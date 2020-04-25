@@ -3,23 +3,28 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "autoprefixer": "^9.7.6",
         "axios": "^0.19.2",
-        "postcss-cli": "^7.1.0",
+        "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-naver-maps": "^0.0.13",
         "react-router-dom": "^5.1.2",
-        "react-scripts": "3.4.1",
-        "react-slide-out": "^0.1.4",
+        "react-scripts": "3.4.1"
+    },
+    "devDependencies": {
+        "ts-loader": "^6.2.2",
+        "tsc-watch": "^4.2.3",
+        "postcss-cli": "^7.1.0",
+        "autoprefixer": "^9.7.6",
         "tailwindcss": "^1.2.0",
         "typescript": "~3.7.2"
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build",
+        "build": "tailwind build src/styles/index.css -o src/styles/tailwind.css && react-scripts build",
+        "postbuild": "mv build ../server/frontend",
         "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
-        "build:all": "tailwind build src/styles/index.css -o src/styles/tailwind.css && react-scripts build",
+        "build:react": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
@@ -37,9 +42,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {
-        "ts-loader": "^6.2.2",
-        "tsc-watch": "^4.2.3"
     }
 }
