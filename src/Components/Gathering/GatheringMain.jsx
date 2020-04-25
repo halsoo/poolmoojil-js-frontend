@@ -9,10 +9,10 @@ export default class GatheringMain extends Component {
             gatherings: [],
         };
 
-        this.loadBooks();
+        this.loadInfos();
     }
 
-    loadBooks = async () => {
+    loadInfos = async () => {
         const gatherings = await axios.get('http://localhost:4000/api/gatherings');
         const status = gatherings.status;
         if (status === 200) {

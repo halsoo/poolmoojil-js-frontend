@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
-import Slider from 'react-slide-out';
-import 'react-slide-out/lib/index.css';
+import Slider from '../SlideOut/SlideOut';
 
 import logo from '../../img/logo.png';
 import menu from '../../img/menu.png';
@@ -40,59 +39,46 @@ class Nav extends Component {
                 },
             ],
             isOpen: false,
+            windowSize: {
+                width: window.innderWidth,
+                height: window.innerHeight,
+            },
         };
     }
 
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions = () => {
+        this.setState({ windowSize: { width: window.innerWidth, height: window.innerHeight } });
+    };
+
     render() {
         const elems = this.state.elems;
-        return (
-            <div
-                className="sm:flex sm:flex-col sm:h-full
-                            lg:grid lg:grid-cols-12 lg:col-gap-2"
-            >
-                <div
-                    className="lg:col-start-3 lg:col-end-4 
-                                sm:grid sm:grid-cols-3 sm:col-gap-2
-                                sm:w-full sm:items-center
-                                "
-                >
-                    <button
-                        onClick={() => {
-                            this.setState({ isOpen: !this.state.isOpen });
-                        }}
-                        className="lg:hidden sm:w-16 sm:ml-16 sm:col-start-1 sm:col-end-2"
-                    >
-                        <img src={menu} alt="menu" />
-                    </button>
-
-                    <Link
-                        to="/"
-                        className="sm:h-auto sm:w-64 sm:col-start-2 sm:col-end-3 sm:mx-auto"
-                    >
+        return this.state.windowSize.width > 1080 ? (
+            <div className="grid grid-cols-12 col-gap-2">
+                <div className="col-start-3 col-end-4">
+                    <Link to="/" className="">
                         <img src={logo} className="" alt="풀무질" />
                     </Link>
                 </div>
                 {/* NAV BAR ELEMS including login and register */}
-                <div
-                    className={`lg:col-start-4 lg:col-end-11
-                                lg:grid lg:grid-cols-7 lg:col-gap-2
-                                sm:hidden `}
-                >
+                <div className="col-start-4 col-end-11 grid grid-cols-7 col-gap-2">
                     {/* NAV BAR ELEMS */}
-                    <div
-                        className="lg:flex lg:flex-row 
-                                    lg:col-start-1 lg:col-end-6
-                                    lg:justify-around
-                                    sm:flex sm:flex-col"
-                    >
+                    <div className="flex flex-row col-start-1 col-end-6 justify-around">
                         {/* EACH NAV BAR ELEMS */}
                         {elems.map((elem, index) => {
                             return (
                                 <div
                                     className={`h-full flex 
-                                        sm:mt-4
-                                        lg:items-center lg:w-28
-                                        lg:${
+                                        items-center w-28
+                                        ${
                                             this.props.location.pathname === elem.path
                                                 ? 'bg-green-500'
                                                 : 'bg-white'
@@ -101,17 +87,12 @@ class Nav extends Component {
                                 >
                                     <Link
                                         to={elem.path}
-                                        onClick={() => {
-                                            this.setState({ isOpen: !this.state.isOpen });
-                                        }}
-                                        className={`mx-auto lg:text-2xl sm:text-6xl font-regular tracking-wider
-                                            lg:${
+                                        className={`mx-auto text-2xl font-regular tracking-wider
+                                            ${
                                                 this.props.location.pathname === elem.path
                                                     ? 'text-white'
                                                     : 'text-green-500'
-                                            }
-                                            sm:text-green-500
-                                            `}
+                                            }`}
                                     >
                                         {elem.display}
                                     </Link>
@@ -122,37 +103,52 @@ class Nav extends Component {
 
                     {/* login and register */}
                     <div
-                        className="lg:col-start-6 lg:col-end-8
+                        className="col-start-6 col-end-8
                                     flex items-center 
-                                    lg:justify-end
-                                    lg:text-xl lg:text-right
-                                    sm:text-5xl sm:mx-auto sm:mt-4
+                                    justify-end
+                                    text-xl text-right
                                     text-green-500 
                                     font-regular tracking-wider"
                     >
-                        <Link
-                            to="/login"
-                            onClick={() => {
-                                this.setState({ isOpen: !this.state.isOpen });
-                            }}
-                            className=""
-                        >
+                        <Link to="/login" className="">
                             로그인
                         </Link>
-                        <Link
-                            to="/register"
-                            onClick={() => {
-                                this.setState({ isOpen: !this.state.isOpen });
-                            }}
-                            className="ml-12"
-                        >
+                        <Link to="/register" className="ml-12">
                             회원가입
                         </Link>
                     </div>
                 </div>
 
+                {/* bottom bar */}
+                <div
+                    className="h-0 w-auto sm:w-full
+                                col-start-1 col-end-13 
+                                border-green-500 border-t-3 sm:border-3"
+                />
+            </div>
+        ) : (
+            // small screen
+            <div className="flex flex-col h-full">
+                <div
+                    className="grid grid-cols-3 col-gap-2
+                                w-full items-center"
+                >
+                    <button
+                        onClick={() => {
+                            this.setState({ isOpen: !this.state.isOpen });
+                        }}
+                        className="w-16 ml-16 col-start-1 col-end-2"
+                    >
+                        <img src={menu} alt="menu" />
+                    </button>
+
+                    <Link to="/" className="h-auto w-64 col-start-2 col-end-3 mx-auto">
+                        <img src={logo} className="" alt="풀무질" />
+                    </Link>
+                </div>
+
                 <Slider
-                    headerHeight="10%"
+                    headerHeight={9}
                     header={
                         <div className="h-full grid grid-cols-3">
                             <button
@@ -168,14 +164,24 @@ class Nav extends Component {
                     isOpen={this.state.isOpen}
                     leftToRight
                     onOutsideClick={() => this.setState({ isOpen: !this.state.isOpen })}
-                ></Slider>
+                    className="flex flex-col"
+                >
+                    {elems.map((elem, index) => {
+                        return (
+                            <div className="flex mt-4 items-center" key={index}>
+                                <Link
+                                    to={elem.path}
+                                    className="mr-auto text-6xl text-white font-regular tracking-wider"
+                                >
+                                    {elem.display}
+                                </Link>
+                            </div>
+                        );
+                    })}
+                </Slider>
 
                 {/* bottom bar */}
-                <div
-                    className="h-0 lg:w-auto sm:w-full
-                                lg:col-start-1 lg:col-end-13 
-                                border-green-500 lg:border-t-3 sm:border-3"
-                />
+                <div className="h-0 sm:w-full border-green-500 border-t-3 sm:border-3" />
             </div>
         );
     }
