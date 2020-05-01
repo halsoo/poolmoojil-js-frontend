@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
-import Slider from '../SlideOut/SlideOut';
+import Slider from '../SlideOut';
 
 import logo from '../../img/logo.png';
 import menu from '../../img/menu.png';

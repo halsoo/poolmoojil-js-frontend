@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Nav from './Components/Nav/Nav';
+import Nav from './Components/Nav';
 import Books from './Components/Store/Books';
-import GatheringMain from './Components/Gathering/GatheringMain';
-import Main from './Components/Main/Main';
-import About from './Components/About/About';
-import Footer from './Components/Footer/Footer';
+import GatheringMain from './Components/Gathering';
+import Main from './Components/Main';
+import About from './Components/About';
+import Footer from './Components/Footer';
 
 function App() {
     return (

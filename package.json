@@ -12,12 +12,9 @@
         "react-scripts": "3.4.1"
     },
     "devDependencies": {
-        "ts-loader": "^6.2.2",
-        "tsc-watch": "^4.2.3",
-        "postcss-cli": "^7.1.0",
         "autoprefixer": "^9.7.6",
-        "tailwindcss": "^1.2.0",
-        "typescript": "~3.7.2"
+        "postcss-cli": "^7.1.0",
+        "tailwindcss": "^1.2.0"
     },
     "scripts": {
         "start": "react-scripts start",
