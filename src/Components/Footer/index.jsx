@@ -6,7 +6,7 @@ export default class Footer extends Component {
     render() {
         return (
             <div className="grid grid-cols-12 col-gap-4">
-                <div className="sm:hidden h-0 col-start-3 col-end-11 border-green-500 border-t" />
+                <div className="h-0 col-start-3 col-end-11 border-green-500 border-t" />
                 <div
                     className="p-4 
                                 lg:col-start-3 lg:col-end-11

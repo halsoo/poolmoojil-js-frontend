@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getBooksAPI } from '../../util/api';
 
 import axios from 'axios';
 
-export default class Books extends Component {
+class Books extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,7 +15,7 @@ export default class Books extends Component {
     }
 
     loadBooks = async () => {
-        const books = await axios.get('http://localhost:4000/api/books');
+        const books = await getBooksAPI();
         const status = books.status;
         if (status === 200) {
             this.setState({
@@ -40,3 +42,12 @@ export default class Books extends Component {
         );
     }
 }
+
+const MapStateToProps = (state) => ({
+    logged: state.logged,
+    cookie: state.cookie,
+});
+
+const MapDispatchToProps = {};
+
+export default connect(MapStateToProps, MapDispatchToProps)(Books);
