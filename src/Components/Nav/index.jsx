@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 import Slider from '../SlideOut';
+
+import { logoutTry } from '../../actions';
 
 import logo from '../../img/logo.png';
 import menu from '../../img/menu.png';
@@ -110,12 +112,24 @@ class Nav extends Component {
                                     text-green-500 
                                     font-regular tracking-wider"
                     >
-                        <Link to="/login" className="">
-                            로그인
-                        </Link>
-                        <Link to="/register" className="ml-12">
-                            회원가입
-                        </Link>
+                        {this.props.logged.status ? (
+                            <Link to="/mypage" className="">
+                                나의 풀무질
+                            </Link>
+                        ) : (
+                            <Link to="/login" className="">
+                                로그인
+                            </Link>
+                        )}
+                        {this.props.logged.status ? (
+                            <button onClick={() => this.props.logoutTry()} className="ml-12">
+                                로그아웃
+                            </button>
+                        ) : (
+                            <Link to="/register" className="ml-12">
+                                회원가입
+                            </Link>
+                        )}
                     </div>
                 </div>
 
@@ -123,7 +137,7 @@ class Nav extends Component {
                 <div
                     className="h-0 w-auto sm:w-full
                                 col-start-1 col-end-13 
-                                border-green-500 border-t-3 sm:border-3"
+                                border-green-500 border-t-3"
                 />
             </div>
         ) : (
@@ -137,18 +151,19 @@ class Nav extends Component {
                         onClick={() => {
                             this.setState({ isOpen: !this.state.isOpen });
                         }}
-                        className="w-16 ml-16 col-start-1 col-end-2"
+                        className="w-20% ml-16 col-start-1 col-end-2"
                     >
                         <img src={menu} alt="menu" />
                     </button>
 
-                    <Link to="/" className="h-auto w-64 col-start-2 col-end-3 mx-auto">
+                    <Link to="/" className="h-auto w-2/3 col-start-2 col-end-3 mx-auto">
                         <img src={logo} className="" alt="풀무질" />
                     </Link>
+                    <div className="col-start-1 col-end-4 border-t-8 border-green-500" />
                 </div>
 
                 <Slider
-                    headerHeight={9}
+                    headerHeight={10}
                     header={
                         <div className="h-full grid grid-cols-3">
                             <button
@@ -159,6 +174,44 @@ class Nav extends Component {
                             >
                                 <img src={close} className="ml-16 w-20%" alt="close" />
                             </button>
+
+                            {this.props.logged.status ? (
+                                <Link
+                                    to="/mypage"
+                                    onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+                                    className="m-auto text-7xl text-green-500"
+                                >
+                                    나의 풀무질
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/login"
+                                    onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+                                    className="m-auto text-7xl text-green-500"
+                                >
+                                    로그인
+                                </Link>
+                            )}
+
+                            {this.props.logged.status ? (
+                                <button
+                                    onClick={() => {
+                                        this.setState({ isOpen: !this.state.isOpen });
+                                        return this.props.logoutTry();
+                                    }}
+                                    className="m-auto text-7xl text-green-500"
+                                >
+                                    로그아웃
+                                </button>
+                            ) : (
+                                <Link
+                                    to="/register"
+                                    onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+                                    className="m-auto text-7xl text-green-500"
+                                >
+                                    회원가입
+                                </Link>
+                            )}
                         </div>
                     }
                     isOpen={this.state.isOpen}
@@ -168,23 +221,28 @@ class Nav extends Component {
                 >
                     {elems.map((elem, index) => {
                         return (
-                            <div className="flex mt-4 items-center" key={index}>
+                            <div className="flex flex-col mt-4 items-center" key={index}>
                                 <Link
                                     to={elem.path}
-                                    className="mr-auto text-6xl text-white font-regular tracking-wider"
+                                    onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+                                    className="ml-24 mr-auto text-10xl text-white tracking-wider"
                                 >
                                     {elem.display}
                                 </Link>
+                                <div className="h-0 w-90% border-t-8 border-white" />
                             </div>
                         );
                     })}
                 </Slider>
-
-                {/* bottom bar */}
-                <div className="h-0 sm:w-full border-green-500 border-t-3 sm:border-3" />
             </div>
         );
     }
 }
 
-export default Nav;
+const MapStateToProps = (state) => ({
+    logged: state.logged,
+});
+
+const MapDispatchToProps = { logoutTry };
+
+export default connect(MapStateToProps, MapDispatchToProps)(withRouter(Nav));
