@@ -6,9 +6,15 @@ export default function InputWithLabel(props) {
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
             <div className="w-full flex flex-row justify-between">
                 <label className="text-2xl h-8 text-green-500">{props.label}</label>
-                <div className="w-70% flex flex-row justify-between">
+                <div
+                    className={`w-70% flex flex-row ${
+                        props.name === 'phone' ? 'justify-between' : 'justify-start'
+                    }`}
+                >
                     <input
-                        className="w-25% pl-2 border border-green-500 sm:rounded-none"
+                        className={`w-25% pl-2 border border-green-500 sm:rounded-none ${
+                            props.name === 'birth' ? 'mr-12' : null
+                        }`}
                         type={props.type}
                         name={props.name + 'A'}
                         onChange={props.onChange}
@@ -19,7 +25,8 @@ export default function InputWithLabel(props) {
                     <input
                         className={`w-${
                             props.name === 'phone' ? '25%' : '20%'
-                        } pl-2 border border-green-500 sm:rounded-none`}
+                        } pl-2 border border-green-500 sm:rounded-none
+                        ${props.name === 'birth' ? 'mr-12' : null}`}
                         type={props.type}
                         name={props.name + 'B'}
                         onChange={props.onChange}
