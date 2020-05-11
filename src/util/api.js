@@ -1,4 +1,5 @@
 import axios from 'axios';
+import addressAPIKey from './key';
 
 const baseUrl =
     process.env.NODE_ENV === 'development' ? '/api' : `https://${window.location.hostname}/api`;
@@ -71,5 +72,13 @@ export async function logoutAPI() {
 
 export async function getBooksAPI(token) {
     const res = await methods.get('books', token);
+    return res;
+}
+
+export function getAddressAPI(query, page) {
+    const res = axios.get(
+        `http://www.juso.go.kr/addrlink/addrLinkApi.do?confmKey=${addressAPIKey}&currentPage=${page}&countPerPage=5&keyword=${query}&resultType=json`,
+    );
+
     return res;
 }

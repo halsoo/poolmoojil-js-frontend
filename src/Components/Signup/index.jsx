@@ -6,9 +6,12 @@ import { signupTry } from '../../actions';
 import { isEmail, isLength, isAlphanumeric, isNumeric } from 'validator';
 import InputWithLabel from './InputWithLabel';
 import ButtonForm from './ButtonForm';
+import AddressSearch from './AddressSearch';
+import NewWindow from 'react-new-window';
+
 import { checkDuplicateAPI } from '../../util/api';
 import mainLogo from '../../img/main_logo.png';
-import key from './key';
+import { node } from 'prop-types';
 
 class Signup extends Component {
     constructor(props) {
@@ -29,6 +32,7 @@ class Signup extends Component {
             address: {
                 zipCode: null,
                 addressA: null,
+                addressB: null,
             },
 
             IDokay: false,
@@ -37,7 +41,11 @@ class Signup extends Component {
                 checkA: false,
                 checkB: false,
             },
+
+            popup: false,
         };
+
+        window.name = 'parentWindow';
     }
 
     validate = {
@@ -322,16 +330,14 @@ class Signup extends Component {
         });
     };
 
-    popup = () => {
-        // 호출된 페이지(jusopopup.jsp)에서 실제 주소검색URL(http://www.juso.go.kr/addrlink/addrLinkUrl.do)를 호출하게 됩니다.
-        var pop = window.open(
-            `http://www.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=${key}&returnUrl=${window.location.href}`,
-            'pop',
-            'width=570,height=420, scrollbars=yes, resizable=yes',
-        );
+    handleAddress = (event) => {
+        const target = event.target;
+    };
 
-        // 모바일 웹인 경우, 호출된 페이지(jusopopup.jsp)에서 실제 주소검색URL(http://www.juso.go.kr/addrlink/addrMobileLinkUrl.do)를 호출하게 됩니다.
-        //var pop = window.open("/popup/jusoPopup.jsp","pop","scrollbars=yes, resizable=yes");
+    openAddressAPI = () => {
+        this.setState({
+            popup: true,
+        });
     };
 
     static getDerivedStateFromProps(nProps, pState) {
@@ -344,6 +350,25 @@ class Signup extends Component {
             };
         }
         return null;
+    }
+
+    componentDidMount() {
+        window.addEventListener(
+            'message',
+            (event) => {
+                if (event.data.zipCode) {
+                    console.log(event.data);
+                    this.setState({
+                        address: {
+                            ...this.state.address,
+                            zipCode: event.data.zipCode,
+                            addressA: event.data.addressA,
+                        },
+                    });
+                }
+            },
+            false,
+        );
     }
 
     render() {
@@ -423,9 +448,9 @@ class Signup extends Component {
                         placeholder="우편번호"
                         additionalButton={true}
                         additionalLabel="검색"
-                        additionalOnClick={this.popup}
+                        additionalOnClick={this.openAddressAPI}
                         value={this.state.address.zipCode}
-                        disabled="disables"
+                        disabled="disabled"
                     />
                     <InputWithLabel
                         label="주소"
@@ -484,6 +509,17 @@ class Signup extends Component {
                 />
 
                 <img className="absolute right-0 top-0 h-60%" src={mainLogo} alt="main logo" />
+
+                {this.state.popup ? (
+                    <NewWindow
+                        name="popup"
+                        center="screen"
+                        onUnload={() => this.setState({ popup: false })}
+                        features={{ width: 570, height: 450 }}
+                    >
+                        <AddressSearch />
+                    </NewWindow>
+                ) : null}
             </div>
         );
     }
