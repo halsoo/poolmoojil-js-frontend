@@ -76,7 +76,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     email: null,
                 },
             });
@@ -95,7 +94,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     userID: null,
                 },
             });
@@ -122,7 +120,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     password: null,
                 },
             });
@@ -141,7 +138,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     passwordConfirm: null,
                 },
             });
@@ -161,7 +157,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     phone: null,
                 },
             });
@@ -180,7 +175,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     phone: null,
                 },
             });
@@ -199,7 +193,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     phone: null,
                 },
             });
@@ -219,7 +212,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     birth: null,
                 },
             });
@@ -238,7 +230,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     birth: null,
                 },
             });
@@ -257,7 +248,6 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
                     birth: null,
                 },
             });
@@ -389,6 +379,10 @@ class Signup extends Component {
             IDokay: IDokay,
             EMAILokay: EMAILokay,
             [name]: value,
+            errors: {
+                ...this.state.errors,
+                overall: null,
+            },
         });
     };
 
@@ -419,7 +413,6 @@ class Signup extends Component {
             'message',
             (event) => {
                 if (event.data.zipCode) {
-                    console.log(event.data);
                     this.setState({
                         address: {
                             ...this.state.address,
