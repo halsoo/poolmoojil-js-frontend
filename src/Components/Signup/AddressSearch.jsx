@@ -103,7 +103,11 @@ class AddressSearch extends Component {
                             도로명주소 검색 결과({this.state.total})
                         </div>
 
-                        <AddrList list={this.state.addresses} parent={window.opener} />
+                        <AddrList
+                            list={this.state.addresses}
+                            parent={window.opener}
+                            self={window}
+                        />
 
                         <div className="mx-auto w-40% flex flex-row justify-around">
                             <button
@@ -154,7 +158,7 @@ class AddrList extends Component {
 
     sendMessage = (addressInfo) => {
         this.props.parent.postMessage(addressInfo, '*');
-        this.props.parent.close();
+        window.open('', 'popup').close();
     };
 
     render() {

@@ -9,7 +9,7 @@ import ButtonForm from './ButtonForm';
 import AddressSearch from './AddressSearch';
 import NewWindow from 'react-new-window';
 
-import { checkDuplicateAPI } from '../../util/api';
+import { checkDuplicateUserAPI, checkDuplicateEmailAPI } from '../../util/api';
 import mainLogo from '../../img/main_logo.png';
 import { node } from 'prop-types';
 
@@ -36,6 +36,7 @@ class Signup extends Component {
             },
 
             IDokay: false,
+            EMAILokay: false,
 
             buttonForm: {
                 checkA: false,
@@ -62,6 +63,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     email: null,
                 },
             });
@@ -80,6 +82,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     userID: null,
                 },
             });
@@ -98,6 +101,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     password: null,
                 },
             });
@@ -116,6 +120,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     passwordConfirm: null,
                 },
             });
@@ -135,6 +140,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     phone: null,
                 },
             });
@@ -153,6 +159,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     phone: null,
                 },
             });
@@ -171,6 +178,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     phone: null,
                 },
             });
@@ -190,6 +198,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     birth: null,
                 },
             });
@@ -208,6 +217,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     birth: null,
                 },
             });
@@ -226,6 +236,7 @@ class Signup extends Component {
             this.setState({
                 error: {
                     ...this.state.error,
+                    overall: null,
                     birth: null,
                 },
             });
@@ -236,18 +247,18 @@ class Signup extends Component {
     combine = (strA, strB, strC, isPhone) => {
         let result = null;
         if (isPhone) {
-            result = strA + ' - ' + strB + ' - ' + strC;
+            result = strA + strB + strC;
         } else {
-            if (strB.length() < 2) strB = '0' + strB;
-            if (strC.length() < 2) strC = '0' + strC;
+            if (strB.length < 2) strB = '0' + strB;
+            if (strC.length < 2) strC = '0' + strC;
             result = strA + '-' + strB + '-' + strC;
         }
 
         return result;
     };
 
-    checkDuplicate = async (event) => {
-        const res = await checkDuplicateAPI(this.state.userID);
+    checkDuplicateUser = async (event) => {
+        const res = await checkDuplicateUserAPI(this.state.userID);
         if (res.status === 200 && !this.state.error.userID) {
             this.setState({ IDokay: true });
         } else {
@@ -255,6 +266,34 @@ class Signup extends Component {
                 error: {
                     ...this.state.error,
                     userID: '이미 존재하는 아이디입니다.',
+                },
+            });
+        }
+    };
+
+    checkDuplicateUser = async (event) => {
+        const res = await checkDuplicateUserAPI(this.state.userID);
+        if (res.status === 200 && !this.state.error.userID) {
+            this.setState({ IDokay: true });
+        } else {
+            this.setState({
+                error: {
+                    ...this.state.error,
+                    userID: '이미 존재하는 아이디입니다.',
+                },
+            });
+        }
+    };
+
+    checkDuplicateEmail = async (event) => {
+        const res = await checkDuplicateEmailAPI(this.state.email);
+        if (res.status === 200 && !this.state.error.email) {
+            this.setState({ EMAILokay: true });
+        } else {
+            this.setState({
+                error: {
+                    ...this.state.error,
+                    email: '이미 존재하는 이메일입니다.',
                 },
             });
         }
@@ -273,9 +312,11 @@ class Signup extends Component {
             this.state.birthA && this.state.birthB && this.state.birthC
                 ? this.combine(this.state.birthA, this.state.birthB, this.state.birthC, false)
                 : null;
-        const zipCode = this.state.zipCode ? this.state.zipCode : null;
-        const addressA = this.state.addressA ? this.state.addressA : null;
+        const zipCode = this.state.address.zipCode ? this.state.address.zipCode : null;
+        const addressA = this.state.address.addressA ? this.state.address.addressA : null;
         const addressB = this.state.addressB ? this.state.addressB : null;
+
+        console.log(zipCode);
 
         const signupInfo = {
             userID,
@@ -290,15 +331,24 @@ class Signup extends Component {
         };
 
         const errors = Object.values(this.state.error).reduce((a, b) => a + b, 0);
-        const infos = Object.values(signupInfo).reduce((a, b) => a + b, 0);
 
-        if (this.state.IDokay && errors === 0 && infos !== 0 && this.state.buttonForm.checkA) {
-            this.props.signupTry(signupInfo, this.props.cookie);
-        } else {
+        console.log(this.state.IDokay, errors, this.state.buttonForm.checkA);
+
+        if (errors !== 0) {
             this.setState({
                 error: {
                     ...this.state.error,
                     overall: '모든 항목을 기입하셨나요?',
+                },
+            });
+        } else if (this.state.IDokay && errors === 0 && this.state.buttonForm.checkA) {
+            console.log('signup!!');
+            this.props.signupTry(signupInfo);
+        } else {
+            this.setState({
+                error: {
+                    ...this.state.error,
+                    overall: null,
                 },
             });
         }
@@ -312,8 +362,15 @@ class Signup extends Component {
         const validation = this.validate[name];
         if (validation !== undefined) validation(value);
 
+        let IDokay = this.state.IDokay;
+        if (name === 'userID') IDokay = false;
+
+        let EMAILokay = this.state.EMAILokay;
+        if (name === 'email') EMAILokay = false;
+
         this.setState({
-            IDokay: false,
+            IDokay: IDokay,
+            EMAILokay: EMAILokay,
             [name]: value,
         });
     };
@@ -339,18 +396,6 @@ class Signup extends Component {
             popup: true,
         });
     };
-
-    static getDerivedStateFromProps(nProps, pState) {
-        if (nProps.logged.error) {
-            return {
-                error: {
-                    ...pState.error,
-                    overall: '필수 항목에 값을 입력해주세요.',
-                },
-            };
-        }
-        return null;
-    }
 
     componentDidMount() {
         window.addEventListener(
@@ -399,7 +444,7 @@ class Signup extends Component {
                         placeholder="아이디"
                         additionalButton={true}
                         additionalLabel="중복 확인"
-                        additionalOnClick={this.checkDuplicate}
+                        additionalOnClick={this.checkDuplicateUser}
                         error={this.state.error.userID}
                         okay={this.state.IDokay}
                     />
@@ -410,7 +455,11 @@ class Signup extends Component {
                         onChange={this.handleChange}
                         value={this.state.email}
                         placeholder="이메일"
+                        additionalButton={true}
+                        additionalLabel="중복 확인"
+                        additionalOnClick={this.checkDuplicateEmail}
                         error={this.state.error.email}
+                        okay={this.state.EMAILokay}
                     />
                     <InputWithLabel
                         label="이름"

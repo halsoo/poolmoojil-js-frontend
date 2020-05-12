@@ -62,10 +62,15 @@ export const logoutTry = () => async (dispatch) => {
     }
 };
 
-export const signupTry = () => async (dispatch) => {
+export const signupTry = (signupInfo) => async (dispatch) => {
     try {
-        const res = await signupAPI();
-        dispatch(signup());
+        const res = await signupAPI(signupInfo);
+        console.log('signup!');
+        if (res.status === 201) {
+            dispatch(signup());
+        } else {
+            dispatch(signupFail(res.status));
+        }
     } catch (error) {
         console.log(error);
         dispatch(signupFail(error));
