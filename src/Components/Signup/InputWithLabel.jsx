@@ -51,7 +51,7 @@ export default function InputWithLabel(props) {
         <div className="w-full mb-4 flex flex-col justify-between">
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
             {props.okay ? (
-                <div className="text-green-500 mb-2"> 사용 가능한 아이디입니다. </div>
+                <div className="text-green-500 mb-2"> 사용 가능한 {props.label}입니다. </div>
             ) : null}
             <div className="w-full flex flex-row justify-between">
                 <label className="text-2xl h-8 text-green-500">{props.label}</label>

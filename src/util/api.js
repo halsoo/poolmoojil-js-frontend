@@ -60,8 +60,13 @@ export async function signupAPI(signupInfo) {
     return res;
 }
 
-export async function checkDuplicateAPI(userID) {
-    const res = await methods.get('users/' + userID);
+export async function checkDuplicateUserAPI(userID) {
+    const res = await methods.get('users/getuser/' + userID);
+    return res;
+}
+
+export async function checkDuplicateEmailAPI(email) {
+    const res = await methods.get('users/getemail/' + email);
     return res;
 }
 
