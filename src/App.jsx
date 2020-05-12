@@ -25,13 +25,13 @@ class App extends Component {
     static getDerivedStateFromProps(nProps, pState) {
         const cookie = nProps.cookies.get('access_token');
 
-        if (cookie !== pState.cookie && pState.cookie === undefined) {
+        if (cookie && cookie !== pState.cookie && pState.cookie === undefined) {
             nProps.setCookie(cookie);
             nProps.loginCookie();
-            return { cookie: cookie };
+            return { cookie: cookie, logged: true };
         } else if (!cookie && pState.cookie !== undefined) {
             nProps.noneCookie();
-            return { cookie: undefined };
+            return { cookie: undefined, logged: false };
         } else {
             return null;
         }
