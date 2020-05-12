@@ -10,7 +10,7 @@ class AddressSearch extends Component {
         super(props);
 
         this.state = {
-            queryText: '안새내길',
+            queryText: '',
             currentPage: 1,
             addresses: [],
             isSearched: false,
