@@ -3,7 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signupTry } from '../../actions';
 
-import { isEmail, isLength, isAlphanumeric, isNumeric } from 'validator';
+import { isEmail, isLength, isAlphanumeric, isAscii, isNumeric } from 'validator';
 import InputWithLabel from './InputWithLabel';
 import ButtonForm from './ButtonForm';
 import AddressSearch from './AddressSearch';
@@ -27,6 +27,19 @@ class Signup extends Component {
                 passwordConfirm: null,
                 phone: null,
                 birth: null,
+            },
+
+            required: {
+                overall: true,
+                userID: true,
+                name: true,
+                email: true,
+                password: true,
+                passwordConfirm: true,
+                phone: true,
+                zipCode: true,
+                addressA: true,
+                birth: false,
             },
 
             address: {
@@ -94,6 +107,14 @@ class Signup extends Component {
                     error: {
                         ...this.state.error,
                         password: '비밀번호를 8자 이상 입력하세요.',
+                    },
+                });
+                return false;
+            } else if (!isAscii(value)) {
+                this.setState({
+                    error: {
+                        ...this.state.error,
+                        password: '영문, 숫자, 특수문자만 사용해주세요.',
                     },
                 });
                 return false;
@@ -271,20 +292,6 @@ class Signup extends Component {
         }
     };
 
-    checkDuplicateUser = async (event) => {
-        const res = await checkDuplicateUserAPI(this.state.userID);
-        if (res.status === 200 && !this.state.error.userID) {
-            this.setState({ IDokay: true });
-        } else {
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    userID: '이미 존재하는 아이디입니다.',
-                },
-            });
-        }
-    };
-
     checkDuplicateEmail = async (event) => {
         const res = await checkDuplicateEmailAPI(this.state.email);
         if (res.status === 200 && !this.state.error.email) {
@@ -331,6 +338,12 @@ class Signup extends Component {
         };
 
         const errors = Object.values(this.state.error).reduce((a, b) => a + b, 0);
+        const values = Object.keys(signupInfo).reduce((a, b) => {
+            if (this.state.required[b]) {
+                if (signupInfo[b] !== null) return a + null;
+                else return a + 1;
+            } else return a + null;
+        }, null);
 
         console.log(this.state.IDokay, errors, this.state.buttonForm.checkA);
 
@@ -341,14 +354,18 @@ class Signup extends Component {
                     overall: '모든 항목을 기입하셨나요?',
                 },
             });
-        } else if (this.state.IDokay && errors === 0 && this.state.buttonForm.checkA) {
-            console.log('signup!!');
+        } else if (
+            this.state.IDokay &&
+            errors === 0 &&
+            values === 0 &&
+            this.state.buttonForm.checkA
+        ) {
             this.props.signupTry(signupInfo);
         } else {
             this.setState({
                 error: {
                     ...this.state.error,
-                    overall: null,
+                    overall: '모든 항목을 기입하셨나요?',
                 },
             });
         }
@@ -447,6 +464,7 @@ class Signup extends Component {
                         additionalOnClick={this.checkDuplicateUser}
                         error={this.state.error.userID}
                         okay={this.state.IDokay}
+                        required={this.state.required.userID}
                     />
                     <InputWithLabel
                         label="E-MAIL"
@@ -460,6 +478,7 @@ class Signup extends Component {
                         additionalOnClick={this.checkDuplicateEmail}
                         error={this.state.error.email}
                         okay={this.state.EMAILokay}
+                        required={this.state.required.email}
                     />
                     <InputWithLabel
                         label="이름"
@@ -469,6 +488,7 @@ class Signup extends Component {
                         value={this.state.name}
                         placeholder="이름"
                         error={this.state.error.name}
+                        required={this.state.required.name}
                     />
                     <InputWithLabel
                         label="비밀번호"
@@ -478,6 +498,7 @@ class Signup extends Component {
                         value={this.state.password}
                         placeholder="비밀번호"
                         error={this.state.error.password}
+                        required={this.state.required.password}
                     />
                     <InputWithLabel
                         label="비밀번호 확인"
@@ -487,6 +508,7 @@ class Signup extends Component {
                         value={this.state.passwordConfirm}
                         placeholder="비밀번호 확인"
                         error={this.state.error.passwordConfirm}
+                        required={this.state.required.passwordConfirm}
                     />
                     <InputWithLabel
                         label="우편번호"
@@ -500,6 +522,7 @@ class Signup extends Component {
                         additionalOnClick={this.openAddressAPI}
                         value={this.state.address.zipCode}
                         disabled="disabled"
+                        required={this.state.required.zipCode}
                     />
                     <InputWithLabel
                         label="주소"
@@ -510,6 +533,7 @@ class Signup extends Component {
                         placeholder=""
                         value={this.state.address.addressA}
                         disabled="disabled"
+                        required={this.state.required.addressA}
                     />
                     <InputWithLabel
                         label=""
@@ -517,7 +541,7 @@ class Signup extends Component {
                         name="addressB"
                         onChange={this.handleChange}
                         value={this.state.addressB}
-                        placeholder=""
+                        placeholder="상세 주소"
                     />
 
                     <InputWithLabel
@@ -527,6 +551,7 @@ class Signup extends Component {
                         onChange={this.handleChange}
                         placeholder=""
                         error={this.state.error.phone}
+                        required={this.state.required.phone}
                     />
 
                     <InputWithLabel
