@@ -6,12 +6,11 @@ import { signupTry } from '../../actions';
 import { isEmail, isLength, isAlphanumeric, isAscii, isNumeric } from 'validator';
 import InputWithLabel from './InputWithLabel';
 import ButtonForm from './ButtonForm';
-import AddressSearch from './AddressSearch';
+import AddressSearch from '../shared/AddressSearch';
 import NewWindow from 'react-new-window';
 
 import { checkDuplicateUserAPI, checkDuplicateEmailAPI } from '../../util/api';
 import mainLogo from '../../img/main_logo.png';
-import { node } from 'prop-types';
 
 class Signup extends Component {
     constructor(props) {
@@ -235,7 +234,7 @@ class Signup extends Component {
             });
             return true;
         },
-        birthA: (value) => {
+        birthC: (value) => {
             if (!isNumeric(value) || !isLength(value, { min: 1, max: 31 })) {
                 this.setState({
                     error: {
@@ -313,8 +312,6 @@ class Signup extends Component {
         const addressA = this.state.address.addressA ? this.state.address.addressA : null;
         const addressB = this.state.addressB ? this.state.addressB : null;
 
-        console.log(zipCode);
-
         const signupInfo = {
             userID,
             name,
@@ -334,8 +331,6 @@ class Signup extends Component {
                 else return a + 1;
             } else return a + null;
         }, null);
-
-        console.log(this.state.IDokay, errors, this.state.buttonForm.checkA);
 
         if (errors !== 0) {
             this.setState({
@@ -396,10 +391,6 @@ class Signup extends Component {
                 [name]: value,
             },
         });
-    };
-
-    handleAddress = (event) => {
-        const target = event.target;
     };
 
     openAddressAPI = () => {
@@ -508,7 +499,6 @@ class Signup extends Component {
                         type="text"
                         name="zipCode"
                         onChange={this.handleChange}
-                        value={this.state.zipCode}
                         placeholder="우편번호"
                         additionalButton={true}
                         additionalLabel="검색"
@@ -522,7 +512,6 @@ class Signup extends Component {
                         type="text"
                         name="addressA"
                         onChange={this.handleChange}
-                        value={this.state.addressA}
                         placeholder=""
                         value={this.state.address.addressA}
                         disabled="disabled"

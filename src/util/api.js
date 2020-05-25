@@ -75,8 +75,58 @@ export async function logoutAPI() {
     return res;
 }
 
-export async function getBooksAPI(token) {
-    const res = await methods.get('books', token);
+export async function getGatheringByID(ID) {
+    const res = await methods.get('gathering/getid/' + ID);
+    return res;
+}
+
+export async function getGatherings(query) {
+    const res = await methods.post('gathering/', query);
+    return res;
+}
+
+export async function getPackageByID(ID) {
+    const res = await methods.get('package/getid/' + ID);
+    return res;
+}
+
+export async function getPackageMonthly() {
+    const res = await methods.get('package/getmonthly');
+    return res;
+}
+
+export async function getPackages(query) {
+    const res = await methods.post('package/', query);
+    return res;
+}
+
+export async function getBooks(query) {
+    const res = await methods.post('book/', query);
+    return res;
+}
+
+export async function getBookByID(ID) {
+    const res = await methods.get('book/getid/' + ID);
+    return res;
+}
+
+export async function getBookCurated(query) {
+    const res = await methods.post('book/getcurated', query);
+    return res;
+}
+
+export async function getBookSelected(query) {
+    const res = await methods.post('book/getselected', query);
+    return res;
+}
+
+export async function getGoods(query) {
+    const res = await methods.post('good/', query);
+    return res;
+}
+
+export async function getGoodByID(ID) {
+    const res = await methods.get('good/getid/' + ID);
     return res;
 }
 
