@@ -92,7 +92,7 @@ class AddressSearch extends Component {
                         </button>
                     </div>
 
-                    <div className="flex ml-7% justify-start text-4xl text-green-500">
+                    <div className="flex ml-7vw justify-start text-4xl text-green-500">
                         검색어 예 : 도로명(반포대로 58), 건물명(독립기념관), 지번(삼성동25)
                     </div>
                 </div>

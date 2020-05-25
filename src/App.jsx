@@ -6,8 +6,14 @@ import { withCookies } from 'react-cookie';
 import Nav from './Components/Nav';
 import Main from './Components/Main';
 import About from './Components/About';
-import Books from './Components/Store/Books';
-import GatheringMain from './Components/Gathering';
+import Gathering from './Components/Gathering/Gathering';
+import GatheringItem from './Components/Gathering/GatheringItem';
+import Package from './Components/Package/Package';
+import PackageItem from './Components/Package/PackageItem';
+import Store from './Components/Store/Store';
+import BookItem from './Components/Store/BookItem';
+import Good from './Components/Store/Good';
+import GoodItem from './Components/Store/GoodItem';
 import Login from './Components/Login';
 import MyPage from './Components/MyPage';
 import Signup from './Components/Signup';
@@ -53,15 +59,17 @@ class App extends Component {
                                 <Route exact path="/" component={Main} />
                                 <Route exact path="/main" to="/" />
                                 <Route exact path="/about" component={About} />
-                                <Route exact path="/gathering" component={GatheringMain} />
-                                <Route exact path="/package" component={Books} />
-                                <Route exact path="/store" component={Books} />
-                                <Route exact path="/notice" component={Books} />
-
+                                <Route exact path="/gathering" component={Gathering} />
+                                <Route exact path="/gathering/:id" component={GatheringItem} />
+                                <Route exact path="/package" component={Package} />
+                                <Route exact path="/package/:id" component={PackageItem} />
+                                <Route exact path="/store" component={Store} />
+                                <Route exact path="/store/good" component={Good} />
+                                <Route exact path="/store/book/:id" component={BookItem} />
+                                <Route exact path="/store/good/:id" component={GoodItem} />
+                                <Route exact path="/notice" component={Store} />
                                 <Route exact path="/mypage" component={MyPage} />
-
                                 <Route exact path="/login" component={Login} />
-
                                 <Route exact path="/register" component={Signup} />
                             </Switch>
                         </div>
