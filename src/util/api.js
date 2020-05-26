@@ -60,6 +60,11 @@ export async function signupAPI(signupInfo) {
     return res;
 }
 
+export async function getUserCookie() {
+    const res = await methods.get('users/getbycookie');
+    return res;
+}
+
 export async function checkDuplicateUserAPI(userID) {
     const res = await methods.get('users/getuser/' + userID);
     return res;
@@ -77,6 +82,11 @@ export async function logoutAPI() {
 
 export async function getGatheringByID(ID) {
     const res = await methods.get('gathering/getid/' + ID);
+    return res;
+}
+
+export async function getUpcomingGathering() {
+    const res = await methods.get('gathering/upcoming/');
     return res;
 }
 
@@ -127,6 +137,16 @@ export async function getGoods(query) {
 
 export async function getGoodByID(ID) {
     const res = await methods.get('good/getid/' + ID);
+    return res;
+}
+
+export async function getNotices(query) {
+    const res = await methods.post('notice/', query);
+    return res;
+}
+
+export async function getNoticeByID(ID) {
+    const res = await methods.get('notice/getid/' + ID);
     return res;
 }
 

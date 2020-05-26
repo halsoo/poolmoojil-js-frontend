@@ -44,9 +44,9 @@ class GatheringItem extends Component {
                             ) : gathering.isOver ? (
                                 <ButtonOver />
                             ) : gathering.isAll ? (
-                                <ButtonGroup />
+                                <ButtonGroup id={gathering.id} />
                             ) : (
-                                <ButtonOne />
+                                <ButtonOne id={gathering.id} />
                             )}
                         </div>
                     </div>
@@ -126,20 +126,12 @@ function GatheringItemDesc(props) {
 function ButtonGroup(props) {
     return (
         <div className="mt-2 flex flex-row justify-between ">
-            <button
-                className="w-49% h-18 text-2xl text-green-500 border border-green-500"
-                name="oneTime"
-                checkOnChange={props.onChange}
-            >
-                1회 참가 신청
+            <button className="w-49% h-18 text-2xl text-green-500 border border-green-500">
+                <Link to={'/gathering/onetime/' + props.id}>1회 참가 신청</Link>
             </button>
 
-            <button
-                className="w-49% text-2xl text-white bg-green-500"
-                name="fullTime"
-                checkOnChange={props.onChange}
-            >
-                12회 참가 신청
+            <button className="w-49% text-2xl text-white bg-green-500">
+                <Link to={'/gathering/oneyear/' + props.id}>12회 참가 신청</Link>
             </button>
         </div>
     );
@@ -148,12 +140,8 @@ function ButtonGroup(props) {
 function ButtonOne(props) {
     return (
         <div className="mt-2 flex flex-row justify-between ">
-            <button
-                className="w-full h-18 text-2xl text-white bg-green-500"
-                name="fullTime"
-                checkOnChange={props.onChange}
-            >
-                참여하기
+            <button className="w-full h-18 text-2xl text-white bg-green-500">
+                <Link to={'/gathering/onetime/' + props.id}>참여하기</Link>
             </button>
         </div>
     );
