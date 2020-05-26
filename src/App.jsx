@@ -8,12 +8,15 @@ import Main from './Components/Main';
 import About from './Components/About';
 import Gathering from './Components/Gathering/Gathering';
 import GatheringItem from './Components/Gathering/GatheringItem';
+import GatheringOneTime from './Components/Gathering/GatheringOneTime';
+import GatheringOneYear from './Components/Gathering/GatheringOneYear';
 import Package from './Components/Package/Package';
 import PackageItem from './Components/Package/PackageItem';
 import Store from './Components/Store/Store';
 import BookItem from './Components/Store/BookItem';
 import Good from './Components/Store/Good';
 import GoodItem from './Components/Store/GoodItem';
+import Notice from './Components/Notice';
 import Login from './Components/Login';
 import MyPage from './Components/MyPage';
 import Signup from './Components/Signup';
@@ -61,13 +64,23 @@ class App extends Component {
                                 <Route exact path="/about" component={About} />
                                 <Route exact path="/gathering" component={Gathering} />
                                 <Route exact path="/gathering/:id" component={GatheringItem} />
+                                <Route
+                                    exact
+                                    path="/gathering/onetime/:id"
+                                    component={GatheringOneTime}
+                                />
+                                <Route
+                                    exact
+                                    path="/gathering/oneyear/:id"
+                                    component={GatheringOneYear}
+                                />
                                 <Route exact path="/package" component={Package} />
                                 <Route exact path="/package/:id" component={PackageItem} />
                                 <Route exact path="/store" component={Store} />
                                 <Route exact path="/store/good" component={Good} />
                                 <Route exact path="/store/book/:id" component={BookItem} />
                                 <Route exact path="/store/good/:id" component={GoodItem} />
-                                <Route exact path="/notice" component={Store} />
+                                <Route exact path="/notice" component={Notice} />
                                 <Route exact path="/mypage" component={MyPage} />
                                 <Route exact path="/login" component={Login} />
                                 <Route exact path="/register" component={Signup} />
