@@ -95,6 +95,11 @@ export async function getGatherings(query) {
     return res;
 }
 
+export async function getGatheringsCalendar() {
+    const res = await methods.get('gathering//threemonths');
+    return res;
+}
+
 export async function getPackageByID(ID) {
     const res = await methods.get('package/getid/' + ID);
     return res;

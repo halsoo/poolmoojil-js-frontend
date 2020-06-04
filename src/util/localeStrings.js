@@ -132,3 +132,31 @@ export function convertDayToKor(str) {
             return '일';
     }
 }
+
+export function dateToTime(str) {
+    const year = str.substring(0, 4);
+    const month = str.substring(5, 7);
+
+    let intMonth = parseInt(month);
+    let intYear = parseInt(year);
+    if (intMonth > 11) {
+        intMonth = 1;
+        intYear += 1;
+    }
+
+    return new Date(intYear, intMonth, 1).getTime();
+}
+
+export function plusSixMonths(str) {
+    const year = str.substring(0, 4);
+    const month = str.substring(5, 7);
+
+    let intMonth = parseInt(month) + 6;
+    let intYear = parseInt(year);
+    if (intMonth > 12) {
+        intMonth = intMonth - 12;
+        intYear += 1;
+    }
+
+    return { month: intMonth, year: intYear };
+}

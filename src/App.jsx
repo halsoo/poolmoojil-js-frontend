@@ -12,6 +12,8 @@ import GatheringOneTime from './Components/Gathering/GatheringOneTime';
 import GatheringOneYear from './Components/Gathering/GatheringOneYear';
 import Package from './Components/Package/Package';
 import PackageItem from './Components/Package/PackageItem';
+import PackageOneTime from './Components/Package/PackageOneTime';
+import PackageSixMonths from './Components/Package/PackageSixMonths';
 import Store from './Components/Store/Store';
 import BookItem from './Components/Store/BookItem';
 import Good from './Components/Store/Good';
@@ -20,6 +22,8 @@ import Notice from './Components/Notice';
 import Login from './Components/Login';
 import MyPage from './Components/MyPage';
 import Signup from './Components/Signup';
+import Cart from './Components/Store/Cart';
+import CartIcon from './Components/shared/CartIcon';
 import Footer from './Components/Footer';
 
 class App extends Component {
@@ -48,9 +52,10 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
+            <div className="App relative w-full">
                 <Router>
                     <Route path="/" component={Nav} />
+                    <Route path="/store" component={CartIcon} />
                     <div className="lg:grid lg:grid-cols-12 lg:gap-2">
                         <div
                             className="lg:mt-3 lg:mb-3 
@@ -76,10 +81,21 @@ class App extends Component {
                                 />
                                 <Route exact path="/package" component={Package} />
                                 <Route exact path="/package/:id" component={PackageItem} />
+                                <Route
+                                    exact
+                                    path="/package/onetime/:id"
+                                    component={PackageOneTime}
+                                />
+                                <Route
+                                    exact
+                                    path="/package/sixmonths/:id"
+                                    component={PackageSixMonths}
+                                />
                                 <Route exact path="/store" component={Store} />
                                 <Route exact path="/store/good" component={Good} />
                                 <Route exact path="/store/book/:id" component={BookItem} />
                                 <Route exact path="/store/good/:id" component={GoodItem} />
+                                <Route exact path="/cart" component={Cart} />
                                 <Route exact path="/notice" component={Notice} />
                                 <Route exact path="/mypage" component={MyPage} />
                                 <Route exact path="/login" component={Login} />

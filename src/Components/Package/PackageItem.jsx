@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { getPackageByID } from '../../util/api';
-import { priceStr, oneTimeMonthStr } from '../../util/localeStrings';
+import { priceStr, oneTimeMonthStr, dateToTime } from '../../util/localeStrings';
 
 class PackageItem extends Component {
     constructor(props) {
@@ -18,7 +18,6 @@ class PackageItem extends Component {
 
     getInfo = async () => {
         const res = await getPackageByID(this.props.match.params.id);
-        console.log(res);
         if (res.status === 200) {
             this.setState(
                 {
@@ -36,12 +35,14 @@ class PackageItem extends Component {
         this.setState({
             elems: fullList,
         });
-        console.log(fullList);
     };
 
     render() {
         const singlePackage = this.state.package;
+        const today = new Date().getTime();
+        const packageDay = singlePackage ? dateToTime(singlePackage.date) : null;
         console.log(singlePackage);
+
         return singlePackage ? (
             <div className="flex flex-col">
                 <div className="flex flex-row justify-between border border-green-500">
@@ -55,7 +56,16 @@ class PackageItem extends Component {
                                 src={singlePackage.mainImg.link}
                             />
 
-                            {!this.props.logged.status ? <ButtonLogin /> : <ButtonGroup />}
+                            {!this.props.logged.status ? (
+                                <ButtonLogin />
+                            ) : packageDay < today ? (
+                                <ButtonOver />
+                            ) : (
+                                <ButtonGroup
+                                    bookId={singlePackage.monthlyCurated.book[0].id}
+                                    packageId={singlePackage.id}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -63,6 +73,11 @@ class PackageItem extends Component {
                 {this.state.elems ? (
                     <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
                         <p className="m-4 text-2xl mb-4">꾸러미 구성품</p>
+                        <PackageElems
+                            elem={singlePackage.monthlyCurated.book[0]}
+                            index={'이 달의 책'}
+                            last={false}
+                        />
                         {this.state.elems.map((item, index) => {
                             let last = false;
                             if (index === this.state.elems.length - 1) last = true;
@@ -123,6 +138,16 @@ function ButtonLogin(props) {
     );
 }
 
+function ButtonOver(props) {
+    return (
+        <div className="mt-2 flex flex-row justify-between ">
+            <button className="w-full h-18 text-white text-2xl bg-green-500">
+                지난 꾸러미입니다
+            </button>
+        </div>
+    );
+}
+
 function ButtonGroup(props) {
     return (
         <div className="mt-2 flex flex-col justify-between">
@@ -130,26 +155,19 @@ function ButtonGroup(props) {
                 <button
                     className="w-49% h-18 text-2xl text-green-500 border border-green-500"
                     name="oneTime"
-                    checkOnChange={props.onChange}
                 >
-                    구러미 구매
+                    <Link to={'/package/onetime/' + props.packageId}>구러미 구매</Link>
                 </button>
 
-                <button
-                    className="w-49% h-18 text-2xl text-green-500 border border-green-500"
-                    name="oneTime"
-                    checkOnChange={props.onChange}
-                >
-                    이 달의 책 구매
-                </button>
+                {props.bookId ? (
+                    <button className="w-49% h-18 text-2xl text-green-500 border border-green-500">
+                        <Link to={'/store/book/' + props.bookId}>이 달의 책 구매</Link>
+                    </button>
+                ) : null}
             </div>
 
-            <button
-                className="w-full h-18 text-2xl text-white bg-green-500"
-                name="fullTime"
-                checkOnChange={props.onChange}
-            >
-                꾸러미 구독
+            <button className="w-full h-18 text-2xl text-white bg-green-500" name="fullTime">
+                <Link to={'/package/sixmonths/' + props.packageId}>꾸러미 구독</Link>
             </button>
         </div>
     );
@@ -163,7 +181,11 @@ function PackageElems(props) {
             <div className="w-full p-4 flex flex-row justify-between">
                 <img className="flex-grow-0" src={elem.mainImg.link} alt="" />
                 <div className="w-50% my-auto px-10 flex-grow ">
-                    <p className="mb-4 text-lg">{props.index + 1}번째 구성품</p>
+                    <p className="mb-4 text-lg">
+                        {props.index === '이 달의 책'
+                            ? '이 달의 책'
+                            : props.index + 1 + '번째 구성품'}
+                    </p>
                     <p className="mb-4 text-2xl">{elem.title ? elem.title : elem.name}</p>
                     {elem.author ? (
                         <div>
@@ -176,7 +198,9 @@ function PackageElems(props) {
                 </div>
 
                 <button className="w-20% h-18 my-auto text-2xl text-white bg-green-500">
-                    <Link to={'/store/' + elem.id}>장터에서 보기</Link>
+                    <Link to={elem.title ? '/store/book' + elem.id : '/store/good' + elem.id}>
+                        장터에서 보기
+                    </Link>
                 </button>
             </div>
             {!props.last ? <div className="border-b border-green-500" /> : null}

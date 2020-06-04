@@ -21,6 +21,7 @@ class GatheringSubsc extends Component {
             gathering: this.props.gathering,
             headCount: 1,
             creditUse: 0,
+            payOption: undefined,
         };
 
         this.getUser();
@@ -49,8 +50,23 @@ class GatheringSubsc extends Component {
         let value = target.value;
         value = parseInt(value);
 
+        if (value < this.state.user.credit) {
+            this.setState({
+                creditUse: value,
+            });
+        } else {
+            this.setState({
+                creditUse: this.state.user.credit,
+            });
+        }
+    };
+
+    handlePayOption = (e) => {
+        const target = e.target;
+        let value = target.value;
+
         this.setState({
-            creditUse: value,
+            payOption: value,
         });
     };
 
@@ -115,8 +131,9 @@ class GatheringSubsc extends Component {
 
     render() {
         const gathering = this.state.gathering;
-        const info = this.handleInfo();
-        return gathering ? (
+        const user = this.state.user;
+        const info = gathering ? this.handleInfo() : null;
+        return gathering && user ? (
             <div className="flex flex-col">
                 <GatheringInfo
                     isAll={this.props.isAll}
@@ -126,7 +143,17 @@ class GatheringSubsc extends Component {
                     onChange={this.handleHeadCount}
                     headCount={this.state.headCount}
                 />
-                <SubscInfo gathering={gathering} info={info} />
+                <SubscInfo gathering={gathering} headCount={this.state.headCount} info={info} />
+                <UserInfo user={user} />
+                <PaymentInfo
+                    user={user}
+                    headCount={this.state.headCount}
+                    info={info}
+                    inputValue={this.state.creditUse}
+                    inputOnChange={this.handleDiscount}
+                    selectValue={this.state.payOption}
+                    selectOnChange={this.handlePayOption}
+                />
             </div>
         ) : null;
     }
@@ -175,23 +202,108 @@ function GatheringInfo(props) {
     );
 }
 
-function SubscInfo(props) {
-    const gathering = props.gathering;
-    const { price, priceInt, count, date } = props.info;
-
+function InfoItem(props) {
     return (
-        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-            <div className="mb-12 text-2xl">예약 정보</div>
-            <InfoItem title="모임 정보" contents={gathering.title} />
+        <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
+            <div className="col-start-1 col-end-3 text-xl">{props.title}</div>
+            <div className="col-start-3 col-end-13 text-xl">{props.contents}</div>
         </div>
     );
 }
 
-function InfoItem(props) {
+function SubscInfo(props) {
+    const gathering = props.gathering;
+    const { price, priceInt, count, date } = props.info;
+    const headCount = props.headCount;
+
     return (
-        <div className="flex flex-row">
-            <div className="mr-16 text-xl">{props.title}</div>
-            <div className="text-xl">{props.contents}</div>
+        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+            <div className="mb-12 text-2xl">예약 정보</div>
+            <InfoItem title="모임 정보" contents={gathering.title} mb={true} />
+            <InfoItem title="일시" contents={date} mb={true} />
+            <InfoItem title="장소" contents={gathering.place.name} mb={true} />
+            <InfoItem title="참가 인원" contents={headCount} mb={true} />
+            <InfoItem
+                title="예약비"
+                contents={(priceInt * headCount).toLocaleString() + '원'}
+                mb={false}
+            />
+        </div>
+    );
+}
+
+function UserInfo(props) {
+    const user = props.user;
+
+    return (
+        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+            <div className="mb-12 text-2xl">참가자 정보</div>
+            <InfoItem title="이름" contents={user.name} mb={true} />
+            <InfoItem title="연락처" contents={user.phone} mb={true} />
+            <InfoItem title="E-MAIL" contents={user.email} mb={false} />
+        </div>
+    );
+}
+
+function PaymentInfo(props) {
+    const user = props.user;
+    const { priceInt } = props.info;
+    const headCount = props.headCount;
+
+    return (
+        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+            <div className="mb-12 text-2xl">결제 정보</div>
+            <InfoItem
+                title="총합 금액"
+                contents={(priceInt * headCount).toLocaleString() + '원'}
+                mb={true}
+            />
+            <div className="mb-4 grid grid-cols-12">
+                <div className="col-start-1 col-end-3 text-xl">적립금 사용</div>
+                <div className="col-start-3 col-end-13 flex flex-row text-xl">
+                    <input
+                        className="w-24 pl-2 mr-2 border border-green-500"
+                        value={props.inputValue}
+                        onChange={props.inputOnChange}
+                    />
+                    <div>원 / {user.credit.toLocaleString()}원</div>
+                </div>
+            </div>
+            <InfoItem
+                title="할인 금액"
+                contents={props.inputValue.toLocaleString() + '원'}
+                mb={true}
+            />
+            <InfoItem
+                title="결제 금액"
+                contents={(priceInt * headCount - props.inputValue).toLocaleString() + '원'}
+                mb={true}
+            />
+
+            <div className="mb-12 grid grid-cols-12">
+                <div className="col-start-1 col-end-3 text-xl">결제 방법</div>
+                <select
+                    className="col-start-3 col-end-5"
+                    value={props.selectValue}
+                    onChange={props.selectOnChange}
+                >
+                    <option value="">옵션 선택</option>
+                    <option value="creditCard">신용카드/체크카드</option>
+                    <option value="remittance">무통장 입금</option>
+                </select>
+            </div>
+
+            <ButtonOne />
+        </div>
+    );
+}
+
+function ButtonOne(props) {
+    return (
+        <div className="w-25% mx-auto">
+            <button className="w-full h-20 mx-auto text-2xl text-white bg-green-500">
+                <Link to={'/gathering/onetime/' + props.id}>결제하기</Link>
+            </button>
         </div>
     );
 }

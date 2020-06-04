@@ -30,7 +30,7 @@ class Notice extends Component {
             offset: query.offset,
         };
         const res = await getNotices(queryList);
-        console.log(res.data.length);
+
         if (res.status === 200) {
             if (res.data.length !== 0) {
                 this.setState({

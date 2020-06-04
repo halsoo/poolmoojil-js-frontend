@@ -27,8 +27,8 @@ class GatheringOneYear extends Component {
     render() {
         const gathering = this.state.gathering;
         return gathering ? (
-            <div className="flex flex-row border border-green-500">
-                <GatheringSubsc isAll={gathering.isAll} isOnce={true} gathering={gathering} />
+            <div className="flex flex-row">
+                <GatheringSubsc isAll={gathering.isAll} isOnce={false} gathering={gathering} />
             </div>
         ) : null;
     }

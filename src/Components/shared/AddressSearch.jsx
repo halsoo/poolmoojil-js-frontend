@@ -29,7 +29,6 @@ class AddressSearch extends Component {
             isSearched: true,
         });
         const res = await getAddressAPI(query, page);
-        //console.log(res);
         if (res.status === 200 && res.data.results.common.errorMessage === '정상') {
             const juso = res.data.results.juso;
             const total = res.data.results.common.totalCount;
@@ -57,6 +56,11 @@ class AddressSearch extends Component {
         this.setState({
             addresses: tempAddr,
         });
+    };
+
+    sendMessage = (addressInfo) => {
+        window.postMessage(addressInfo, '*');
+        window.open('', 'popup').close();
     };
 
     shouldComponentUpdate(nProps, nState) {
@@ -103,11 +107,7 @@ class AddressSearch extends Component {
                             도로명주소 검색 결과({this.state.total})
                         </div>
 
-                        <AddrList
-                            list={this.state.addresses}
-                            parent={window.opener}
-                            self={window}
-                        />
+                        <AddrList list={this.state.addresses} onClick={this.sendMessage} />
 
                         <div className="mx-auto w-40% flex flex-row justify-around">
                             <button
@@ -156,11 +156,6 @@ class AddrList extends Component {
         super(props);
     }
 
-    sendMessage = (addressInfo) => {
-        this.props.parent.postMessage(addressInfo, '*');
-        window.open('', 'popup').close();
-    };
-
     render() {
         return (
             <table className="border-t border-b border-green-500">
@@ -172,7 +167,7 @@ class AddrList extends Component {
                     {this.props.list.map((d, i) => (
                         <tr className="text-green-500 border-b border-green-500" key={i}>
                             <th className="pl-12 text-left font-normal">
-                                <button onClick={() => this.sendMessage(d)}>
+                                <button onClick={() => this.props.onClick(d)}>
                                     <div className="text-5xl">{d.addressA}</div>
                                     <div className="text-lg">{d.oldAddress}</div>
                                 </button>

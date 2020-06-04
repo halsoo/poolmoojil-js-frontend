@@ -144,7 +144,9 @@ function MonthlyPackage(props) {
             <div className="mb-2 font-bold text-2xl">이 달의 꾸러미</div>
             <div className="h-full flex flex-row">
                 <div className="w-40% h-auto my-auto flex border border-green-500">
-                    <img className="h-auto" src={monthlyPackage.mainImg.link} alt="" />
+                    <Link to={'/package/' + monthlyPackage.id}>
+                        <img className="h-auto" src={monthlyPackage.mainImg.link} alt="" />
+                    </Link>
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
@@ -170,7 +172,9 @@ function UpcomingGathering(props) {
             <div className="mb-2 font-bold text-2xl">다가오는 모임</div>
             <div className="h-full flex flex-row">
                 <div className="w-40% h-auto my-auto flex border border-green-500">
-                    <img className="h-auto" src={gathering.mainImg.link} alt="" />
+                    <Link to={'/gathering/' + gathering.id}>
+                        <img className="h-auto" src={gathering.mainImg.link} alt="" />
+                    </Link>
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
@@ -217,7 +221,14 @@ function ThreeItems(props) {
                 {props.items.map((item, index) => {
                     return (
                         <div key={index} className="w-30% flex flex-col">
-                            <img className="mx-auto mb-2" src={item.mainImg.link} />
+                            <Link
+                                className="mx-auto font-bold"
+                                to={
+                                    item.name ? '/store/goods/' + item.id : '/store/book/' + item.id
+                                }
+                            >
+                                <img className="mx-auto mb-2" src={item.mainImg.link} />
+                            </Link>
                             <Link
                                 className="mx-auto font-bold"
                                 to={
