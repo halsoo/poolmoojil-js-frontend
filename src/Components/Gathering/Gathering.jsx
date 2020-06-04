@@ -301,7 +301,6 @@ class Gathering extends Component {
     };
 
     render() {
-        console.log(this.state.calendar);
         return this.state.calendar ? (
             <div className="flex flex-col justify-between">
                 <div className="w-full h-auto mb-4 p-4 flex flex-row border border-green-500">
@@ -351,7 +350,7 @@ class Gathering extends Component {
                         endAccessor="end"
                         views={['month']}
                         culture="kor"
-                        style={{ height: 500 }}
+                        style={{ height: '80vh' }}
                     />
                 </div>
 

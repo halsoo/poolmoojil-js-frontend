@@ -41,7 +41,6 @@ class PackageItem extends Component {
         const singlePackage = this.state.package;
         const today = new Date().getTime();
         const packageDay = singlePackage ? dateToTime(singlePackage.date) : null;
-        console.log(singlePackage);
 
         return singlePackage ? (
             <div className="flex flex-col">
