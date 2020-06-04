@@ -192,7 +192,9 @@ function PackageItem(props) {
     return (
         <div className="p-4 flex flex-row justify-between text-green-500 border border-green-500">
             <div className="w-40% flex justify-center border border-green-500">
-                <img src={singlePackage.mainImg.link} alt="" />
+                <Link to={'/package/' + singlePackage.id}>
+                    <img src={singlePackage.mainImg.link} alt="" />
+                </Link>
             </div>
 
             <div className="w-60% my-auto ml-8 flex-col">

@@ -65,7 +65,6 @@ export const logoutTry = () => async (dispatch) => {
 export const signupTry = (signupInfo) => async (dispatch) => {
     try {
         const res = await signupAPI(signupInfo);
-        console.log('signup!');
         if (res.status === 201) {
             dispatch(signup());
         } else {
@@ -87,5 +86,21 @@ export const setCookie = (cookie) => {
 export const noneCookie = () => {
     return {
         type: 'NONE_COOKIE',
+    };
+};
+
+export const cartIn = ({ id, category, quantity }) => {
+    return {
+        type: 'CART_IN',
+        id: id,
+        category: category,
+        quantity: quantity,
+    };
+};
+
+export const cartOut = ({ id }) => {
+    return {
+        type: 'CART_OUT',
+        id: id,
     };
 };

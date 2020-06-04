@@ -185,7 +185,7 @@ function ReadingText(props) {
                 </div>
 
                 <button className="w-20% h-18 my-auto text-2xl text-white bg-green-500">
-                    <Link to={'/store/' + book.id}>장터에서 보기</Link>
+                    <Link to={'/store/book/' + book.id}>장터에서 보기</Link>
                 </button>
             </div>
             {!props.last ? <div className="border-b border-green-500" /> : null}

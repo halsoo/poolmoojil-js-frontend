@@ -218,6 +218,7 @@ class Store extends Component {
                     ...this.state.query,
                     type: type,
                 },
+                isSearched: true,
                 filterA: checked,
             },
             this.refreshList,
@@ -307,7 +308,6 @@ class Store extends Component {
     };
 
     render() {
-        console.log(this.state.books);
         return (
             <div className="flex flex-col justify-between">
                 <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
@@ -492,7 +492,9 @@ function BookItem(props) {
             } flex flex-col items-stretch justify-between`}
         >
             <div className="h-full flex flex-col justify-center">
-                <img src={book.mainImg.link} alt="" />
+                <Link className="mx-auto" to={'/store/book/' + book.id}>
+                    <img src={book.mainImg.link} alt="" />
+                </Link>
             </div>
 
             <div className="flex flex-col justify-between text-lg text-green-500">
@@ -516,7 +518,9 @@ function MonthlyPackage(props) {
             <div className="mb-2 font-bold text-2xl">이 달의 꾸러미</div>
             <div className="h-full flex flex-row">
                 <div className="w-40% h-auto my-auto flex border border-green-500">
-                    <img className="h-auto" src={monthlyPackage.mainImg.link} alt="" />
+                    <Link to={'/package/' + monthlyPackage.id}>
+                        <img className="h-auto" src={monthlyPackage.mainImg.link} alt="" />
+                    </Link>
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
@@ -553,7 +557,9 @@ function MonthlyCurated(props) {
             </div>
             <div className="h-full flex flex-row">
                 <div className="w-40% my-auto flex justify-center border border-green-500">
-                    <img src={book.mainImg.link} alt="" />
+                    <Link to={'/store/book/' + book.id}>
+                        <img src={book.mainImg.link} alt="" />
+                    </Link>
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
@@ -600,12 +606,15 @@ function ThreeItems(props) {
                 {props.items.map((item, index) => {
                     return (
                         <div key={index} className="w-30% flex flex-col">
-                            <img className="mx-auto mb-2" src={item.mainImg.link} />
                             <Link
                                 className="mx-auto font-bold"
-                                to={
-                                    item.name ? '/store/goods/' + item.id : '/store/book/' + item.id
-                                }
+                                to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
+                            >
+                                <img className="mx-auto mb-2" src={item.mainImg.link} />
+                            </Link>
+                            <Link
+                                className="mx-auto font-bold"
+                                to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
                             >
                                 {item.name ? item.name : item.title}
                             </Link>

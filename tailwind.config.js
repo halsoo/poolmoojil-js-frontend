@@ -322,6 +322,7 @@ module.exports = {
             ...theme('spacing'),
             ...negative(theme('spacing')),
             '0': '0',
+            '1/12': '8.333333%',
             '1/4': '25%',
             '1/2': '50%',
             auto: 'auto',

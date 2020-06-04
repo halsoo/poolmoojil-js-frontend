@@ -12831,6 +12831,13 @@ video {
   left: -30rem;
 }
 
+.inset-1\/12 {
+  top: 8.333333%;
+  right: 8.333333%;
+  bottom: 8.333333%;
+  left: 8.333333%;
+}
+
 .inset-1\/4 {
   top: 25%;
   right: 25%;
@@ -13860,6 +13867,16 @@ video {
 .-inset-x-p2xl {
   right: -30rem;
   left: -30rem;
+}
+
+.inset-y-1\/12 {
+  top: 8.333333%;
+  bottom: 8.333333%;
+}
+
+.inset-x-1\/12 {
+  right: 8.333333%;
+  left: 8.333333%;
 }
 
 .inset-y-1\/4 {
@@ -15506,6 +15523,22 @@ video {
 
 .-left-p2xl {
   left: -30rem;
+}
+
+.top-1\/12 {
+  top: 8.333333%;
+}
+
+.right-1\/12 {
+  right: 8.333333%;
+}
+
+.bottom-1\/12 {
+  bottom: 8.333333%;
+}
+
+.left-1\/12 {
+  left: 8.333333%;
 }
 
 .top-1\/4 {
@@ -34406,6 +34439,13 @@ video {
     left: -30rem;
   }
 
+  .sm\:inset-1\/12 {
+    top: 8.333333%;
+    right: 8.333333%;
+    bottom: 8.333333%;
+    left: 8.333333%;
+  }
+
   .sm\:inset-1\/4 {
     top: 25%;
     right: 25%;
@@ -35435,6 +35475,16 @@ video {
   .sm\:-inset-x-p2xl {
     right: -30rem;
     left: -30rem;
+  }
+
+  .sm\:inset-y-1\/12 {
+    top: 8.333333%;
+    bottom: 8.333333%;
+  }
+
+  .sm\:inset-x-1\/12 {
+    right: 8.333333%;
+    left: 8.333333%;
   }
 
   .sm\:inset-y-1\/4 {
@@ -37081,6 +37131,22 @@ video {
 
   .sm\:-left-p2xl {
     left: -30rem;
+  }
+
+  .sm\:top-1\/12 {
+    top: 8.333333%;
+  }
+
+  .sm\:right-1\/12 {
+    right: 8.333333%;
+  }
+
+  .sm\:bottom-1\/12 {
+    bottom: 8.333333%;
+  }
+
+  .sm\:left-1\/12 {
+    left: 8.333333%;
   }
 
   .sm\:top-1\/4 {
@@ -55982,6 +56048,13 @@ video {
     left: -30rem;
   }
 
+  .lg\:inset-1\/12 {
+    top: 8.333333%;
+    right: 8.333333%;
+    bottom: 8.333333%;
+    left: 8.333333%;
+  }
+
   .lg\:inset-1\/4 {
     top: 25%;
     right: 25%;
@@ -57011,6 +57084,16 @@ video {
   .lg\:-inset-x-p2xl {
     right: -30rem;
     left: -30rem;
+  }
+
+  .lg\:inset-y-1\/12 {
+    top: 8.333333%;
+    bottom: 8.333333%;
+  }
+
+  .lg\:inset-x-1\/12 {
+    right: 8.333333%;
+    left: 8.333333%;
   }
 
   .lg\:inset-y-1\/4 {
@@ -58657,6 +58740,22 @@ video {
 
   .lg\:-left-p2xl {
     left: -30rem;
+  }
+
+  .lg\:top-1\/12 {
+    top: 8.333333%;
+  }
+
+  .lg\:right-1\/12 {
+    right: 8.333333%;
+  }
+
+  .lg\:bottom-1\/12 {
+    bottom: 8.333333%;
+  }
+
+  .lg\:left-1\/12 {
+    left: 8.333333%;
   }
 
   .lg\:top-1\/4 {

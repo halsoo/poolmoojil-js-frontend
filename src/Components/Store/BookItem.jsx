@@ -6,12 +6,14 @@ import ReturnAndRefundPolicy from './ReturnAndRefundPolicy';
 
 import { getBookByID } from '../../util/api';
 import { priceStr, oneTimeDateStr } from '../../util/localeStrings';
+import { cartIn } from '../../actions';
 
 class BookItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
             book: undefined,
+            quantity: 1,
         };
 
         this.getInfo();
@@ -24,6 +26,15 @@ class BookItem extends Component {
                 book: res.data,
             });
         }
+    };
+
+    handleQuantity = (e) => {
+        const target = e.target;
+        const value = parseInt(target.value);
+
+        this.setState({
+            quantity: value,
+        });
     };
 
     render() {
@@ -41,8 +52,24 @@ class BookItem extends Component {
                     </div>
 
                     <div className="w-50% h-auto p-4 flex flex-col">
-                        <BookItemGeneralDesc book={book} />
-                        {!this.props.logged.status ? <ButtonLogin /> : <ButtonGroup />}
+                        <BookItemGeneralDesc
+                            book={book}
+                            value={this.state.quantity}
+                            onChange={this.handleQuantity}
+                        />
+                        {!this.props.logged.status ? (
+                            <ButtonLogin />
+                        ) : (
+                            <ButtonGroup
+                                cartOnClick={() =>
+                                    this.props.cartIn({
+                                        id: book.id,
+                                        category: 'book',
+                                        quantity: this.state.quantity,
+                                    })
+                                }
+                            />
+                        )}
                     </div>
                 </div>
                 <BookItemInfo book={book} />
@@ -56,9 +83,10 @@ class BookItem extends Component {
 
 const MapStateToProps = (state) => ({
     logged: state.logged,
+    cart: state.cart,
 });
 
-const MapDispatchToProps = {};
+const MapDispatchToProps = { cartIn };
 
 export default connect(MapStateToProps, MapDispatchToProps)(BookItem);
 
@@ -84,6 +112,8 @@ function BookItemGeneralDesc(props) {
                 <input
                     className="w-20 pl-4 text-xl border border-green-500"
                     type="number"
+                    value={props.value}
+                    onChange={props.onChange}
                     min="1"
                     step="1"
                 ></input>
@@ -108,16 +138,15 @@ function ButtonGroup(props) {
             <div className="mb-2 flex flex-row justify-between">
                 <button
                     className="w-49% h-18 text-2xl text-green-500 border border-green-500"
-                    name="oneTime"
-                    checkOnChange={props.onChange}
+                    onClick={props.cartOnClick}
                 >
-                    구매
+                    <Link to="/cart">구매</Link>
                 </button>
 
                 <button
                     className="w-49% h-18 text-2xl text-white bg-green-500"
                     name="oneTime"
-                    checkOnChange={props.onChange}
+                    onClick={props.cartOnClick}
                 >
                     장바구니 추가
                 </button>

@@ -6,12 +6,14 @@ import ReturnAndRefundPolicy from './ReturnAndRefundPolicy';
 
 import { getGoodByID } from '../../util/api';
 import { priceStr, oneTimeDateStr } from '../../util/localeStrings';
+import { cartIn } from '../../actions';
 
 class GoodItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
             good: undefined,
+            quantity: 1,
         };
 
         this.getInfo();
@@ -19,7 +21,6 @@ class GoodItem extends Component {
 
     getInfo = async () => {
         const res = await getGoodByID(this.props.match.params.id);
-        console.log(res);
         if (res.status === 200) {
             this.setState({
                 good: res.data,
@@ -27,9 +28,17 @@ class GoodItem extends Component {
         }
     };
 
+    handleQuantity = (e) => {
+        const target = e.target;
+        const value = parseInt(target.value);
+
+        this.setState({
+            quantity: value,
+        });
+    };
+
     render() {
         const good = this.state.good;
-        console.log(good);
         return good ? (
             <div className="flex flex-col">
                 <div className="p-4 flex flex-row justify-between border border-green-500">
@@ -43,8 +52,24 @@ class GoodItem extends Component {
                     </div>
 
                     <div className="w-50% h-auto p-4 flex flex-col">
-                        <GoodItemGeneralDesc good={good} />
-                        {!this.props.logged.status ? <ButtonLogin /> : <ButtonGroup />}
+                        <GoodItemGeneralDesc
+                            good={good}
+                            value={this.state.quantity}
+                            onChange={this.handleQuantity}
+                        />
+                        {!this.props.logged.status ? (
+                            <ButtonLogin />
+                        ) : (
+                            <ButtonGroup
+                                cartOnClick={() =>
+                                    this.props.cartIn({
+                                        id: good.id,
+                                        category: 'good',
+                                        quantity: this.state.quantity,
+                                    })
+                                }
+                            />
+                        )}
                     </div>
                 </div>
                 <GoodItemInfo good={good} />
@@ -58,9 +83,10 @@ class GoodItem extends Component {
 
 const MapStateToProps = (state) => ({
     logged: state.logged,
+    cart: state.cart,
 });
 
-const MapDispatchToProps = {};
+const MapDispatchToProps = { cartIn };
 
 export default connect(MapStateToProps, MapDispatchToProps)(GoodItem);
 
@@ -86,6 +112,8 @@ function GoodItemGeneralDesc(props) {
                     <input
                         className="w-20 pl-4 text-xl border border-green-500"
                         type="number"
+                        value={props.value}
+                        onChange={props.onChange}
                         min="1"
                         step="1"
                     ></input>
@@ -111,16 +139,14 @@ function ButtonGroup(props) {
             <div className="mb-2 flex flex-row justify-between">
                 <button
                     className="w-49% h-18 text-2xl text-green-500 border border-green-500"
-                    name="oneTime"
-                    checkOnChange={props.onChange}
+                    onClick={props.cartOnClick}
                 >
-                    구매
+                    <Link to="/cart">구매</Link>
                 </button>
 
                 <button
                     className="w-49% h-18 text-2xl text-white bg-green-500"
-                    name="oneTime"
-                    checkOnChange={props.onChange}
+                    onClick={props.cartOnClick}
                 >
                     장바구니 추가
                 </button>

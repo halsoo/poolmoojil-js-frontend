@@ -83,7 +83,6 @@ class Good extends Component {
     };
 
     render() {
-        console.log(this.state.goods);
         return (
             <div className="flex flex-col justify-between">
                 <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
@@ -147,7 +146,9 @@ function GoodItem(props) {
             } flex flex-col items-stretch justify-between`}
         >
             <div className="h-full flex flex-col justify-center">
-                <img src={good.mainImg.link} alt="" />
+                <Link className="mx-auto" to={'/store/good/' + good.id}>
+                    <img src={good.mainImg.link} alt="" />
+                </Link>
             </div>
 
             <div className="flex flex-col justify-between text-lg text-green-500">

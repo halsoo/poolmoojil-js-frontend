@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'moment/locale/ko';
+import './calendar.css';
 
-import { getGatherings } from '../../util/api';
+import { getGatherings, getGatheringsCalendar } from '../../util/api';
 import { priceStr, rangeDateStr, oneTimeDateStr, timeStr } from '../../util/localeStrings';
 
 import gatheringImg from '../../img/gathering_img.png';
 import triangle from '../../img/triangle.png';
+
+let localizer = momentLocalizer(moment);
+const dateFormat = (date, localizer) => {
+    localizer.format(date, 'YYYY[년 ]MM[월]', 'ko');
+};
 
 class Gathering extends Component {
     constructor(props) {
@@ -38,6 +47,7 @@ class Gathering extends Component {
             filterD: '',
         };
 
+        this.loadCalendar();
         this.loadReadingPast();
         this.loadLecturePast();
         this.refreshList();
@@ -69,6 +79,25 @@ class Gathering extends Component {
         if (res.status === 200) {
             this.setState({
                 lecturePast: res.data,
+            });
+        }
+    };
+
+    loadCalendar = async () => {
+        const res = await getGatheringsCalendar();
+        let events = [];
+
+        if (res.status === 200) {
+            for (const event of res.data) {
+                events.push({
+                    start: moment(event.start, 'YYYY-MM-DD').toDate(),
+                    end: moment(event.end, 'YYYY-MM-DD').toDate(),
+                    title: <Link to={`/gathering/${event.id}`}>{event.title}</Link>,
+                });
+            }
+
+            this.setState({
+                calendar: events,
             });
         }
     };
@@ -272,7 +301,8 @@ class Gathering extends Component {
     };
 
     render() {
-        return (
+        console.log(this.state.calendar);
+        return this.state.calendar ? (
             <div className="flex flex-col justify-between">
                 <div className="w-full h-auto mb-4 p-4 flex flex-row border border-green-500">
                     <div className="w-25% h-full mr-4 ">
@@ -305,6 +335,24 @@ class Gathering extends Component {
                             subDesc="참가비 만원 내외"
                         />
                     </div>
+                </div>
+
+                <div className="mb-4 p-4 flex flex-col border border-green-500">
+                    <div className="font-bold text-2xl text-green-500">월별 모임 일정</div>
+                    <Calendar
+                        localizer={localizer}
+                        defaultDate={new Date()}
+                        defaultView="month"
+                        events={this.state.calendar}
+                        formats={{
+                            monthHeaderFormat: 'YYYY' + '년 ' + 'MM' + '월',
+                        }}
+                        startAccessor="start"
+                        endAccessor="end"
+                        views={['month']}
+                        culture="kor"
+                        style={{ height: 500 }}
+                    />
                 </div>
 
                 <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
@@ -380,7 +428,7 @@ class Gathering extends Component {
                     <div className="absolute top-0 left-2vw">더보기</div>
                 </button>
             </div>
-        );
+        ) : null;
     }
 }
 
@@ -521,7 +569,9 @@ function GatheringItem(props) {
         <div className="relative overflow-hidden">
             <div className="w-full h-full p-4 grid grid-cols-12 border border-green-500">
                 <div className="mr-6 col-start-1 col-end-4 border border-green-500">
-                    <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                    <Link className="text-2xl" to={`/gathering/${gathering.id}`}>
+                        <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                    </Link>
                 </div>
                 <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
                     <p>{gathering.format}</p>
