@@ -13,9 +13,6 @@ import gatheringImg from '../../img/gathering_img.png';
 import triangle from '../../img/triangle.png';
 
 let localizer = momentLocalizer(moment);
-const dateFormat = (date, localizer) => {
-    localizer.format(date, 'YYYY[년 ]MM[월]', 'ko');
-};
 
 class Gathering extends Component {
     constructor(props) {
@@ -350,7 +347,7 @@ class Gathering extends Component {
                         endAccessor="end"
                         views={['month']}
                         culture="kor"
-                        style={{ height: '80vh' }}
+                        style={{ height: '70vh' }}
                     />
                 </div>
 
