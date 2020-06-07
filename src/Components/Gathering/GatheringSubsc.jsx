@@ -288,8 +288,8 @@ function PaymentInfo(props) {
                     onChange={props.selectOnChange}
                 >
                     <option value="">옵션 선택</option>
-                    <option value="creditCard">신용카드/체크카드</option>
-                    <option value="remittance">무통장 입금</option>
+                    <option value="kcp">신용카드/체크카드</option>
+                    <option value="kakaopay">카카오페이</option>
                 </select>
             </div>
 

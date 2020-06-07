@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const baseUrl =
-    process.env.NODE_ENV === 'development' ? '/api' : `https://${window.location.hostname}/api`;
+    process.env.NODE_ENV === 'development' ? '/api' : `https://poolmoojil-server.now.sh/api`;
 
 const methods = {
     get: async function (endpoint, token = null) {
@@ -95,7 +95,7 @@ export async function getGatherings(query) {
 }
 
 export async function getGatheringsCalendar() {
-    const res = await methods.get('gathering//threemonths');
+    const res = await methods.get('gathering/threemonths');
     return res;
 }
 
