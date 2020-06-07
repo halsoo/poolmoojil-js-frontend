@@ -332,6 +332,8 @@ class Signup extends Component {
             } else return a + null;
         }, null);
 
+        console.log(errors, values);
+
         if (errors !== 0) {
             this.setState({
                 error: {

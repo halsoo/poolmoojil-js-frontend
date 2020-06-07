@@ -53,6 +53,7 @@ class PackageItem extends Component {
                             <img
                                 className="w-full border border-green-500"
                                 src={singlePackage.mainImg.link}
+                                alt=""
                             />
 
                             {!this.props.logged.status ? (
@@ -72,11 +73,13 @@ class PackageItem extends Component {
                 {this.state.elems ? (
                     <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
                         <p className="m-4 text-2xl mb-4">꾸러미 구성품</p>
-                        <PackageElems
-                            elem={singlePackage.monthlyCurated.book[0]}
-                            index={'이 달의 책'}
-                            last={false}
-                        />
+                        {singlePackage.monthlyCurated ? (
+                            <PackageElems
+                                elem={singlePackage.monthlyCurated.book[0]}
+                                index={'이 달의 책'}
+                                last={false}
+                            />
+                        ) : null}
                         {this.state.elems.map((item, index) => {
                             let last = false;
                             if (index === this.state.elems.length - 1) last = true;
@@ -112,6 +115,9 @@ function PackageItemDesc(props) {
             <p className="text-2xl mb-4">{month}의 꾸러미</p>
             <p className="text-3xl mb-4">{singlePackage.title}</p>
             <p className="text-xl mb-4">'{singlePackage.bookList[0].title}' 꾸러미</p>
+            {singlePackage.packageList ? (
+                <p className="text-xl mb-4">구성품: {singlePackage.packageList}</p>
+            ) : null}
             <p className="text-xl mb-10">가격: {price}</p>
 
             <div>

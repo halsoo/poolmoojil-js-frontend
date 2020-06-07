@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import {
-    getUpcomingGathering,
-    getPackageMonthly,
-    getGoods,
-    getBooks,
-    getNotices,
-} from '../../util/api';
+import { getUpcomingGathering, getPackageMonthly, getGoods, getNotices } from '../../util/api';
 import {
     priceStr,
     rangeDateStr,
@@ -65,7 +59,6 @@ export default class Main extends Component {
     };
 
     loadNotices = async () => {
-        const query = this.state.query;
         const queryList = {
             page: 1,
             offset: 6,
@@ -90,8 +83,8 @@ export default class Main extends Component {
                     <img src={logo} className="absolute inset-y-0 right-0 h-full" alt="logo" />
                 </div>
 
-                <div className="w-full mt-2 h-40 text-white bg-green-500">
-                    <p className="text-3xl">소락재</p>
+                <div className="w-full mt-2 h-40 flex justify-center text-white bg-green-500">
+                    <p className="text-3xl my-auto">PG사 심사를 위한 테스트 사이트입니다</p>
                 </div>
 
                 <div className="mt-2 flex flex-row flex-wrap justify-between items-stretch">
@@ -106,7 +99,12 @@ export default class Main extends Component {
                     ) : null}
                     {this.state.notices ? (
                         <div className="w-49% p-4 flex flex-col border border-green-500 text-green-500">
-                            <p className="mb-4 text-2xl">공지</p>
+                            <div className="mb-4 flex flex-row justify-between">
+                                <p className="text-2xl font-bold">공지</p>
+                                <Link to="/notice">
+                                    <p className="text-xl font-bold">더보기</p>
+                                </Link>
+                            </div>
                             <table className="w-full">
                                 <tbody>
                                     {this.state.notices.map((d, i) => (
@@ -115,11 +113,9 @@ export default class Main extends Component {
                                             key={i}
                                         >
                                             <th className="text-left font-normal">
-                                                <Link to="/notice">
-                                                    <div className="text-3xl">{d.title}</div>
-                                                </Link>
+                                                <div className="text-xl">{d.title}</div>
                                             </th>
-                                            <th className="my-auto text-lg font-normal">
+                                            <th className="my-auto text-base font-normal">
                                                 {timeStampToDate(d.createdAt)}
                                             </th>
                                         </tr>
@@ -227,7 +223,7 @@ function ThreeItems(props) {
                                     item.name ? '/store/goods/' + item.id : '/store/book/' + item.id
                                 }
                             >
-                                <img className="mx-auto mb-2" src={item.mainImg.link} />
+                                <img className="mx-auto mb-2" src={item.mainImg.link} alt="" />
                             </Link>
                             <Link
                                 className="mx-auto font-bold"

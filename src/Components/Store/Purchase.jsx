@@ -3,28 +3,19 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import NewWindow from 'react-new-window';
 
-import { getUserCookie } from '../../util/api';
-import {
-    priceStr,
-    priceStrToInt,
-    dateToTime,
-    oneTimeMonthStr,
-    plusSixMonths,
-} from '../../util/localeStrings';
+import { getBookByID, getGoodByID, getUserCookie } from '../../util/api';
+import { priceStr, priceStrToInt } from '../../util/localeStrings';
 import { islandAndMountainousArea, jejuArea } from '../../util/extraFee';
-
+import { cartClear } from '../../actions';
 import AddressSearch from '../shared/AddressSearch';
 
-const { IMP } = window;
-IMP.init('imp04344123');
-
-class PackageSubsc extends Component {
+class Purchase extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            cart: this.props.cart,
+            cartInfo: undefined,
             user: undefined,
-            package: this.props.package,
-            quantity: 1,
             creditUse: 0,
             payOption: undefined,
             popup: false,
@@ -38,8 +29,24 @@ class PackageSubsc extends Component {
             shippingFee: 0,
         };
 
+        this.getItems();
         this.getUser();
     }
+
+    getItems = async () => {
+        const cart = this.state.cart;
+        let res = null;
+        let cartInfo = {};
+        for (const id in cart) {
+            if (cart[id].category === 'book') res = await getBookByID(id);
+            else res = await getGoodByID(id);
+            cartInfo[id] = res.data;
+        }
+
+        this.setState({
+            cartInfo: cartInfo,
+        });
+    };
 
     getUser = async () => {
         const res = await getUserCookie();
@@ -48,15 +55,6 @@ class PackageSubsc extends Component {
                 user: res.data,
             });
         }
-    };
-
-    handleQuantity = (e) => {
-        const target = e.target;
-        let value = target.value;
-
-        this.setState({
-            quantity: value,
-        });
     };
 
     handleShipInfo = (e) => {
@@ -134,24 +132,6 @@ class PackageSubsc extends Component {
         });
     };
 
-    handleInfo = () => {
-        const singlePackage = this.state.package;
-
-        const price = priceStr(singlePackage.price);
-        const priceInt = priceStrToInt(price);
-        const date = oneTimeMonthStr(singlePackage.date);
-        const time = dateToTime(singlePackage.date);
-        const sixMonthLater = plusSixMonths(singlePackage.date);
-
-        return {
-            price: price,
-            priceInt: priceInt,
-            date: date,
-            time: time,
-            sixMonthLater: sixMonthLater,
-        };
-    };
-
     calcShipping = () => {
         if (islandAndMountainousArea.includes(this.state.shipInfo.zip)) {
             return 7000;
@@ -189,24 +169,16 @@ class PackageSubsc extends Component {
     }
 
     render() {
-        const singlePackage = this.state.package;
+        const cart = this.state.cart;
+        const cartInfo = this.state.cartInfo;
         const user = this.state.user;
-        const info = singlePackage ? this.handleInfo() : null;
-        return singlePackage && user ? (
+        return cartInfo && user ? (
             <div className="flex flex-col">
-                <PackageInfo
-                    isOnce={this.props.isOnce}
-                    package={singlePackage}
-                    info={info}
-                    onChange={this.handleQuantity}
-                    headCount={this.state.quantity}
-                />
-                <SubscInfo
-                    package={singlePackage}
-                    quantity={this.state.quantity}
-                    info={info}
-                    isOnce={this.props.isOnce}
-                />
+                <div className="p-4 flex flex-col text-green-500 border border-green-500">
+                    <div className="mb-12 text-2xl">주문/결제</div>
+                    <ItemList cart={cart} cartInfo={cartInfo} />
+                    <TotalPrice cart={cart} cartInfo={cartInfo} shipping={this.state.shippingFee} />
+                </div>
                 <div className="mb-2 flex flex-row justify-between">
                     <UserInfo user={user} />
                     <ShipmentInfo
@@ -220,9 +192,8 @@ class PackageSubsc extends Component {
                 <div className="mt-2 p-4 border border-green-500">
                     <PaymentInfo
                         user={user}
-                        isOnce={this.props.isOnce}
-                        quantity={this.state.quantity}
-                        info={info}
+                        cart={cart}
+                        cartInfo={cartInfo}
                         shipping={this.state.shippingFee}
                         inputValue={this.state.creditUse}
                         inputOnChange={this.handleDiscount}
@@ -232,6 +203,7 @@ class PackageSubsc extends Component {
 
                     <ButtonOne />
                 </div>
+
                 {this.state.popup ? (
                     <NewWindow
                         name="popup"
@@ -249,89 +221,79 @@ class PackageSubsc extends Component {
 
 const MapStateToProps = (state) => ({
     logged: state.logged,
+    cart: state.cart,
 });
 
-const MapDispatchToProps = {};
+const MapDispatchToProps = { cartClear };
 
-export default connect(MapStateToProps, MapDispatchToProps)(PackageSubsc);
+export default connect(MapStateToProps, MapDispatchToProps)(Purchase);
 
-function PackageInfo(props) {
-    const singlePackage = props.package;
-
+function ItemList(props) {
+    const cart = props.cart;
+    const cartInfo = props.cartInfo;
     return (
-        <div className="w-full h-full p-4 grid grid-cols-12 border border-green-500">
-            <div className="mr-6 col-start-1 col-end-4 border border-green-500">
-                <img className="w-full" src={singlePackage.mainImg.link} alt="img" />
-            </div>
-            <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
-                {props.isOnce ? (
-                    <Link className="text-2xl" to={`/package/${singlePackage.id}`}>
-                        {singlePackage.title}
-                    </Link>
-                ) : (
-                    <p className="text-2xl">꾸러미 구독하기</p>
-                )}
-
-                {props.isOnce ? (
-                    <div className="flex flex-row">
-                        <label className="text-xl mr-16">수량</label>
-                        <input
-                            className="w-20 pl-4 text-xl border border-green-500"
-                            onChange={props.onChange}
-                            value={props.headCount}
-                            type="number"
-                            min="1"
-                            step="1"
-                        ></input>
-                    </div>
-                ) : (
-                    <div className="flex flex-row">
-                        <div className="text-xl mr-16">구독 개월</div>
-                        <div className="text-xl">6개월</div>
-                    </div>
-                )}
-            </div>
+        <div className="w-full mb-12 flex flex-col">
+            <table className="">
+                <tbody>
+                    <tr className="h-16 text-green-500 border-b border-green-500">
+                        <th className="w-60% text-xl text-left font-normal">상품 정보</th>
+                        <th className="w-20% text-xl font-normal">수량</th>
+                        <th className="w-20% text-xl font-normal">가격</th>
+                    </tr>
+                    {Object.keys(props.cart).map((id, index) => (
+                        <tr className="text-green-500 border-b border-green-500" key={index}>
+                            <th className="text-left font-normal">
+                                <div className="py-4 flex flex-row">
+                                    <img className="w-20% mr-6" src={cartInfo[id].mainImg.link} />
+                                    <div className="my-auto text-xl">
+                                        {cartInfo[id].name ? cartInfo[id].name : cartInfo[id].title}
+                                    </div>
+                                </div>
+                            </th>
+                            <th className="font-normal text-center">
+                                <div className="w-20 mx-auto text-xl">{cart[id].quantity}</div>
+                            </th>
+                            <th className="text-center font-normal">
+                                <div className="">
+                                    {(
+                                        priceStrToInt(priceStr(cartInfo[id].price)) *
+                                        cart[id].quantity
+                                    ).toLocaleString()}
+                                    원
+                                </div>
+                            </th>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }
 
-function InfoItem(props) {
+function TotalPrice(props) {
+    let totalPrice = 0;
+    for (const id in props.cartInfo) {
+        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price)) * props.cart[id].quantity;
+    }
+
+    const shipping = props.shipping;
+
     return (
-        <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <div className="col-start-1 col-end-3 text-xl">{props.title}</div>
-            <div className="col-start-3 col-end-13 text-xl">{props.contents}</div>
-        </div>
-    );
-}
-
-function SubscInfo(props) {
-    const { priceInt, date, sixMonthLater } = props.info;
-    const quantity = props.isOnce ? props.quantity : 6;
-
-    const range =
-        date +
-        ' ~ ' +
-        sixMonthLater.year.toString() +
-        '년 ' +
-        (sixMonthLater.month < 10
-            ? '0' + sixMonthLater.month.toString()
-            : sixMonthLater.month.toString()) +
-        '월';
-    return (
-        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-            <div className="mb-12 text-2xl">{props.isOnce ? '구매 정보' : '구독 정보'}</div>
-            {props.isOnce ? (
-                <InfoItem title="수량" contents={quantity + '개'} mb={true} />
-            ) : (
-                <InfoItem title="구독 개월" contents="6개월" mb={true} />
-            )}
-            {props.isOnce ? null : <InfoItem title="구독 기간" contents={range} mb={true} />}
-
-            <InfoItem
-                title={props.isOnce ? '가격' : '구독료'}
-                contents={(priceInt * quantity).toLocaleString() + '원'}
-                mb={false}
-            />
+        <div className="w-full flex flex-col">
+            <div className="w-50% ml-auto flex flex-col text-xl border-b border-green-500">
+                <div className="mb-4 flex flex-row justify-between">
+                    <div>상품 합계</div>
+                    <div className="text-right">{totalPrice.toLocaleString()}원</div>
+                </div>
+                <div className="mb-4 flex flex-row justify-between">
+                    <div>배송비</div>
+                    <div className="text-right">{shipping.toLocaleString()}원</div>
+                </div>
+            </div>
+            <div className="w-50% mt-4 ml-auto flex flex-row justify-between text-xl">
+                <div>합계</div>
+                <div className="text-right">{(totalPrice + shipping).toLocaleString()}원</div>
+            </div>
         </div>
     );
 }
@@ -339,7 +301,7 @@ function SubscInfo(props) {
 function SearchInputItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <lable className="col-start-1 col-end-3 text-xl">{props.title}</lable>
+            <label className="col-start-1 col-end-3 text-xl">{props.title}</label>
             <input
                 className={`pl-2 col-start-4 col-end-10 text-xl border border-green-500 ${
                     props.disabled ? 'bg-purple-500' : 'bg-white'
@@ -360,10 +322,19 @@ function SearchInputItem(props) {
     );
 }
 
+function InfoItem(props) {
+    return (
+        <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
+            <div className="col-start-1 col-end-3 text-xl">{props.title}</div>
+            <div className="col-start-3 col-end-13 text-xl">{props.contents}</div>
+        </div>
+    );
+}
+
 function InputItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <lable className="col-start-1 col-end-3 text-xl">{props.title}</lable>
+            <label className="col-start-1 col-end-3 text-xl">{props.title}</label>
             <input
                 disabled={props.disabled}
                 className={`pl-2 col-start-4 col-end-13 text-xl border border-green-500 ${
@@ -394,6 +365,8 @@ function UserInfo(props) {
 }
 
 function ShipmentInfo(props) {
+    const user = props.user;
+    const address = user.address[0];
     const shipInfo = props.shipInfo;
 
     return (
@@ -449,17 +422,15 @@ function ShipmentInfo(props) {
 
 function PaymentInfo(props) {
     const user = props.user;
-    const { priceInt } = props.info;
-    const quantity = props.isOnce ? props.quantity : 6;
+    let totalPrice = 0;
+    for (const id in props.cartInfo) {
+        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price)) * props.cart[id].quantity;
+    }
 
     return (
-        <div className="w-full h-auto flex flex-col text-green-500">
+        <div className="w-full h-full flex flex-col text-green-500">
             <div className="mb-12 text-2xl">결제 정보</div>
-            <InfoItem
-                title="총합 금액"
-                contents={(priceInt * quantity).toLocaleString() + '원'}
-                mb={true}
-            />
+            <InfoItem title="상품 금액" contents={totalPrice.toLocaleString() + '원'} mb={true} />
             <div className="mb-4 grid grid-cols-12">
                 <div className="col-start-1 col-end-3 text-xl">적립금 사용</div>
                 <div className="col-start-3 col-end-13 flex flex-row text-xl">
@@ -479,7 +450,7 @@ function PaymentInfo(props) {
             <InfoItem title="배송비" contents={props.shipping.toLocaleString() + '원'} mb={true} />
             <InfoItem
                 title="결제 금액"
-                contents={(priceInt * quantity - props.inputValue).toLocaleString() + '원'}
+                contents={(totalPrice + props.shipping - props.inputValue).toLocaleString() + '원'}
                 mb={true}
             />
 

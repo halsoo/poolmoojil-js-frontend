@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import ReturnAndRefundPolicy from './ReturnAndRefundPolicy';
 
 import { getGoodByID } from '../../util/api';
-import { priceStr, oneTimeDateStr } from '../../util/localeStrings';
-import { cartIn } from '../../actions';
+import { priceStr } from '../../util/localeStrings';
+import { cartInTry } from '../../actions';
 
 class GoodItem extends Component {
     constructor(props) {
@@ -47,6 +47,7 @@ class GoodItem extends Component {
                             <img
                                 className="w-full border border-green-500"
                                 src={good.mainImg.link}
+                                alt=""
                             />
                         </div>
                     </div>
@@ -62,7 +63,7 @@ class GoodItem extends Component {
                         ) : (
                             <ButtonGroup
                                 cartOnClick={() =>
-                                    this.props.cartIn({
+                                    this.props.cartInTry({
                                         id: good.id,
                                         category: 'good',
                                         quantity: this.state.quantity,
@@ -86,7 +87,7 @@ const MapStateToProps = (state) => ({
     cart: state.cart,
 });
 
-const MapDispatchToProps = { cartIn };
+const MapDispatchToProps = { cartInTry };
 
 export default connect(MapStateToProps, MapDispatchToProps)(GoodItem);
 
@@ -137,12 +138,14 @@ function ButtonGroup(props) {
     return (
         <div className="mt-2 flex flex-col justify-between">
             <div className="mb-2 flex flex-row justify-between">
-                <button
-                    className="w-49% h-18 text-2xl text-green-500 border border-green-500"
-                    onClick={props.cartOnClick}
+                <Link
+                    className="w-49% h-18 flex justify-center text-2xl text-green-500 border border-green-500"
+                    to="/cart"
                 >
-                    <Link to="/cart">구매</Link>
-                </button>
+                    <button className="m-auto" onClick={props.cartOnClick}>
+                        구매
+                    </button>
+                </Link>
 
                 <button
                     className="w-49% h-18 text-2xl text-white bg-green-500"
@@ -213,6 +216,7 @@ function GoodAdditionalImages(props) {
                               className={`${mb ? 'mb-2' : 'mb-0'} w-full h-auto`}
                               key={index}
                               src={img.link}
+                              alt=""
                           />
                       );
                   })

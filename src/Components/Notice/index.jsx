@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 import left from '../../img/leftArrow.png';
 import right from '../../img/rightArrow.png';

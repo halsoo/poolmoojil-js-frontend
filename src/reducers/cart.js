@@ -18,20 +18,12 @@ const cartReducer = (state = {}, action) => {
             };
         }
 
-        case 'CART_INCREASE': {
-            return {
-                ...state,
-                [action.id]: state[action.id] + 1,
-            };
+        case 'CART_CLEAR': {
+            return {};
         }
 
-        case 'CART_DECREASE': {
-            let nState = state[action.id];
-            nState = nState - 1 > 0 ? nState - 1 : nState;
-            return {
-                ...state,
-                [action.id]: nState,
-            };
+        case 'CART_COOKIE': {
+            return { ...action.cart };
         }
 
         default:
