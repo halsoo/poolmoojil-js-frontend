@@ -538,7 +538,6 @@ function MonthlyPackage(props) {
 
 function MonthlyCurated(props) {
     const book = props.curation.book[0];
-    const curation = props.curation;
     const month = oneTimeMonthStr(props.curation.date);
     const price = priceStr(book.price);
 
@@ -610,7 +609,7 @@ function ThreeItems(props) {
                                 className="mx-auto font-bold"
                                 to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
                             >
-                                <img className="mx-auto mb-2" src={item.mainImg.link} />
+                                <img className="mx-auto mb-2" src={item.mainImg.link} alt="" />
                             </Link>
                             <Link
                                 className="mx-auto font-bold"

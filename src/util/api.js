@@ -1,5 +1,4 @@
 import axios from 'axios';
-import addressAPIKey from './key';
 
 const baseUrl =
     process.env.NODE_ENV === 'development' ? '/api' : `https://${window.location.hostname}/api`;
@@ -145,6 +144,21 @@ export async function getGoodByID(ID) {
     return res;
 }
 
+export async function postCartIn(cart) {
+    const res = await methods.post('users/cartin', cart);
+    return res;
+}
+
+export async function postCartOut(query) {
+    const res = await methods.post('users/cartout', query);
+    return res;
+}
+
+export async function getCartCookieAPI(query) {
+    const res = await methods.get('users/getcartcookie');
+    return res;
+}
+
 export async function getNotices(query) {
     const res = await methods.post('notice/', query);
     return res;
@@ -155,10 +169,11 @@ export async function getNoticeByID(ID) {
     return res;
 }
 
-export function getAddressAPI(query, page) {
-    const res = axios.get(
-        `http://www.juso.go.kr/addrlink/addrLinkApi.do?confmKey=${addressAPIKey}&currentPage=${page}&countPerPage=5&keyword=${query}&resultType=json`,
-    );
-
+export async function getAddressAPI(query, page) {
+    const q = {
+        query: query,
+        page: page,
+    };
+    const res = await methods.post('getaddress/', q);
     return res;
 }

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import NewWindow from 'react-new-window';
 
 import { getBookByID, getGoodByID, getUserCookie } from '../../util/api';
 import { priceStr, priceStrToInt } from '../../util/localeStrings';
-import { cartIn, cartOut } from '../../actions';
+import { cartInTry, cartOutTry } from '../../actions';
 import remove from '../../img/close.png';
 
 class Cart extends Component {
@@ -18,7 +17,6 @@ class Cart extends Component {
         };
 
         this.getItems();
-        this.getUser();
     }
 
     getItems = async () => {
@@ -36,20 +34,16 @@ class Cart extends Component {
         });
     };
 
-    getUser = async () => {
-        const res = getUserCookie();
-
-        if (res.status === 200) {
-            this.setState({
-                user: res.data,
-            });
-        }
-    };
-
     handleQuantity = (e) => {
         const target = e.target;
         const value = parseInt(target.value);
         const name = target.name;
+
+        this.props.cartInTry({
+            id: name,
+            category: this.state.cart[name].category,
+            quantity: value,
+        });
 
         this.setState({
             cart: {
@@ -62,6 +56,16 @@ class Cart extends Component {
         });
     };
 
+    static getDerivedStateFromProps(nProps, pState) {
+        if (pState.cart !== nProps.cart) {
+            return {
+                cart: nProps.cart,
+            };
+        }
+
+        return null;
+    }
+
     render() {
         const cart = this.state.cart;
         const cartInfo = this.state.cartInfo;
@@ -72,11 +76,13 @@ class Cart extends Component {
                     cart={cart}
                     cartInfo={cartInfo}
                     onChange={this.handleQuantity}
-                    onClick={cartOut}
+                    onClick={this.props.cartOutTry}
                 />
-                <TotalPrice cartInfo={cartInfo} />
-                <ButtonOne />
+                <TotalPrice cart={cart} cartInfo={cartInfo} />
+                {Object.keys(cart).length === 0 ? <Redirect to="/store" /> : <ButtonOne />}
             </div>
+        ) : Object.keys(cart).length === 0 ? (
+            <Redirect to="/store" />
         ) : null;
     }
 }
@@ -85,7 +91,7 @@ const MapStateToProps = (state) => ({
     cart: state.cart,
 });
 
-const MapDispatchToProps = { cartOut, cartIn };
+const MapDispatchToProps = { cartOutTry, cartInTry };
 
 export default connect(MapStateToProps, MapDispatchToProps)(Cart);
 
@@ -106,7 +112,11 @@ function ItemList(props) {
                         <tr className="text-green-500 border-b border-green-500" key={index}>
                             <th className="text-left font-normal">
                                 <div className="py-4 flex flex-row">
-                                    <img className="w-20% mr-6" src={cartInfo[id].mainImg.link} />
+                                    <img
+                                        className="w-20% mr-6"
+                                        src={cartInfo[id].mainImg.link}
+                                        alt=""
+                                    />
                                     <div className="my-auto text-xl">
                                         {cartInfo[id].name ? cartInfo[id].name : cartInfo[id].title}
                                     </div>
@@ -114,7 +124,7 @@ function ItemList(props) {
                             </th>
                             <th className="font-normal">
                                 <input
-                                    className="w-20 text-xl border border-green-500"
+                                    className="w-20 pl-2 text-xl border border-green-500"
                                     type="number"
                                     name={id}
                                     value={cart[id].quantity}
@@ -133,8 +143,8 @@ function ItemList(props) {
                                 </div>
                             </th>
                             <th className="text-left font-normal">
-                                <button onClick={() => props.onClick(id)}>
-                                    <img className="w-20% mx-auto" src={remove} />
+                                <button onClick={() => props.onClick({ id })}>
+                                    <img className="w-20% mx-auto" src={remove} alt="" />
                                 </button>
                             </th>
                         </tr>
@@ -148,7 +158,8 @@ function ItemList(props) {
 function TotalPrice(props) {
     let totalPrice = 0;
     for (const id in props.cartInfo) {
-        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price));
+        let temp = props.cart[id] ? props.cart[id].quantity : 0;
+        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price)) * temp;
     }
 
     const shipping = 3000;
@@ -156,16 +167,16 @@ function TotalPrice(props) {
     return (
         <div className="w-full flex flex-col">
             <div className="w-50% ml-auto flex flex-col text-xl border-b border-green-500">
-                <div className="flex flex-row justify-between">
+                <div className="mb-4 flex flex-row justify-between">
                     <div>상품 합계</div>
                     <div className="text-right">{totalPrice.toLocaleString()}원</div>
                 </div>
-                <div className="flex flex-row justify-around">
+                <div className="mb-4 flex flex-row justify-between">
                     <div>배송비</div>
                     <div className="text-right">{shipping.toLocaleString()}원</div>
                 </div>
             </div>
-            <div className="w-50% ml-auto flex flex-row justify-between text-xl">
+            <div className="w-50% mt-4 ml-auto flex flex-row justify-between text-xl">
                 <div>합계</div>
                 <div className="text-right">{(totalPrice + shipping).toLocaleString()}원</div>
             </div>
@@ -175,9 +186,9 @@ function TotalPrice(props) {
 
 function ButtonOne(props) {
     return (
-        <div className="w-25% mx-auto">
+        <div className="mt-12 w-25% mx-auto">
             <button className="w-full h-20 mx-auto text-2xl text-white bg-green-500">
-                <Link to={'/store/purchase'}> 주문하기 </Link>
+                <Link to={'/purchase'}> 주문하기 </Link>
             </button>
         </div>
     );

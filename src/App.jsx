@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setCookie, noneCookie, loginCookie, logoutTry } from './actions';
+import {
+    setCookie,
+    noneCookie,
+    loginCookie,
+    logoutTry,
+    TryGetCartCookie,
+    cartClear,
+} from './actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 import Nav from './Components/Nav';
@@ -18,11 +25,12 @@ import Store from './Components/Store/Store';
 import BookItem from './Components/Store/BookItem';
 import Good from './Components/Store/Good';
 import GoodItem from './Components/Store/GoodItem';
+import Cart from './Components/Store/Cart';
+import Purchase from './Components/Store/Purchase';
 import Notice from './Components/Notice';
 import Login from './Components/Login';
 import MyPage from './Components/MyPage';
 import Signup from './Components/Signup';
-import Cart from './Components/Store/Cart';
 import CartIcon from './Components/shared/CartIcon';
 import Footer from './Components/Footer';
 
@@ -41,9 +49,11 @@ class App extends Component {
         if (cookie && cookie !== pState.cookie && pState.cookie === undefined) {
             nProps.setCookie(cookie);
             nProps.loginCookie();
+            nProps.TryGetCartCookie();
             return { cookie: cookie, logged: true };
         } else if (!cookie && pState.cookie !== undefined) {
             nProps.noneCookie();
+            nProps.cartClear();
             return { cookie: undefined, logged: false };
         } else {
             return null;
@@ -96,6 +106,7 @@ class App extends Component {
                                 <Route exact path="/store/book/:id" component={BookItem} />
                                 <Route exact path="/store/good/:id" component={GoodItem} />
                                 <Route exact path="/cart" component={Cart} />
+                                <Route exact path="/purchase" component={Purchase} />
                                 <Route exact path="/notice" component={Notice} />
                                 <Route exact path="/mypage" component={MyPage} />
                                 <Route exact path="/login" component={Login} />
@@ -112,8 +123,16 @@ class App extends Component {
 const MapStateToProps = (state) => ({
     cookie: state.cookie,
     logged: state.logged,
+    cart: state.cart,
 });
 
-const MapDispatchToProps = { setCookie, noneCookie, loginCookie, logoutTry };
+const MapDispatchToProps = {
+    setCookie,
+    noneCookie,
+    loginCookie,
+    logoutTry,
+    TryGetCartCookie,
+    cartClear,
+};
 
 export default connect(MapStateToProps, MapDispatchToProps)(withCookies(App));

@@ -213,7 +213,7 @@ function InfoItem(props) {
 
 function SubscInfo(props) {
     const gathering = props.gathering;
-    const { price, priceInt, count, date } = props.info;
+    const { priceInt, date } = props.info;
     const headCount = props.headCount;
 
     return (

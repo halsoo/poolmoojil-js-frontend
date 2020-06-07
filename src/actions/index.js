@@ -1,4 +1,11 @@
-import { loginAPI, logoutAPI, signupAPI } from '../util/api';
+import {
+    loginAPI,
+    logoutAPI,
+    signupAPI,
+    postCartIn,
+    postCartOut,
+    getCartCookieAPI,
+} from '../util/api';
 
 export const login = () => {
     return {
@@ -89,6 +96,18 @@ export const noneCookie = () => {
     };
 };
 
+export const cartInTry = (cartInInfo) => async (dispatch) => {
+    try {
+        const res = await postCartIn(cartInInfo);
+        console.log(res);
+        if (res.status === 200) {
+            dispatch(cartIn(cartInInfo));
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const cartIn = ({ id, category, quantity }) => {
     return {
         type: 'CART_IN',
@@ -98,9 +117,46 @@ export const cartIn = ({ id, category, quantity }) => {
     };
 };
 
+export const cartOutTry = ({ id }) => async (dispatch) => {
+    try {
+        const res = await postCartOut({ id: id });
+        console.log(res);
+        if (res.status === 200) {
+            dispatch(cartOut({ id }));
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const cartOut = ({ id }) => {
     return {
         type: 'CART_OUT',
         id: id,
+    };
+};
+
+export const TryGetCartCookie = () => async (dispatch) => {
+    try {
+        const res = await getCartCookieAPI();
+        console.log(res);
+        if (res.status === 200) {
+            dispatch(getCartCookie(res.data));
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getCartCookie = (cart) => {
+    return {
+        type: 'CART_COOKIE',
+        cart: cart,
+    };
+};
+
+export const cartClear = () => {
+    return {
+        type: 'CART_CLEAR',
     };
 };

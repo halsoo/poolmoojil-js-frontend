@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { getGatheringByID, getGatherings } from '../../util/api';
+import { getGatheringByID } from '../../util/api';
 import { priceStr, rangeDateStr, oneTimeDateStr, timeStr } from '../../util/localeStrings';
 
 class GatheringItem extends Component {
@@ -37,6 +37,7 @@ class GatheringItem extends Component {
                             <img
                                 className="w-full border border-green-500"
                                 src={gathering.mainImg.link}
+                                alt=""
                             />
 
                             {!this.props.logged.status ? (

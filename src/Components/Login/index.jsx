@@ -56,12 +56,19 @@ class Login extends Component {
             >
                 <div className="flex flex-col justify-around">
                     <div
-                        className={`w-50% h-auto sm:mb-${this.state.error ? 3 : 10} lg:mb-${
+                        className={`flex flex-row justify-between sm:mb-${
                             this.state.error ? 3 : 10
-                        } sm:text-7xl lg:text-4xl text-green-500`}
+                        } lg:mb-${this.state.error ? 3 : 10}`}
                     >
-                        로그인
+                        <div className={`w-50% h-auto sm:text-7xl lg:text-4xl text-green-500`}>
+                            로그인
+                        </div>
+
+                        <div className="w-50% h-auto my-auto text-2xl text-green-500">
+                            test ID: test1234 / test password: test1234
+                        </div>
                     </div>
+
                     <div className="w-50% h-auto sm:mb-6 lg:mb-6 sm:text-xl lg:text-xl text-red-500">
                         {this.state.error ? this.state.error : null}
                     </div>
