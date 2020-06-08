@@ -143,6 +143,18 @@ class GatheringSubsc extends Component {
                     onChange={this.handleHeadCount}
                     headCount={this.state.headCount}
                 />
+
+                <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+                    <div className="text-2xl mb-10">배송/교환/반품 안내</div>
+                    <p className="lg:text-xl sm:text-4xl">
+                        읽기모임: 당일 취소환불 불가, 전일까지는 100% 환불
+                    </p>
+                    <p className="mt-2 lg:text-xl sm:text-4xl">
+                        강연/세미나: 개강일로부터 4일 전까지 100% 환불, 개강일 전 3일까지 50% 환불,
+                        개강일 이후 환불이 불가
+                    </p>
+                </div>
+
                 <SubscInfo gathering={gathering} headCount={this.state.headCount} info={info} />
                 <UserInfo user={user} />
                 <PaymentInfo

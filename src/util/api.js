@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const baseUrl =
-    process.env.NODE_ENV === 'development' ? '/api' : `https://poolmoojil-server.now.sh/api`;
+const baseUrl = `https://poolmoojil-tau.now.sh/api`;
+//process.env.NODE_ENV === 'development' ? '/api' : ;
 
 const methods = {
     get: async function (endpoint, token = null) {
@@ -48,6 +48,16 @@ const methods = {
         return json;
     },
 };
+
+export async function getPlaces() {
+    const res = await methods.get('places');
+    return res;
+}
+
+export async function getAboutTexts() {
+    const res = await methods.get('aboutTexts');
+    return res;
+}
 
 export async function loginAPI(loginInfo) {
     const res = await methods.post('users/login', loginInfo);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { getPlaces, getAboutTexts } from '../../util/api';
 
 export default class About extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ export default class About extends Component {
     }
 
     getPlaces = async () => {
-        const places = await axios.get('http://localhost:4000/api/places');
+        const places = await getPlaces();
         if (places.status === 200) {
             this.setState({
                 places: places.data,
@@ -27,7 +27,7 @@ export default class About extends Component {
     };
 
     getTexts = async () => {
-        const texts = await axios.get('http://localhost:4000/api/aboutTexts');
+        const texts = await getAboutTexts();
         if (texts.status === 200) {
             const splitBody = texts.data.map((text) => {
                 return text.body.split(/\r\n|\r|\n/);
