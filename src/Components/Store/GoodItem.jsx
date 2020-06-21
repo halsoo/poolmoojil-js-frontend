@@ -60,7 +60,7 @@ class GoodItem extends Component {
                         />
                         {!this.props.logged.status ? (
                             <ButtonLogin />
-                        ) : (
+                        ) : good.quantity > 0 ? (
                             <ButtonGroup
                                 cartOnClick={() =>
                                     this.props.cartInTry({
@@ -70,6 +70,8 @@ class GoodItem extends Component {
                                     })
                                 }
                             />
+                        ) : (
+                            <OutOfStock />
                         )}
                     </div>
                 </div>
@@ -158,6 +160,19 @@ function ButtonGroup(props) {
     );
 }
 
+function OutOfStock(props) {
+    return (
+        <div className="mt-2 flex flex-row justify-between ">
+            <button
+                className="w-full lg:h-18 sm:h-32 text-2xl text-green-500 border border-green-500"
+                name="Over"
+            >
+                품절
+            </button>
+        </div>
+    );
+}
+
 function GoodItemInfo(props) {
     const good = props.good;
     const maker = good.maker ? good.maker : '';
@@ -194,7 +209,7 @@ function GoodItemDetailDesc(props) {
             {body.map((para, index) => {
                 const mb = index === body.length - 1 ? false : true;
                 return (
-                    <p className={`${mb ? 'mb-6' : 'mb-0'} lg:text-xl sm:text-4xl`} key={index}>
+                    <p className={`${mb ? 'mb-6' : 'mb-0'} lg:text-xl sm:text-5xl`} key={index}>
                         {para}
                     </p>
                 );

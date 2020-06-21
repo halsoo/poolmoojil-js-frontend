@@ -307,11 +307,31 @@ class Store extends Component {
         );
     };
 
+    shouldComponentUpdate(nProps, nState) {
+        if (
+            (this.state.isSearched && this.state.books !== nState.books) ||
+            (!this.state.isSearched &&
+                (this.state.curatedMonthly !== nState.curatedMonthly ||
+                    this.state.packageMonthly !== nState.packageMonthly ||
+                    this.state.poolmoojilSelection !== nState.poolmoojilSelection ||
+                    this.state.goods !== nState.goods))
+        ) {
+            return true;
+        }
+
+        return true;
+    }
+
     render() {
-        return (
-            <div className="flex flex-col justify-between">
-                <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
-                    <div className="mb-2 font-bold text-2xl">도서 검색</div>
+        return (this.state.isSearched && this.state.books) ||
+            (!this.state.isSearched &&
+                this.state.curatedMonthly &&
+                this.state.packageMonthly &&
+                this.state.poolmoojilSelection &&
+                this.state.goods) ? (
+            <div className="flex flex-col sm:h-auto justify-between">
+                <div className="mb-4 sm:h-auto p-4 flex flex-col bg-green-500 text-white border border-green-500">
+                    <div className="mb-2 font-bold lg:text-2xl sm:text-5xl">도서 검색</div>
 
                     <ButtonGroup
                         title="도서 종류"
@@ -348,23 +368,25 @@ class Store extends Component {
                         <BookList books={this.state.books} />
 
                         <button
-                            className="relative mx-auto mt-16 w-10% h-12 text-white"
+                            className="relative mx-auto mt-16 w-10% h-18 text-white"
                             onClick={this.handleMore}
                         >
                             <img className="w-full" src={triangle} alt="" />
-                            <div className="absolute top-0 left-2vw">더보기</div>
                         </button>
                     </div>
                 ) : null}
 
-                <div className="h-full flex flex-row flex-wrap content-between items-stretch justify-between">
-                    {!this.state.isSearched && this.state.curatedMonthly ? (
+                {!this.state.isSearched &&
+                this.state.curatedMonthly &&
+                this.state.poolmoojilSelection &&
+                this.state.packageMonthly &&
+                this.state.goods ? (
+                    <div className="h-full flex lg:flex-row lg:flex-wrap sm:flex-col content-between items-stretch justify-between">
                         <MonthlyCurated
                             curation={this.state.curatedMonthly}
                             onClick={this.handleShowFull}
                         />
-                    ) : null}
-                    {!this.state.isSearched && this.state.poolmoojilSelection ? (
+
                         <ThreeItems
                             title="풀무질 인문학 100선"
                             name="selected"
@@ -372,15 +394,15 @@ class Store extends Component {
                             onClick={this.handleShowFull}
                             mb={true}
                         />
-                    ) : null}
-                    {!this.state.isSearched && this.state.packageMonthly ? (
+
                         <MonthlyPackage package={this.state.packageMonthly} />
-                    ) : null}
-                    {!this.state.isSearched && this.state.goods ? (
+
                         <ThreeItems title="풀무질 굿즈" name="goods" items={this.state.goods} />
-                    ) : null}
-                </div>
+                    </div>
+                ) : null}
             </div>
+        ) : (
+            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
         );
     }
 }
@@ -395,7 +417,9 @@ function SingleButton(props) {
     return (
         <div>
             <button
-                className={`mr-2 text-white ${props.buttonState ? 'font-bold' : 'font-regular'}`}
+                className={`mr-2 text-white sm:text-5xl ${
+                    props.buttonState ? 'font-bold' : 'font-regular'
+                }`}
                 name={props.name}
                 type="button"
                 onClick={props.onClick}
@@ -409,8 +433,8 @@ function SingleButton(props) {
 function ButtonGroup(props) {
     return (
         <div className="mb-2 grid grid-cols-12 ">
-            <div className="col-start-1 col-end-3 text-lg"> {props.title} </div>
-            <div className="col-start-3 col-end-6 flex flex-row justify-between">
+            <div className="col-start-1 col-end-3 lg:text-lg sm:text-4xl"> {props.title} </div>
+            <div className="lg:col-start-3 lg:col-end-6 sm:col-start-3 sm:col-end-9 flex flex-row justify-between">
                 {props.button.map((item, index) => {
                     return (
                         <SingleButton
@@ -430,8 +454,8 @@ function ButtonGroup(props) {
 function TextInput(props) {
     return (
         <div className="grid grid-cols-12">
-            <div className="col-start-1 col-end-3 text-lg"> {props.title} </div>
-            <div className="col-start-3 col-end-4 text-lg text-green-500">
+            <div className="col-start-1 col-end-3 lg:text-lg sm:text-4xl"> {props.title} </div>
+            <div className="col-start-3 lg:col-end-4 sm:col-end-5 lg:text-lg sm:text-4xl text-green-500">
                 <select name="filterB" value={props.selectValue} onChange={props.selectOnChange}>
                     <option value="">옵션 선택</option>
                     <option value="title">제목</option>
@@ -439,15 +463,15 @@ function TextInput(props) {
                     <option value="publishingCompany">출판사</option>
                 </select>
             </div>
-            <div className="col-start-4 col-end-10 pl-4 flex flex-row justify-between">
+            <div className="lg:col-start-4 sm:col-start-5 col-end-10 pl-4 flex flex-row justify-between">
                 <input
-                    className="pl-2 w-85% text-black text-base"
+                    className="pl-2 w-75% text-black text-base"
                     type="text"
                     value={props.textValue}
                     onChange={props.textOnChange}
                 />
                 <button
-                    className="w-10% bg-white text-green-500"
+                    className="sm:text-4xl w-15% bg-white text-green-500"
                     type="button"
                     onClick={props.onClick}
                 >
@@ -465,12 +489,13 @@ function BookList(props) {
                 const multirow = props.books.length > 1 ? true : false;
                 return (
                     <div
+                        key={index}
                         className={`mb-8 flex flex-row ${
                             multirow ? 'justify-start' : 'justify-center'
                         }`}
                     >
                         {bookRow.map((b, index) => {
-                            const book = b.book ? b.book[0] : b;
+                            const book = b.book ? b.book : b;
                             const end = (index + 1) % 4 === 0 ? true : false;
                             return <BookItem key={index} book={book} end={end} />;
                         })}
@@ -497,7 +522,7 @@ function BookItem(props) {
                 </Link>
             </div>
 
-            <div className="flex flex-col justify-between text-lg text-green-500">
+            <div className="flex flex-col justify-between lg:text-lg sm:text-4xl text-green-500">
                 <Link className="mx-auto" to={'/store/book/' + book.id}>
                     <p className="font-bold">{book.title}</p>
                 </Link>
@@ -514,8 +539,8 @@ function MonthlyPackage(props) {
     const price = priceStr(monthlyPackage.price);
 
     return (
-        <div className="w-49% p-4 flex flex-col text-white bg-green-500 border border-green-500">
-            <div className="mb-2 font-bold text-2xl">이 달의 꾸러미</div>
+        <div className="lg:w-49% sm:w-full p-4 sm:mb-4 flex flex-col text-white bg-green-500 border border-green-500">
+            <div className="mb-2 font-bold lg:text-2xl sm:text-5xl">이 달의 꾸러미</div>
             <div className="h-full flex flex-row">
                 <div className="w-40% h-auto my-auto flex border border-green-500">
                     <Link to={'/package/' + monthlyPackage.id}>
@@ -524,12 +549,14 @@ function MonthlyPackage(props) {
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
-                    <p className="text-lg mb-2">{month}의 꾸러미</p>
+                    <p className="lg:text-lg sm:text-4xl mb-2">{month}의 꾸러미</p>
                     <Link to={'/package/' + monthlyPackage.id}>
-                        <p className="text-2xl mb-2">{monthlyPackage.title}</p>
+                        <p className="lg:text-2xl sm:text-5xl mb-2">{monthlyPackage.title}</p>
                     </Link>
-                    <p className="text-lg mb-2">{monthlyPackage.bookList[0].title}</p>
-                    <p className="text-lg">가격: {price}원</p>
+                    <p className="lg:text-lg sm:text-4xl mb-2">
+                        {monthlyPackage.monthlyCurated.book.title}
+                    </p>
+                    <p className="lg:text-lg sm:text-4xl">가격: {price}원</p>
                 </div>
             </div>
         </div>
@@ -537,17 +564,17 @@ function MonthlyPackage(props) {
 }
 
 function MonthlyCurated(props) {
-    const book = props.curation.book[0];
+    const book = props.curation.book;
     const month = oneTimeMonthStr(props.curation.date);
     const price = priceStr(book.price);
 
     return (
-        <div className="w-49% mb-4 p-4 flex flex-col text-green-500 border border-green-500">
+        <div className="lg:w-49% sm:w-full mb-4 p-4 flex flex-col text-green-500 border border-green-500">
             <div className="w-full mb-2 flex flex-row justify-between">
-                <div className="font-bold text-2xl">이 달의 책</div>
+                <div className="font-bold lg:text-2xl sm:text-5xl">이 달의 책</div>
                 <div>
                     <button
-                        className="font-bold text-xl"
+                        className="font-bold lg:text-xl sm:text-4xl"
                         onClick={(e) => props.onClick(e, 'monthly')}
                     >
                         더보기
@@ -562,13 +589,13 @@ function MonthlyCurated(props) {
                 </div>
 
                 <div className="w-80% my-auto ml-8 flex flex-col">
-                    <p className="text-lg mb-2">{month}의 책</p>
+                    <p className="lg:text-lg sm:text-4xl mb-2">{month}의 책</p>
                     <Link to={'/store/book/' + book.id}>
-                        <p className="text-2xl mb-2">{book.title}</p>
+                        <p className="lg:text-2xl sm:text-5xl mb-2">{book.title}</p>
                     </Link>
-                    <p className="text-lg mb-2">저자: {book.author}</p>
-                    <p className="text-lg mb-2">출판사: {book.publishingCompany}</p>
-                    <p className="text-lg">가격: {price}원</p>
+                    <p className="lg:text-lg sm:text-4xl mb-2">저자: {book.author}</p>
+                    <p className="lg:text-lg sm:text-4xl mb-2">출판사: {book.publishingCompany}</p>
+                    <p className="lg:text-lg sm:text-4xl">가격: {price}원</p>
                 </div>
             </div>
         </div>
@@ -579,20 +606,20 @@ function ThreeItems(props) {
     const mb = props.mb;
     return (
         <div
-            className={`w-49% ${
-                mb ? 'mb-4' : 'mb-0'
+            className={`lg:w-49% sm:w-full ${
+                mb ? 'lg:mb-4 sm:mb-4' : 'lg:mb-0 sm:mb-4'
             } p-4 flex flex-col text-green-500 border border-green-500`}
         >
             <div className="w-full flex flex-row justify-between">
-                <div className="mb-2 font-bold text-2xl">{props.title}</div>
+                <div className="mb-2 font-bold lg:text-2xl sm:text-5xl">{props.title}</div>
                 <div>
                     {props.name === 'goods' ? (
-                        <Link className="font-bold text-xl" to="/store/good">
+                        <Link className="font-bold lg:text-xl sm:text-4xl" to="/store/good">
                             더보기
                         </Link>
                     ) : (
                         <button
-                            className="font-bold text-xl"
+                            className="font-bold lg:text-xl sm:text-4xl"
                             onClick={(e) => props.onClick(e, props.name)}
                         >
                             더보기
@@ -606,19 +633,19 @@ function ThreeItems(props) {
                     return (
                         <div key={index} className="w-30% flex flex-col">
                             <Link
-                                className="mx-auto font-bold"
+                                className="sm:text-4xl mx-auto font-bold"
                                 to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
                             >
                                 <img className="mx-auto mb-2" src={item.mainImg.link} alt="" />
                             </Link>
                             <Link
-                                className="mx-auto font-bold"
+                                className="sm:text-4xl mx-auto font-bold"
                                 to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
                             >
                                 {item.name ? item.name : item.title}
                             </Link>
                             {item.author ? <p className="mx-auto">{item.author}</p> : null}
-                            <p className="mx-auto">{priceStr(item.price) + '원'}</p>
+                            <p className="sm:text-4xl mx-auto">{priceStr(item.price) + '원'}</p>
                         </div>
                     );
                 })}

@@ -36,12 +36,16 @@ class Notice extends Component {
                     postList: res.data,
                 });
             } else {
-                this.setState({
-                    query: {
-                        ...this.state.query,
-                        page: this.state.query.page - 1,
+                this.setState(
+                    {
+                        postList: '',
+                        query: {
+                            ...this.state.query,
+                            page: this.state.query.page - 1,
+                        },
                     },
-                });
+                    this.reloadList(),
+                );
             }
         }
     };
@@ -60,6 +64,17 @@ class Notice extends Component {
         }
     };
 
+    shouldComponentUpdate(nProps, nState) {
+        if (
+            this.state.postList !== nState.postList ||
+            this.state.currentPost !== nState.currentPost
+        ) {
+            return true;
+        }
+
+        return true;
+    }
+
     render() {
         const body = this.state.currentPost
             ? this.state.currentPost.desc.split(/\r\n|\r|\n/)
@@ -69,53 +84,67 @@ class Notice extends Component {
                 {this.state.currentPost ? (
                     <div>
                         <div className="flex flex-row justify-between">
-                            <div className="text-3xl">{this.state.currentPost.title}</div>
-                            <div className="my-auto text-lg">
+                            <div className="lg:text-3xl sm:text-6xl">
+                                {this.state.currentPost.title}
+                            </div>
+                            <div className="my-auto lg:text-lg sm:text-4xl">
                                 {timeStampToDate(this.state.currentPost.createdAt)}
                             </div>
                         </div>
 
-                        <div className="mt-8 mb-4 text-lg">
+                        <div className="mt-8 mb-4 lg:text-lg sm:text-4xl">
                             {body.map((para, index) => {
                                 return <p key={index}>{para}</p>;
                             })}
                         </div>
                     </div>
                 ) : (
-                    <div className="w-full font-bold text-3xl">공지사항</div>
+                    <div className="w-full font-bold lg:text-3xl sm:text-6xl">공지사항</div>
                 )}
 
                 <table className="mt-8">
                     <tbody>
-                        {this.state.postList.map((d, i) => (
-                            <tr
-                                className="mb-4 flex flex-row justify-between text-green-500 border-b border-green-500"
-                                key={i}
-                            >
-                                {this.state.currentPost ? (
-                                    this.state.currentPost.id !== d.id ? (
+                        {typeof this.state.postList === 'object' ? (
+                            this.state.postList.map((d, i) => (
+                                <tr
+                                    className="mb-4 flex flex-row justify-between text-green-500 border-b border-green-500"
+                                    key={i}
+                                >
+                                    {this.state.currentPost ? (
+                                        this.state.currentPost.id !== d.id ? (
+                                            <th className="text-left font-normal">
+                                                <button onClick={(e) => this.getCurrentPost(d.id)}>
+                                                    <div className="lg:text-3xl sm:text-6xl">
+                                                        {d.title}
+                                                    </div>
+                                                </button>
+                                            </th>
+                                        ) : (
+                                            <th className="text-left font-bold">
+                                                <div className="lg:text-3xl sm:text-6xl">
+                                                    {d.title}
+                                                </div>
+                                            </th>
+                                        )
+                                    ) : (
                                         <th className="text-left font-normal">
                                             <button onClick={(e) => this.getCurrentPost(d.id)}>
-                                                <div className="text-3xl">{d.title}</div>
+                                                <div className="lg:text-3xl sm:text-6xl">
+                                                    {d.title}
+                                                </div>
                                             </button>
                                         </th>
-                                    ) : (
-                                        <th className="text-left font-bold">
-                                            <div className="text-3xl">{d.title}</div>
-                                        </th>
-                                    )
-                                ) : (
-                                    <th className="text-left font-normal">
-                                        <button onClick={(e) => this.getCurrentPost(d.id)}>
-                                            <div className="text-3xl">{d.title}</div>
-                                        </button>
+                                    )}
+                                    <th className="my-auto lg:text-lg sm:text-4xl font-normal">
+                                        {timeStampToDate(d.createdAt)}
                                     </th>
-                                )}
-                                <th className="my-auto text-lg font-normal">
-                                    {timeStampToDate(d.createdAt)}
-                                </th>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className="text-xl text-green-500">
+                                <th>"공지가 없습니다."</th>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
 
@@ -139,7 +168,7 @@ class Notice extends Component {
                         <img className="mx-auto w-2/12 h-auto" src={left} alt="left" />
                     </button>
 
-                    <div className="text-xl">{this.state.query.page}</div>
+                    <div className="lg:text-xl sm:text-4xl">{this.state.query.page}</div>
 
                     <button
                         onClick={() => {
@@ -158,7 +187,9 @@ class Notice extends Component {
                     </button>
                 </div>
             </div>
-        ) : null;
+        ) : (
+            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
+        );
     }
 }
 

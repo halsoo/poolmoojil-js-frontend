@@ -5,7 +5,7 @@ export default function InputWithLabel(props) {
         <div className="w-full mb-4 flex flex-col justify-between">
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
             <div className="w-full flex flex-row justify-between">
-                <label className="text-xl h-8 text-green-500">
+                <label className="lg:text-xl sm:text-4xl h-8 text-green-500">
                     {props.label} {props.required ? '*' : null}
                 </label>
                 <div
@@ -19,6 +19,7 @@ export default function InputWithLabel(props) {
                         }`}
                         type={props.type}
                         name={props.name + 'A'}
+                        value={props.valueA}
                         onChange={props.onChange}
                         placeholder={props.name === 'birth' ? 'YYYY' : props.placeholder}
                         disabled={props.disabled}
@@ -31,6 +32,7 @@ export default function InputWithLabel(props) {
                         ${props.name === 'birth' ? 'mr-8' : null}`}
                         type={props.type}
                         name={props.name + 'B'}
+                        value={props.valueB}
                         onChange={props.onChange}
                         placeholder={props.name === 'birth' ? 'MM' : props.placeholder}
                         disabled={props.disabled}
@@ -42,6 +44,7 @@ export default function InputWithLabel(props) {
                         } pl-2 border border-green-500 sm:rounded-none`}
                         type={props.type}
                         name={props.name + 'C'}
+                        value={props.valueC}
                         onChange={props.onChange}
                         placeholder={props.name === 'birth' ? 'DD' : props.placeholder}
                         disabled={props.disabled}
@@ -56,7 +59,7 @@ export default function InputWithLabel(props) {
                 <div className="text-green-500 mb-2"> 사용 가능한 {props.label}입니다. </div>
             ) : null}
             <div className="w-full flex flex-row justify-between">
-                <label className="text-xl h-8 text-green-500">
+                <label className="lg:text-xl sm:text-4xl h-8 text-green-500">
                     {props.label} {props.required ? '*' : null}
                 </label>
                 <div className="w-50% flex flex-row justify-between">
@@ -75,7 +78,7 @@ export default function InputWithLabel(props) {
                     />
                     {props.additionalButton ? (
                         <button
-                            className="w-25% h-full text-lg bg-green-500 text-white"
+                            className="w-25% h-full lg:text-lg sm:text-2xl bg-green-500 text-white"
                             type="button"
                             onClick={props.additionalOnClick}
                         >

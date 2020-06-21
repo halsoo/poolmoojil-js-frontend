@@ -19,12 +19,9 @@ class PackageItem extends Component {
     getInfo = async () => {
         const res = await getPackageByID(this.props.match.params.id);
         if (res.status === 200) {
-            this.setState(
-                {
-                    package: res.data,
-                },
-                this.getElems,
-            );
+            this.setState({
+                package: res.data,
+            });
         }
     };
 
@@ -41,15 +38,14 @@ class PackageItem extends Component {
         const singlePackage = this.state.package;
         const today = new Date().getTime();
         const packageDay = singlePackage ? dateToTime(singlePackage.date) : null;
-
         return singlePackage ? (
-            <div className="flex flex-col">
-                <div className="flex flex-row justify-between border border-green-500">
-                    <div className="w-50% h-auto ">
+            <div className="mx-auto w-full flex flex-col">
+                <div className="flex lg:flex-row sm:flex-col sm:flex-col-reverse justify-between border border-green-500">
+                    <div className="lg:w-50% sm:w-full h-auto ">
                         <PackageItemDesc package={singlePackage} />
                     </div>
-                    <div className="w-50% h-auto p-4 flex flex-col">
-                        <div className="w-90% mx-auto">
+                    <div className="lg:w-50% sm:w-full h-auto p-4 flex flex-col">
+                        <div className="lg:w-90% sm:w-full mx-auto">
                             <img
                                 className="w-full border border-green-500"
                                 src={singlePackage.mainImg.link}
@@ -60,35 +56,28 @@ class PackageItem extends Component {
                                 <ButtonLogin />
                             ) : packageDay < today ? (
                                 <ButtonOver />
-                            ) : (
+                            ) : !singlePackage.outOfStock ? (
                                 <ButtonGroup
-                                    bookId={singlePackage.monthlyCurated.book[0].id}
+                                    bookId={singlePackage.monthlyCurated.book.id}
                                     packageId={singlePackage.id}
                                 />
+                            ) : (
+                                <OutOfStock />
                             )}
                         </div>
                     </div>
                 </div>
 
-                {this.state.elems ? (
-                    <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-                        <p className="m-4 text-2xl mb-4">꾸러미 구성품</p>
-                        {singlePackage.monthlyCurated ? (
-                            <PackageElems
-                                elem={singlePackage.monthlyCurated.book[0]}
-                                index={'이 달의 책'}
-                                last={false}
-                            />
-                        ) : null}
-                        {this.state.elems.map((item, index) => {
-                            let last = false;
-                            if (index === this.state.elems.length - 1) last = true;
-                            return (
-                                <PackageElems key={index} elem={item} index={index} last={last} />
-                            );
-                        })}
-                    </div>
-                ) : null}
+                <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+                    <p className="m-4 lg:text-2xl sm:text-5xl mb-4">꾸러미 구성품</p>
+                    {singlePackage.monthlyCurated ? (
+                        <PackageElems
+                            elem={singlePackage.monthlyCurated.book}
+                            index={'이 달의 책'}
+                            last={false}
+                        />
+                    ) : null}
+                </div>
             </div>
         ) : null;
     }
@@ -112,18 +101,20 @@ function PackageItemDesc(props) {
 
     return (
         <div className="w-full h-full p-4 flex flex-col text-green-500">
-            <p className="text-2xl mb-4">{month}의 꾸러미</p>
-            <p className="text-3xl mb-4">{singlePackage.title}</p>
-            <p className="text-xl mb-4">'{singlePackage.bookList[0].title}' 꾸러미</p>
+            <p className="lg:text-2xl sm:text-5xl mb-4">{month}의 꾸러미</p>
+            <p className="lg:text-3xl sm:text-5xl mb-4">{singlePackage.title}</p>
+            <p className="lg:text-xl sm:text-4xl mb-4">
+                '{singlePackage.monthlyCurated.book.title}' 꾸러미
+            </p>
             {singlePackage.packageList ? (
-                <p className="text-xl mb-4">구성품: {singlePackage.packageList}</p>
+                <p className="lg:text-xl sm:text-4xl mb-4">구성품: {singlePackage.packageList}</p>
             ) : null}
-            <p className="text-xl mb-10">가격: {price}</p>
+            <p className="lg:text-xl sm:text-4xl mb-10">가격: {price}</p>
 
             <div>
                 {body.map((para, index) => {
                     return (
-                        <p className="mb-6 lg:text-base sm:text-4xl" key={index}>
+                        <p className="mb-6 lg:text-base sm:text-5xl" key={index}>
                             {para}
                         </p>
                     );
@@ -136,7 +127,10 @@ function PackageItemDesc(props) {
 function ButtonLogin(props) {
     return (
         <div className="mt-2 flex flex-row justify-between ">
-            <button className="w-full h-18 text-white text-2xl bg-green-500" name="needLogin">
+            <button
+                className="w-full lg:h-18 sm:h-32 text-white lg:text-2xl sm:text-5xl bg-green-500"
+                name="needLogin"
+            >
                 <Link to="/login">구독하려면 로그인</Link>
             </button>
         </div>
@@ -146,7 +140,7 @@ function ButtonLogin(props) {
 function ButtonOver(props) {
     return (
         <div className="mt-2 flex flex-row justify-between ">
-            <button className="w-full h-18 text-white text-2xl bg-green-500">
+            <button className="w-full lg:h-18 sm:h-32 text-white lg:text-2xl sm:text-5xl bg-green-500">
                 지난 꾸러미입니다
             </button>
         </div>
@@ -158,21 +152,37 @@ function ButtonGroup(props) {
         <div className="mt-2 flex flex-col justify-between">
             <div className="mb-2 flex flex-row justify-between">
                 <button
-                    className="w-49% h-18 text-2xl text-green-500 border border-green-500"
+                    className="w-49% lg:h-18 sm:h-32 lg:text-2xl sm:text-5xl text-green-500 border border-green-500"
                     name="oneTime"
                 >
                     <Link to={'/package/onetime/' + props.packageId}>구러미 구매</Link>
                 </button>
 
                 {props.bookId ? (
-                    <button className="w-49% h-18 text-2xl text-green-500 border border-green-500">
+                    <button className="w-49% lg:h-18 sm:h-32 lg:text-2xl sm:text-5xl text-green-500 border border-green-500">
                         <Link to={'/store/book/' + props.bookId}>이 달의 책 구매</Link>
                     </button>
                 ) : null}
             </div>
 
-            <button className="w-full h-18 text-2xl text-white bg-green-500" name="fullTime">
+            <button
+                className="w-full lg:h-18 sm:h-32 lg:text-2xl sm:text-5xl text-white bg-green-500"
+                name="fullTime"
+            >
                 <Link to={'/package/sixmonths/' + props.packageId}>꾸러미 구독</Link>
+            </button>
+        </div>
+    );
+}
+
+function OutOfStock(props) {
+    return (
+        <div className="mt-2 flex flex-row justify-between ">
+            <button
+                className="w-full lg:h-18 sm:h-32 lg:text-2xl sm:text-5xl text-green-500 border border-green-500"
+                name="Over"
+            >
+                품절
             </button>
         </div>
     );
@@ -186,23 +196,27 @@ function PackageElems(props) {
             <div className="w-full p-4 flex flex-row justify-between">
                 <img className="flex-grow-0" src={elem.mainImg.link} alt="" />
                 <div className="w-50% my-auto px-10 flex-grow ">
-                    <p className="mb-4 text-lg">
+                    <p className="mb-4 lg:text-lg sm:text-4xl">
                         {props.index === '이 달의 책'
                             ? '이 달의 책'
                             : props.index + 1 + '번째 구성품'}
                     </p>
-                    <p className="mb-4 text-2xl">{elem.title ? elem.title : elem.name}</p>
+                    <p className="mb-4 lg:text-2xl sm:text-5xl">
+                        {elem.title ? elem.title : elem.name}
+                    </p>
                     {elem.author ? (
                         <div>
-                            <p className="mb-4 text-lg">저자: {elem.author}</p>
-                            <p className="mb-4 text-lg">출판사: {elem.publishingCompany}</p>
+                            <p className="mb-4 lg:text-lg sm:text-4xl">저자: {elem.author}</p>
+                            <p className="mb-4 lg:text-lg sm:text-4xl">
+                                출판사: {elem.publishingCompany}
+                            </p>
                         </div>
                     ) : (
-                        <p className="mb-4 text-lg">제작: {elem.maker}</p>
+                        <p className="mb-4 lg:text-lg sm:text-4xl">제작: {elem.maker}</p>
                     )}
                 </div>
 
-                <button className="w-20% h-18 my-auto text-2xl text-white bg-green-500">
+                <button className="w-25% h-18 my-auto lg:text-2xl sm:text-3xl text-white bg-green-500">
                     <Link to={elem.title ? '/store/book' + elem.id : '/store/good' + elem.id}>
                         장터에서 보기
                     </Link>

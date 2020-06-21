@@ -13,6 +13,8 @@ import {
     priceStrToInt,
 } from '../../util/localeStrings';
 
+import ButtonOne from '../shared/ButtonOne';
+
 class GatheringSubsc extends Component {
     constructor(props) {
         super(props);
@@ -103,7 +105,8 @@ class GatheringSubsc extends Component {
                 '일 ' +
                 convertDayToKor(dateObj.day) +
                 '요일 ' +
-                gathering.stringDate.substring(10, 12);
+                gathering.stringDate.substring(10, 12) +
+                '시';
         } else if (this.props.isAll && !this.props.isOnce) {
             const dateObj = nextWeekDay(gathering.stringDate.substring(6, 7));
             date =
@@ -145,11 +148,11 @@ class GatheringSubsc extends Component {
                 />
 
                 <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-                    <div className="text-2xl mb-10">배송/교환/반품 안내</div>
-                    <p className="lg:text-xl sm:text-4xl">
+                    <div className="lg:text-2xl sm:text-5xl mb-10">배송/교환/반품 안내</div>
+                    <p className="lg:text-xl sm:text-5xl">
                         읽기모임: 당일 취소환불 불가, 전일까지는 100% 환불
                     </p>
-                    <p className="mt-2 lg:text-xl sm:text-4xl">
+                    <p className="mt-2 lg:text-xl sm:text-5xl">
                         강연/세미나: 개강일로부터 4일 전까지 100% 환불, 개강일 전 3일까지 50% 환불,
                         개강일 이후 환불이 불가
                     </p>
@@ -157,15 +160,28 @@ class GatheringSubsc extends Component {
 
                 <SubscInfo gathering={gathering} headCount={this.state.headCount} info={info} />
                 <UserInfo user={user} />
-                <PaymentInfo
-                    user={user}
-                    headCount={this.state.headCount}
-                    info={info}
-                    inputValue={this.state.creditUse}
-                    inputOnChange={this.handleDiscount}
-                    selectValue={this.state.payOption}
-                    selectOnChange={this.handlePayOption}
-                />
+
+                <div className="w-full h-full mt-2 p-4 flex flex-col border border-green-500">
+                    <PaymentInfo
+                        user={user}
+                        headCount={this.state.headCount}
+                        info={info}
+                        inputValue={this.state.creditUse}
+                        inputOnChange={this.handleDiscount}
+                        selectValue={this.state.payOption}
+                        selectOnChange={this.handlePayOption}
+                    />
+                    <ButtonOne
+                        history={this.props.history}
+                        pg={this.state.payOption}
+                        gathering={gathering}
+                        origin="gathering_onetime"
+                        price={this.state.headCount * info.priceInt}
+                        headCount={this.state.headCount}
+                        user={this.state.user}
+                        creditUse={this.state.creditUse}
+                    />
+                </div>
             </div>
         ) : null;
     }
@@ -189,16 +205,16 @@ function GatheringInfo(props) {
                 <img className="w-full" src={gathering.mainImg.link} alt="img" />
             </div>
             <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
-                <p>{gathering.format}</p>
-                <Link className="text-2xl" to={`/gathering/${gathering.id}`}>
+                <p className="sm:text-5xl">{gathering.format}</p>
+                <Link className="lg:text-2xl sm:text-5xl" to={`/gathering/${gathering.id}`}>
                     {gathering.title} ({count}회 참가)
                 </Link>
-                <p>일시: {date}</p>
-                <p>참가비: {price}</p>
+                <p className="sm:text-5xl">일시: {date}</p>
+                <p className="sm:text-5xl">참가비: {price}</p>
 
                 {(props.isAll && !props.isOnce) || (!props.isAll && !props.isOnce) ? null : (
                     <div className="flex flex-row">
-                        <label className="text-xl mr-16">참가 인원 수</label>
+                        <label className="lg:text-xl sm:text-5xl mr-16">참가 인원 수</label>
                         <input
                             className="w-20 pl-4 text-xl border border-green-500"
                             onChange={props.onChange}
@@ -217,8 +233,8 @@ function GatheringInfo(props) {
 function InfoItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <div className="col-start-1 col-end-3 text-xl">{props.title}</div>
-            <div className="col-start-3 col-end-13 text-xl">{props.contents}</div>
+            <div className="col-start-1 col-end-3 lg:text-xl sm:text-5xl">{props.title}</div>
+            <div className="col-start-3 col-end-13 lg:text-xl sm:text-5xl">{props.contents}</div>
         </div>
     );
 }
@@ -230,7 +246,7 @@ function SubscInfo(props) {
 
     return (
         <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-            <div className="mb-12 text-2xl">예약 정보</div>
+            <div className="mb-12 lg:text-2xl sm:text-5xl">예약 정보</div>
             <InfoItem title="모임 정보" contents={gathering.title} mb={true} />
             <InfoItem title="일시" contents={date} mb={true} />
             <InfoItem title="장소" contents={gathering.place.name} mb={true} />
@@ -263,7 +279,7 @@ function PaymentInfo(props) {
     const headCount = props.headCount;
 
     return (
-        <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+        <div className="text-green-500">
             <div className="mb-12 text-2xl">결제 정보</div>
             <InfoItem
                 title="총합 금액"
@@ -271,8 +287,8 @@ function PaymentInfo(props) {
                 mb={true}
             />
             <div className="mb-4 grid grid-cols-12">
-                <div className="col-start-1 col-end-3 text-xl">적립금 사용</div>
-                <div className="col-start-3 col-end-13 flex flex-row text-xl">
+                <div className="col-start-1 col-end-3 lg:text-xl sm:text-5xl">적립금 사용</div>
+                <div className="col-start-3 col-end-13 flex flex-row lg:text-xl sm:text-5xl">
                     <input
                         className="w-24 pl-2 mr-2 border border-green-500"
                         value={props.inputValue}
@@ -293,7 +309,7 @@ function PaymentInfo(props) {
             />
 
             <div className="mb-12 grid grid-cols-12">
-                <div className="col-start-1 col-end-3 text-xl">결제 방법</div>
+                <div className="col-start-1 col-end-3 lg:text-xl sm:text-5xl">결제 방법</div>
                 <select
                     className="col-start-3 col-end-5"
                     value={props.selectValue}
@@ -304,18 +320,6 @@ function PaymentInfo(props) {
                     <option value="kakaopay">카카오페이</option>
                 </select>
             </div>
-
-            <ButtonOne />
-        </div>
-    );
-}
-
-function ButtonOne(props) {
-    return (
-        <div className="w-25% mx-auto">
-            <button className="w-full h-20 mx-auto text-2xl text-white bg-green-500">
-                <Link to={'/gathering/onetime/' + props.id}>결제하기</Link>
-            </button>
         </div>
     );
 }

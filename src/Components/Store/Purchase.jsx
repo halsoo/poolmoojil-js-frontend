@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import NewWindow from 'react-new-window';
 
 import { getBookByID, getGoodByID, getUserCookie } from '../../util/api';
 import { priceStr, priceStrToInt } from '../../util/localeStrings';
 import { islandAndMountainousArea, jejuArea } from '../../util/extraFee';
-import { cartClear } from '../../actions';
 import AddressSearch from '../shared/AddressSearch';
+import ButtonOne from '../shared/ButtonOne';
 
 class Purchase extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class Purchase extends Component {
                 zip: '',
                 addressA: '',
                 addressB: '',
-                email: '',
+                phone: '',
             },
             shippingFee: 0,
         };
@@ -89,7 +89,7 @@ class Purchase extends Component {
                     zip: address.zip,
                     addressA: address.addressA,
                     addressB: address.addressB,
-                    email: user.email,
+                    phone: user.phone,
                 },
             },
             () => {
@@ -168,54 +168,98 @@ class Purchase extends Component {
         );
     }
 
+    shouldComponentUpdate(nProps, nState) {
+        if (this.state.cartInfo !== nState.cartInfo || this.state.user !== nState.user) {
+            return true;
+        }
+
+        if (this.state.cart !== nProps.cart) {
+            this.setState(
+                {
+                    cart: nProps.cart,
+                },
+                this.getItems,
+            );
+            return true;
+        }
+
+        return true;
+    }
+
     render() {
         const cart = this.state.cart;
         const cartInfo = this.state.cartInfo;
         const user = this.state.user;
-        return cartInfo && user ? (
-            <div className="flex flex-col">
-                <div className="p-4 flex flex-col text-green-500 border border-green-500">
-                    <div className="mb-12 text-2xl">주문/결제</div>
-                    <ItemList cart={cart} cartInfo={cartInfo} />
-                    <TotalPrice cart={cart} cartInfo={cartInfo} shipping={this.state.shippingFee} />
-                </div>
-                <div className="mb-2 flex flex-row justify-between">
-                    <UserInfo user={user} />
-                    <ShipmentInfo
-                        user={user}
-                        shipInfo={this.state.shipInfo}
-                        onClick={this.handlePopUp}
-                        onChange={this.handleShipInfo}
-                        checkOnChange={this.sameAsBuyer}
-                    />
-                </div>
-                <div className="mt-2 p-4 border border-green-500">
-                    <PaymentInfo
-                        user={user}
-                        cart={cart}
-                        cartInfo={cartInfo}
-                        shipping={this.state.shippingFee}
-                        inputValue={this.state.creditUse}
-                        inputOnChange={this.handleDiscount}
-                        selectValue={this.state.payOption}
-                        selectOnChange={this.handlePayOption}
-                    />
 
-                    <ButtonOne />
-                </div>
+        let totalPrice = 0;
+        for (const id in this.state.cartInfo) {
+            totalPrice +=
+                priceStrToInt(priceStr(this.state.cartInfo[id].price)) *
+                this.state.cart[id].quantity;
+        }
 
-                {this.state.popup ? (
-                    <NewWindow
-                        name="popup"
-                        center="screen"
-                        onUnload={() => this.setState({ popup: false })}
-                        features={{ width: 570, height: 450 }}
-                    >
-                        <AddressSearch />
-                    </NewWindow>
-                ) : null}
-            </div>
-        ) : null;
+        return Object.keys(this.props.cart).length !== 0 ? (
+            cartInfo && user ? (
+                <div className="flex flex-col">
+                    <div className="p-4 flex flex-col text-green-500 border border-green-500">
+                        <div className="mb-12 text-2xl">주문/결제</div>
+                        <ItemList cart={cart} cartInfo={cartInfo} />
+                        <TotalPrice totalPrice={totalPrice} shipping={this.state.shippingFee} />
+                    </div>
+                    <div className="mb-2 flex flex-row items-stretch justify-between">
+                        <UserInfo user={user} />
+                        <ShipmentInfo
+                            user={user}
+                            shipInfo={this.state.shipInfo}
+                            onClick={this.handlePopUp}
+                            onChange={this.handleShipInfo}
+                            checkOnChange={this.sameAsBuyer}
+                        />
+                    </div>
+                    <div className="mt-2 p-4 border border-green-500">
+                        <PaymentInfo
+                            user={user}
+                            cart={cart}
+                            cartInfo={cartInfo}
+                            shipping={this.state.shippingFee}
+                            totalPrice={totalPrice}
+                            inputValue={this.state.creditUse}
+                            inputOnChange={this.handleDiscount}
+                            selectValue={this.state.payOption}
+                            selectOnChange={this.handlePayOption}
+                        />
+
+                        <ButtonOne
+                            history={this.props.history}
+                            pg={this.state.payOption}
+                            origin="store"
+                            price={totalPrice}
+                            user={this.state.user}
+                            cart={cart}
+                            cartInfo={cartInfo}
+                            creditUse={this.state.creditUse}
+                            shipInfo={this.state.shipInfo}
+                            shippingFee={this.state.shippingFee}
+                        />
+                    </div>
+
+                    {this.state.popup ? (
+                        <NewWindow
+                            name="popup"
+                            center="screen"
+                            onUnload={() => this.setState({ popup: false })}
+                            features={{ width: 570, height: 450 }}
+                        >
+                            <AddressSearch />
+                        </NewWindow>
+                    ) : null}
+                </div>
+            ) : (
+                <div className="text-xl text-green-500">loading</div>
+            )
+        ) : (
+            <Redirect to="/store" />
+        );
     }
 }
 
@@ -224,7 +268,7 @@ const MapStateToProps = (state) => ({
     cart: state.cart,
 });
 
-const MapDispatchToProps = { cartClear };
+const MapDispatchToProps = {};
 
 export default connect(MapStateToProps, MapDispatchToProps)(Purchase);
 
@@ -271,11 +315,6 @@ function ItemList(props) {
 }
 
 function TotalPrice(props) {
-    let totalPrice = 0;
-    for (const id in props.cartInfo) {
-        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price)) * props.cart[id].quantity;
-    }
-
     const shipping = props.shipping;
 
     return (
@@ -283,7 +322,7 @@ function TotalPrice(props) {
             <div className="w-50% ml-auto flex flex-col text-xl border-b border-green-500">
                 <div className="mb-4 flex flex-row justify-between">
                     <div>상품 합계</div>
-                    <div className="text-right">{totalPrice.toLocaleString()}원</div>
+                    <div className="text-right">{props.totalPrice.toLocaleString()}원</div>
                 </div>
                 <div className="mb-4 flex flex-row justify-between">
                     <div>배송비</div>
@@ -292,7 +331,7 @@ function TotalPrice(props) {
             </div>
             <div className="w-50% mt-4 ml-auto flex flex-row justify-between text-xl">
                 <div>합계</div>
-                <div className="text-right">{(totalPrice + shipping).toLocaleString()}원</div>
+                <div className="text-right">{(props.totalPrice + shipping).toLocaleString()}원</div>
             </div>
         </div>
     );
@@ -359,6 +398,7 @@ function UserInfo(props) {
             <InputItem title="우편번호" value={address.zip} mb={true} disabled={true} />
             <InputItem title="주소" value={address.addressA} mb={true} disabled={true} />
             <InputItem title="" value={address.addressB} mb={true} />
+            <InputItem title="연락처" value={user.phone} mb={true} />
             <InputItem title="E-MAIL" value={user.email} mb={false} />
         </div>
     );
@@ -370,7 +410,7 @@ function ShipmentInfo(props) {
     const shipInfo = props.shipInfo;
 
     return (
-        <div className="w-49% h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
+        <div className="w-49% h-auto mt-2 p-4 flex flex-col justify-between text-green-500 border border-green-500">
             <div className="flex flex-row justify-between">
                 <div className="mb-12 text-2xl">배송지 정보</div>
                 <div className="flex flex-row">
@@ -409,11 +449,12 @@ function ShipmentInfo(props) {
                 mb={true}
                 onChange={props.onChange}
             />
+
             <InputItem
-                title="E-MAIL"
-                value={shipInfo.email}
-                name="email"
-                mb={false}
+                title="연락처"
+                value={shipInfo.phone}
+                name="phone"
+                mb={true}
                 onChange={props.onChange}
             />
         </div>
@@ -422,15 +463,15 @@ function ShipmentInfo(props) {
 
 function PaymentInfo(props) {
     const user = props.user;
-    let totalPrice = 0;
-    for (const id in props.cartInfo) {
-        totalPrice += priceStrToInt(priceStr(props.cartInfo[id].price)) * props.cart[id].quantity;
-    }
 
     return (
         <div className="w-full h-full flex flex-col text-green-500">
             <div className="mb-12 text-2xl">결제 정보</div>
-            <InfoItem title="상품 금액" contents={totalPrice.toLocaleString() + '원'} mb={true} />
+            <InfoItem
+                title="상품 금액"
+                contents={props.totalPrice.toLocaleString() + '원'}
+                mb={true}
+            />
             <div className="mb-4 grid grid-cols-12">
                 <div className="col-start-1 col-end-3 text-xl">적립금 사용</div>
                 <div className="col-start-3 col-end-13 flex flex-row text-xl">
@@ -450,7 +491,9 @@ function PaymentInfo(props) {
             <InfoItem title="배송비" contents={props.shipping.toLocaleString() + '원'} mb={true} />
             <InfoItem
                 title="결제 금액"
-                contents={(totalPrice + props.shipping - props.inputValue).toLocaleString() + '원'}
+                contents={
+                    (props.totalPrice + props.shipping - props.inputValue).toLocaleString() + '원'
+                }
                 mb={true}
             />
 
@@ -466,16 +509,6 @@ function PaymentInfo(props) {
                     <option value="kakaopay">카카오페이</option>
                 </select>
             </div>
-        </div>
-    );
-}
-
-function ButtonOne(props) {
-    return (
-        <div className="w-25% mx-auto">
-            <button className="w-full h-20 mx-auto text-2xl text-white bg-green-500">
-                <Link>결제하기</Link>
-            </button>
         </div>
     );
 }

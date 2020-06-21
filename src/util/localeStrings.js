@@ -45,6 +45,24 @@ export function oneTimeMonthStr(str) {
     return oneDateYear + '년 ' + oneDateMonth + '월';
 }
 
+export function rangeTimeMonthStr(str) {
+    const startDateYear = str.substring(1, 5);
+    const startDateMonth = str.substring(6, 8);
+    const endDateYear = str.substring(12, 16);
+    const endDateMonth = str.substring(17, 19);
+    return (
+        startDateYear +
+        '년 ' +
+        startDateMonth +
+        '월' +
+        ' ~ ' +
+        endDateYear +
+        '년 ' +
+        endDateMonth +
+        '월'
+    );
+}
+
 export function timeStr(str) {
     const timeHour = str.substring(0, 2);
     const timeMin = str.substring(3, 5);
@@ -57,6 +75,21 @@ export function timeStampToDate(str) {
     const dateDay = str.substring(8, 10);
 
     return dateYear + '년 ' + dateMonth + '월 ' + dateDay + '일';
+}
+
+export function timeStampToDateSimple(str) {
+    const dateYear = str.substring(0, 4);
+    const dateMonth = str.substring(5, 7);
+    const dateDay = str.substring(8, 10);
+
+    return dateYear + '.' + dateMonth + '.' + dateDay;
+}
+
+export function endDateStr(str) {
+    const dateEndYear = str.substring(12, 16);
+    const dateEndMonth = str.substring(17, 19);
+
+    return dateEndYear + '.' + dateEndMonth + '.';
 }
 
 export function nextWeekDay(str) {
@@ -151,7 +184,7 @@ export function plusSixMonths(str) {
     const year = str.substring(0, 4);
     const month = str.substring(5, 7);
 
-    let intMonth = parseInt(month) + 6;
+    let intMonth = parseInt(month) + 3;
     let intYear = parseInt(year);
     if (intMonth > 12) {
         intMonth = intMonth - 12;

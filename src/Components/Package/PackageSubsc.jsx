@@ -14,9 +14,7 @@ import {
 import { islandAndMountainousArea, jejuArea } from '../../util/extraFee';
 
 import AddressSearch from '../shared/AddressSearch';
-
-const { IMP } = window;
-IMP.init('imp04344123');
+import ButtonOne from '../shared/ButtonOne';
 
 class PackageSubsc extends Component {
     constructor(props) {
@@ -33,7 +31,7 @@ class PackageSubsc extends Component {
                 zip: '',
                 addressA: '',
                 addressB: '',
-                email: '',
+                phone: '',
             },
             shippingFee: 0,
         };
@@ -91,7 +89,7 @@ class PackageSubsc extends Component {
                     zip: address.zip,
                     addressA: address.addressA,
                     addressB: address.addressB,
-                    email: user.email,
+                    phone: user.phone,
                 },
             },
             () => {
@@ -157,6 +155,8 @@ class PackageSubsc extends Component {
             return 7000;
         } else if (jejuArea.includes(this.state.shipInfo.zip)) {
             return 6000;
+        } else if (!this.props.isOnce) {
+            return 0;
         } else {
             return 3000;
         }
@@ -203,10 +203,46 @@ class PackageSubsc extends Component {
                 />
 
                 <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-                    <div className="text-2xl mb-10">배송/교환/반품 안내</div>
-                    <p className="lg:text-xl sm:text-4xl">
-                        배송시작 전까지 100% 환불이며, 받은 후 반품 환불 불가
-                    </p>
+                    <div className="lg:text-2xl sm:text-6xl mb-10">배송/교환/반품 안내</div>
+                    <div className="mb-4">
+                        <p className="mb-2 lg:text-2xl sm:text-6xl">
+                            반품/교환 사유에 따른 요청 가능 기간
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            1. 구매자 단순 변심은 상품 수령 후 7일 이내
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            2. 표시/광고와 상이, 상품 하자의 경우 상품 수령 후 3개월 이내 혹은
+                            표시/광고와 다른 사실을 안 날로부터 30일 이내. 둘 중 하나 경과 시
+                            반품/교환 불가
+                        </p>
+                    </div>
+                    <div className="">
+                        <p className="mb-2 lg:text-2xl sm:text-6xl">반품/교환 불가능 사유</p>
+                        <p className="lg:text-xl sm:text-5xl">1. 반품 요청 기간이 지난 경우</p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            2. 구매자의 책임 있는 사유로 상품 등이 멸실 또는 훼손된 경우 (단, 상품의
+                            내용을 확인하기 위하여 포장 등을 훼손한 경우는 제외)
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            3. 구매자의 책임 있는 사유로 포장이 훼손되어 상품 가치가 현저히 상실된
+                            경우
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            4. 구매자의 사용 또는 일부 소비에 의하여 상품의 가치가 현저히 감소한
+                            경우
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            5. 시간의 경과에 의하여 재판매가 곤란할 정도로 상품 등의 가치가 현저히
+                            감소한 경우
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            6. 고객의 요청사항에 맞춰 제작에 들어가는 맞춤제작상품의 경우
+                        </p>
+                        <p className="lg:text-xl sm:text-5xl">
+                            7. 복제 가능한 상품 등의 포장을 훼손한 경우
+                        </p>
+                    </div>
                 </div>
 
                 <SubscInfo
@@ -238,7 +274,18 @@ class PackageSubsc extends Component {
                         selectOnChange={this.handlePayOption}
                     />
 
-                    <ButtonOne />
+                    <ButtonOne
+                        history={this.props.history}
+                        pg={this.state.payOption}
+                        price={info.priceInt * (this.props.isOnce ? this.state.quantity : 3)}
+                        user={this.state.user}
+                        package={singlePackage}
+                        origin={this.props.isOnce ? 'package_onetime' : 'package_sixtime'}
+                        creditUse={this.state.creditUse}
+                        shipInfo={this.state.shipInfo}
+                        shippingFee={this.state.shippingFee}
+                        creditUse={this.state.creditUse}
+                    />
                 </div>
                 {this.state.popup ? (
                     <NewWindow
@@ -273,18 +320,18 @@ function PackageInfo(props) {
             </div>
             <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
                 {props.isOnce ? (
-                    <Link className="text-2xl" to={`/package/${singlePackage.id}`}>
+                    <Link className="lg:text-2xl sm:text-5xl" to={`/package/${singlePackage.id}`}>
                         {singlePackage.title}
                     </Link>
                 ) : (
-                    <p className="text-2xl">꾸러미 구독하기</p>
+                    <p className="lg:text-2xl sm:text-5xl">꾸러미 구독하기</p>
                 )}
 
                 {props.isOnce ? (
                     <div className="flex flex-row">
-                        <label className="text-xl mr-16">수량</label>
+                        <label className="lg:text-xl sm:text-4xl mr-16">수량</label>
                         <input
-                            className="w-20 pl-4 text-xl border border-green-500"
+                            className="w-20 pl-4 lg:text-xl sm:text-4xl border border-green-500"
                             onChange={props.onChange}
                             value={props.headCount}
                             type="number"
@@ -294,8 +341,8 @@ function PackageInfo(props) {
                     </div>
                 ) : (
                     <div className="flex flex-row">
-                        <div className="text-xl mr-16">구독 개월</div>
-                        <div className="text-xl">6개월</div>
+                        <div className="lg:text-xl sm:text-4xl mr-16">구독 개월</div>
+                        <div className="lg:text-xl sm:text-4xl">3개월</div>
                     </div>
                 )}
             </div>
@@ -306,15 +353,15 @@ function PackageInfo(props) {
 function InfoItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <div className="col-start-1 col-end-3 text-xl">{props.title}</div>
-            <div className="col-start-3 col-end-13 text-xl">{props.contents}</div>
+            <div className="col-start-1 col-end-3 lg:text-xl sm:text-4xl">{props.title}</div>
+            <div className="col-start-3 col-end-13 lg:text-xl sm:text-4xl">{props.contents}</div>
         </div>
     );
 }
 
 function SubscInfo(props) {
     const { priceInt, date, sixMonthLater } = props.info;
-    const quantity = props.isOnce ? props.quantity : 6;
+    const quantity = props.isOnce ? props.quantity : 3;
 
     const range =
         date +
@@ -327,11 +374,13 @@ function SubscInfo(props) {
         '월';
     return (
         <div className="w-full h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-            <div className="mb-12 text-2xl">{props.isOnce ? '구매 정보' : '구독 정보'}</div>
+            <div className="mb-12 lg:text-2xl sm:text-5xl">
+                {props.isOnce ? '구매 정보' : '구독 정보'}
+            </div>
             {props.isOnce ? (
                 <InfoItem title="수량" contents={quantity + '개'} mb={true} />
             ) : (
-                <InfoItem title="구독 개월" contents="6개월" mb={true} />
+                <InfoItem title="구독 개월" contents="3개월" mb={true} />
             )}
             {props.isOnce ? null : <InfoItem title="구독 기간" contents={range} mb={true} />}
 
@@ -347,9 +396,9 @@ function SubscInfo(props) {
 function SearchInputItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <lable className="col-start-1 col-end-3 text-xl">{props.title}</lable>
+            <label className="col-start-1 col-end-3 lg:text-xl sm:text-4xl">{props.title}</label>
             <input
-                className={`pl-2 col-start-4 col-end-10 text-xl border border-green-500 ${
+                className={`pl-2 col-start-4 col-end-10 lg:text-xl sm:text-4xl border border-green-500 ${
                     props.disabled ? 'bg-purple-500' : 'bg-white'
                 }`}
                 name={props.name}
@@ -358,7 +407,7 @@ function SearchInputItem(props) {
                 disabled={props.disabled}
             />
             <button
-                className="col-start-11 col-end-13 h-full text-lg bg-green-500 text-white"
+                className="col-start-11 col-end-13 h-full lg:text-lg sm:text-4xl bg-green-500 text-white"
                 type="button"
                 onClick={props.onClick}
             >
@@ -371,10 +420,10 @@ function SearchInputItem(props) {
 function InputItem(props) {
     return (
         <div className={`${props.mb ? 'mb-4' : 'mb-0'} grid grid-cols-12`}>
-            <lable className="col-start-1 col-end-3 text-xl">{props.title}</lable>
+            <label className="col-start-1 col-end-3 lg:text-xl sm:text-4xl">{props.title}</label>
             <input
                 disabled={props.disabled}
-                className={`pl-2 col-start-4 col-end-13 text-xl border border-green-500 ${
+                className={`pl-2 col-start-4 col-end-13 lg:text-xl sm:text-4xl border border-green-500 ${
                     props.disabled ? 'bg-purple-500' : 'bg-white'
                 }`}
                 name={props.name}
@@ -391,11 +440,12 @@ function UserInfo(props) {
 
     return (
         <div className="w-49% h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
-            <div className="mb-12 text-2xl">구매자 정보</div>
+            <div className="mb-12 lg:text-2xl sm:text-5xl">구매자 정보</div>
             <InputItem title="이름" value={user.name} mb={true} />
             <InputItem title="우편번호" value={address.zip} mb={true} disabled={true} />
             <InputItem title="주소" value={address.addressA} mb={true} disabled={true} />
             <InputItem title="" value={address.addressB} mb={true} />
+            <InputItem title="연락처" value={user.phone} mb={true} />
             <InputItem title="E-MAIL" value={user.email} mb={false} />
         </div>
     );
@@ -407,8 +457,8 @@ function ShipmentInfo(props) {
     return (
         <div className="w-49% h-full mt-2 p-4 flex flex-col text-green-500 border border-green-500">
             <div className="flex flex-row justify-between">
-                <div className="mb-12 text-2xl">배송지 정보</div>
-                <div className="flex flex-row">
+                <div className="mb-12 lg:text-xl sm:text-4xl">배송지 정보</div>
+                <div className="sm:text-4xl flex flex-row">
                     <label> 주문자 정보와 동일 </label>
                     <input className="ml-4" type="checkbox" onChange={props.checkOnChange} />
                 </div>
@@ -445,9 +495,9 @@ function ShipmentInfo(props) {
                 onChange={props.onChange}
             />
             <InputItem
-                title="E-MAIL"
-                value={shipInfo.email}
-                name="email"
+                title="연락처"
+                value={shipInfo.phone}
+                name="phone"
                 mb={false}
                 onChange={props.onChange}
             />
@@ -458,19 +508,19 @@ function ShipmentInfo(props) {
 function PaymentInfo(props) {
     const user = props.user;
     const { priceInt } = props.info;
-    const quantity = props.isOnce ? props.quantity : 6;
+    const quantity = props.isOnce ? props.quantity : 3;
 
     return (
         <div className="w-full h-auto flex flex-col text-green-500">
-            <div className="mb-12 text-2xl">결제 정보</div>
+            <div className="mb-12 lg:text-2xl sm:text-5xl">결제 정보</div>
             <InfoItem
                 title="총합 금액"
                 contents={(priceInt * quantity).toLocaleString() + '원'}
                 mb={true}
             />
             <div className="mb-4 grid grid-cols-12">
-                <div className="col-start-1 col-end-3 text-xl">적립금 사용</div>
-                <div className="col-start-3 col-end-13 flex flex-row text-xl">
+                <div className="col-start-1 col-end-3 lg:text-xl sm:text-4xl">적립금 사용</div>
+                <div className="col-start-3 col-end-13 flex flex-row lg:text-xl sm:text-4xl">
                     <input
                         className="w-24 pl-2 mr-2 border border-green-500"
                         value={props.inputValue}
@@ -484,15 +534,24 @@ function PaymentInfo(props) {
                 contents={props.inputValue.toLocaleString() + '원'}
                 mb={true}
             />
-            <InfoItem title="배송비" contents={props.shipping.toLocaleString() + '원'} mb={true} />
+            {props.isOnce ? (
+                <InfoItem
+                    title="배송비"
+                    contents={props.shipping.toLocaleString() + '원'}
+                    mb={true}
+                />
+            ) : null}
             <InfoItem
                 title="결제 금액"
-                contents={(priceInt * quantity - props.inputValue).toLocaleString() + '원'}
+                contents={
+                    (priceInt * quantity - props.inputValue + props.shipping).toLocaleString() +
+                    '원'
+                }
                 mb={true}
             />
 
             <div className="mb-12 grid grid-cols-12">
-                <div className="col-start-1 col-end-3 text-xl">결제 방법</div>
+                <div className="col-start-1 col-end-3 lg:text-xl sm:text-4xl">결제 방법</div>
                 <select
                     className="col-start-3 col-end-5"
                     value={props.selectValue}
@@ -503,16 +562,6 @@ function PaymentInfo(props) {
                     <option value="kakaopay">카카오페이</option>
                 </select>
             </div>
-        </div>
-    );
-}
-
-function ButtonOne(props) {
-    return (
-        <div className="w-25% mx-auto">
-            <button className="w-full h-20 mx-auto text-2xl text-white bg-green-500">
-                <Link>결제하기</Link>
-            </button>
         </div>
     );
 }

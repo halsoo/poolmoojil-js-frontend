@@ -60,16 +60,12 @@ class Login extends Component {
                             this.state.error ? 3 : 10
                         } lg:mb-${this.state.error ? 3 : 10}`}
                     >
-                        <div className={`w-50% h-auto sm:text-7xl lg:text-4xl text-green-500`}>
+                        <div className={`w-50% h-auto sm:text-8xl lg:text-4xl text-green-500`}>
                             로그인
-                        </div>
-
-                        <div className="w-50% h-auto my-auto text-2xl text-green-500">
-                            test ID: test1234 / test password: test1234
                         </div>
                     </div>
 
-                    <div className="w-50% h-auto sm:mb-6 lg:mb-6 sm:text-xl lg:text-xl text-red-500">
+                    <div className="w-50% h-auto sm:mb-6 lg:mb-6 sm:text-2xl lg:text-xl text-red-500">
                         {this.state.error ? this.state.error : null}
                     </div>
                 </div>
@@ -80,14 +76,14 @@ class Login extends Component {
                         className="lg:w-50% sm:h-p lg:h-full sm:mb-12 flex flex-col justify-around lg:justify-between"
                     >
                         <input
-                            className="sm:h-50% lg:h-16 sm:mb-4 p-4 sm:text-6xl lg:text-2xl border border-green-500 sm:rounded-none"
+                            className="sm:h-50% lg:h-16 sm:mb-4 p-4 sm:text-7xl lg:text-2xl border border-green-500 sm:rounded-none"
                             type="text"
                             name="userID"
                             onChange={this.handleChange}
                             placeholder="아이디"
                         />
                         <input
-                            className="sm:h-50% lg:h-16 p-4 sm:text-6xl lg:text-2xl border border-green-500 sm:rounded-none"
+                            className="sm:h-50% lg:h-16 p-4 sm:text-7xl lg:text-2xl border border-green-500 sm:rounded-none"
                             type="password"
                             name="password"
                             onChange={this.handleChange}
@@ -98,13 +94,13 @@ class Login extends Component {
                         <div className="flex sm:mb-12 lg:ml-6 sm:w-full lg:w-40% sm:h-48 bg-green-500 justify-center">
                             <button
                                 onClick={this.login}
-                                className="sm:text-6xl lg:text-4xl text-white"
+                                className="sm:text-7xl lg:text-4xl text-white"
                             >
                                 로그인
                             </button>
                         </div>
 
-                        <div className="lg:ml-6 sm:w-full lg:w-50% sm:h-32 lg:h-full flex sm:flex-row lg:flex-col justify-between lg:text-xl sm:text-4xl">
+                        <div className="lg:ml-6 sm:w-full lg:w-50% sm:h-32 lg:h-full flex sm:flex-row lg:flex-col justify-between lg:text-xl sm:text-5xl">
                             <div className="sm:w-30% lg:h-30% bg-green-500 text-white flex justify-center">
                                 <Link to="/register" className="self-center">
                                     회원가입

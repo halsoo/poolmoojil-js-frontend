@@ -22,7 +22,6 @@ class Gathering extends Component {
             query: {
                 category: undefined,
                 isOver: undefined,
-                place: undefined,
                 title: undefined,
                 page: 1,
                 offset: 5,
@@ -36,10 +35,6 @@ class Gathering extends Component {
             filterB: {
                 upcoming: false,
                 past: false,
-            },
-            filterC: {
-                seoul: false,
-                choonchun: false,
             },
             filterD: '',
         };
@@ -104,7 +99,6 @@ class Gathering extends Component {
         const queryList = {
             category: query.category,
             isOver: query.isOver,
-            place: query.place,
             title: query.title,
             page: 1,
             offset: query.offset,
@@ -243,7 +237,7 @@ class Gathering extends Component {
                 place = '풀무질';
                 break;
             case 'choonchun':
-                place = '춘천 풀무질';
+                place = '소락재';
                 break;
         }
 
@@ -297,16 +291,24 @@ class Gathering extends Component {
         );
     };
 
+    shouldComponentUpdate(nProps, nState) {
+        if (this.state.calendar !== nState.calendar || this.state.gatherings !== nState.gathering) {
+            return true;
+        }
+
+        return true;
+    }
+
     render() {
-        return this.state.calendar ? (
+        return this.state.calendar && this.state.gatherings ? (
             <div className="flex flex-col justify-between">
                 <div className="w-full h-auto mb-4 p-4 flex flex-row border border-green-500">
-                    <div className="w-25% h-full mr-4 ">
+                    <div className="sm:hidden w-25% h-full mr-4 ">
                         <img className="h-full w-full" src={gatheringImg} alt="gathering_img" />
                     </div>
 
                     <div className="flex flex-col justify-around text-green-500">
-                        <div className="font-bold text-2xl">풀무질 모임</div>
+                        <div className="font-bold lg:text-2xl sm:text-6xl">풀무질 모임</div>
 
                         <GatheringTypeDesc
                             title="읽기모임"
@@ -334,7 +336,9 @@ class Gathering extends Component {
                 </div>
 
                 <div className="mb-4 p-4 flex flex-col border border-green-500">
-                    <div className="font-bold text-2xl text-green-500">월별 모임 일정</div>
+                    <div className="font-bold lg:text-2xl sm:text-5xl text-green-500">
+                        월별 모임 일정
+                    </div>
                     <Calendar
                         localizer={localizer}
                         defaultDate={new Date()}
@@ -352,7 +356,7 @@ class Gathering extends Component {
                 </div>
 
                 <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
-                    <div className="mb-2 font-bold text-2xl">필터</div>
+                    <div className="mb-2 font-bold lg:text-2xl sm:text-4xl">필터</div>
 
                     <CheckButtonGroup
                         title="모임 종류"
@@ -390,7 +394,7 @@ class Gathering extends Component {
                         onChange={this.handleFilterB}
                     />
 
-                    <CheckButtonGroup
+                    {/* <CheckButtonGroup
                         title="장소"
                         check={[
                             {
@@ -398,13 +402,13 @@ class Gathering extends Component {
                                 name: 'seoul',
                             },
                             {
-                                title: '풀무질 춘천',
+                                title: '소락재',
                                 name: 'choonchun',
                             },
                         ]}
                         checked={this.state.filterC}
                         onChange={this.handleFilterC}
-                    />
+                    /> */}
 
                     <TextInput
                         title="모임 이름"
@@ -417,14 +421,15 @@ class Gathering extends Component {
                 <GatheringList gatherings={this.state.gatherings} />
 
                 <button
-                    className="relative mx-auto w-10% h-12 text-white"
+                    className="relative mx-auto w-10% h-18 text-white"
                     onClick={this.handleMore}
                 >
                     <img className="w-full" src={triangle} alt="" />
-                    <div className="absolute top-0 left-2vw">더보기</div>
                 </button>
             </div>
-        ) : null;
+        ) : (
+            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
+        );
     }
 }
 
@@ -438,10 +443,10 @@ function GatheringTypeDesc(props) {
     return (
         <div>
             <div className="mb-4">
-                <h2 className="text-xl">{props.title}</h2>
+                <h2 className="lg:text-xl sm:text-4xl">{props.title}</h2>
 
-                <p>{props.mainDesc}</p>
-                <p>({props.subDesc})</p>
+                <p className="sm:text-4xl">{props.mainDesc}</p>
+                <p className="sm:text-4xl">({props.subDesc})</p>
             </div>
 
             {props.pastList ? (
@@ -449,7 +454,7 @@ function GatheringTypeDesc(props) {
                     {props.title === '읽기모임' ? (
                         props.pastList.map((item, index) => {
                             return (
-                                <div key={index} className="mb-4">
+                                <div key={index} className="mb-4 sm:text-4xl">
                                     <p>
                                         {item.title} {item.speaker ? `(${item.speaker})` : null}
                                     </p>
@@ -459,10 +464,10 @@ function GatheringTypeDesc(props) {
                         })
                     ) : (
                         <div>
-                            <p>과거 강좌: </p>
+                            <p className="sm:text-4xl">과거 강좌: </p>
                             {props.pastList.map((item, index) => {
                                 return (
-                                    <div key={index} className="flex mb-4">
+                                    <div key={index} className="flex mb-4 sm:text-4xl">
                                         <p>
                                             {item.title}{' '}
                                             {index === props.pastList.length - 1 ? null : ', '}
@@ -481,9 +486,9 @@ function GatheringTypeDesc(props) {
 function CheckButton(props) {
     return (
         <div>
-            <label> {props.title} </label>
+            <label className="sm:text-4xl"> {props.title} </label>
             <input
-                className="ml-2 border border-white bg-green-500"
+                className="ml-2 my-auto border border-white bg-green-500"
                 name={props.name}
                 type="checkbox"
                 checked={props.checked}
@@ -496,8 +501,8 @@ function CheckButton(props) {
 function CheckButtonGroup(props) {
     return (
         <div className="mb-2 grid grid-cols-12 ">
-            <div className="col-start-1 col-end-3 text-lg"> {props.title} </div>
-            <div className="col-start-3 col-end-6 flex flex-row justify-between">
+            <div className="col-start-1 col-end-3 lg:text-lg sm:text-4xl"> {props.title} </div>
+            <div className="lg:col-start-3 lg:col-end-6 sm:col-start-4 sm:col-end-9 flex flex-row justify-between">
                 {props.check.map((item, index) => {
                     return (
                         <CheckButton
@@ -517,7 +522,7 @@ function CheckButtonGroup(props) {
 function TextInput(props) {
     return (
         <div className="grid grid-cols-12 ">
-            <div className="col-start-1 col-end-3 text-lg"> {props.title} </div>
+            <div className="col-start-1 col-end-3 lg:text-lg sm:text-4xl"> {props.title} </div>
             <div className="col-start-3 col-end-10 flex flex-row justify-between">
                 <input
                     className="pl-2 w-85% text-black text-base"
@@ -527,7 +532,7 @@ function TextInput(props) {
                     onChange={props.onChange}
                 />
                 <button
-                    className="w-10% bg-white text-green-500"
+                    className="w-10% bg-white text-green-500 sm:text-4xl"
                     type="button"
                     onClick={props.onClick}
                 >
@@ -570,19 +575,21 @@ function GatheringItem(props) {
                     </Link>
                 </div>
                 <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
-                    <p>{gathering.format}</p>
-                    <Link className="text-2xl" to={`/gathering/${gathering.id}`}>
-                        {gathering.title}
+                    <p className="sm:font-bold sm:text-4xl">{gathering.format}</p>
+                    <Link to={`/gathering/${gathering.id}`}>
+                        <p className="lg:text-2xl sm:text-6xl">{gathering.title}</p>
                     </Link>
-                    <p>
+                    <p className="sm:text-4xl">
                         일시:{' '}
                         {gathering.count === 1
                             ? oneDate + ' ' + time
                             : fullDate + ' ' + gathering.stringDate}
                     </p>
-                    <p>장소: {gathering.place.name}</p>
-                    <p>회차 수: {gathering.isAll ? '상시' : gathering.count + '회'}</p>
-                    <p>
+                    <p className="sm:text-4xl">장소: {gathering.place.name}</p>
+                    <p className="sm:text-4xl">
+                        회차 수: {gathering.isAll ? '상시' : gathering.count + '회'}
+                    </p>
+                    <p className="sm:text-4xl">
                         참가비:{' '}
                         {oncePrice
                             ? '1회 ' + oncePrice + '원 / 12회 ' + fullPrice + '원'

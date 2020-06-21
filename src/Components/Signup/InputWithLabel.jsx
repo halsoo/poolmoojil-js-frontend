@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function InputWithLabel(props) {
     return props.name === 'phone' || props.name === 'birth' ? (
-        <div className="w-full mb-4 flex flex-col justify-between">
+        <div className="w-full lg:mb-4 sm:mb-12 flex flex-col justify-between">
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
-            <div className="w-full flex flex-row justify-between">
-                <label className="text-2xl h-8 text-green-500">
+            <div className="w-full flex lg:flex-row sm:flex-col justify-between">
+                <label className="lg:text-2xl sm:text-5xl lg:h-8 text-green-500">
                     {props.label} {props.required ? '*' : null}
                 </label>
                 <div
@@ -50,18 +50,18 @@ export default function InputWithLabel(props) {
             </div>
         </div>
     ) : (
-        <div className="w-full mb-4 flex flex-col justify-between">
+        <div className="w-full lg:mb-4 sm:mb-12 flex flex-col justify-between">
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
             {props.okay ? (
                 <div className="text-green-500 mb-2"> 사용 가능한 {props.label}입니다. </div>
             ) : null}
-            <div className="w-full flex flex-row justify-between">
-                <label className="text-2xl h-8 text-green-500">
+            <div className="w-full flex lg:flex-row sm:flex-col justify-between">
+                <label className="lg:text-2xl sm:text-5xl lg:h-8 text-green-500">
                     {props.label} {props.required ? '*' : null}
                 </label>
-                <div className="w-70% flex flex-row justify-between">
+                <div className="lg:w-70% sm:w-full flex flex-row justify-between">
                     <input
-                        className={`w-${props.additionalButton ? '85%' : 'full'} ${
+                        className={`w-${props.additionalButton ? '70%' : 'full'} ${
                             props.additionalButton ? 'mr-2' : null
                         } ${
                             props.disabled ? 'bg-purple-500' : null
@@ -75,7 +75,7 @@ export default function InputWithLabel(props) {
                     />
                     {props.additionalButton ? (
                         <button
-                            className="w-25% h-full text-lg bg-green-500 text-white"
+                            className="w-25% h-full lg:text-lg sm:text-4xl border border-green-500 bg-green-500 text-white"
                             type="button"
                             onClick={props.additionalOnClick}
                         >

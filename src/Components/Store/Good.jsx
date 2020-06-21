@@ -98,7 +98,6 @@ class Good extends Component {
                             onClick={this.handleMore}
                         >
                             <img className="w-full" src={triangle} alt="" />
-                            <div className="absolute top-0 left-2vw">더보기</div>
                         </button>
                     </div>
                 ) : null}

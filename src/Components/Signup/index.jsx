@@ -311,6 +311,7 @@ class Signup extends Component {
         const zipCode = this.state.address.zipCode ? this.state.address.zipCode : null;
         const addressA = this.state.address.addressA ? this.state.address.addressA : null;
         const addressB = this.state.addressB ? this.state.addressB : null;
+        const newsLetter = this.state.buttonForm.checkB;
 
         const signupInfo = {
             userID,
@@ -322,6 +323,7 @@ class Signup extends Component {
             zipCode,
             addressA,
             addressB,
+            newsLetter,
         };
 
         const errors = Object.values(this.state.error).reduce((a, b) => a + b, 0);
@@ -331,8 +333,6 @@ class Signup extends Component {
                 else return a + 1;
             } else return a + null;
         }, null);
-
-        console.log(errors, values);
 
         if (errors !== 0) {
             this.setState({
@@ -423,7 +423,7 @@ class Signup extends Component {
         return this.props.logged.status ? (
             <Redirect to="/" />
         ) : (
-            <div className="w-full h-auto relative p-12 border border-green-500">
+            <div className="w-full h-auto lg:relative sm:flex sm:flex-col p-12 border border-green-500">
                 <div className="flex flex-col justify-between">
                     <div
                         className={`w-50% h-auto sm:mb-${this.state.error.overall ? 3 : 10} lg:mb-${
@@ -432,12 +432,15 @@ class Signup extends Component {
                     >
                         회원가입
                     </div>
-                    <div className="w-50% h-auto sm:mb-6 lg:mb-6 sm:text-xl lg:text-xl text-red-500">
+                    <div className="w-50% h-auto sm:mb-6 lg:mb-6 sm:text-4xl lg:text-xl text-red-500">
                         {this.state.error.overall ? this.state.error.overall : null}
                     </div>
                 </div>
 
-                <form id="login" className="w-60% h-auto flex flex-col justify-between">
+                <form
+                    id="login"
+                    className="lg:w-60% sm:w-full h-auto flex flex-col justify-between"
+                >
                     <InputWithLabel
                         label="아이디"
                         type="text"
@@ -566,7 +569,11 @@ class Signup extends Component {
                     checkBContents={<p>풀무질 뉴스레터 수신 동의</p>}
                 />
 
-                <img className="absolute right-0 top-0 h-60%" src={mainLogo} alt="main logo" />
+                <img
+                    className="sm:hidden absolute right-0 top-0 h-60%"
+                    src={mainLogo}
+                    alt="main logo"
+                />
 
                 {this.state.popup ? (
                     <NewWindow

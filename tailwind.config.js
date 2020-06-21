@@ -176,6 +176,7 @@ module.exports = {
             plg: '23rem',
             pxl: '26rem',
             p2xl: '30rem',
+            p3xl: '45rem',
         },
         backgroundColor: (theme) => theme('colors'),
         backgroundPosition: {
@@ -483,6 +484,7 @@ module.exports = {
             '60%': '60%',
             '65%': '65%',
             '70%': '70%',
+            '75%': '75%',
             '80%': '80%',
             '85%': '85%',
             '90%': '90%',

@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login } from '../../actions';
-import axios from 'axios';
 
-import { isEmail, isLength, isAlphanumeric, isAscii, isNumeric } from 'validator';
+import { isLength, isAscii, isNumeric } from 'validator';
 import InputWithLabel from './InputWithLabel';
 import ListedItems from './ListedItems';
+import SingleItem from './SingleItem';
 import AddressSearch from '../shared/AddressSearch';
 import NewWindow from 'react-new-window';
-
-import { updateTry } from '../../actions';
+import { getUserCookie, updateAPI } from '../../util/api';
 
 class MyPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            user: undefined,
             error: {
                 overall: null,
-                userID: null,
-                name: null,
-                email: null,
                 password: null,
                 passwordConfirm: null,
                 phone: null,
@@ -34,57 +30,39 @@ class MyPage extends Component {
                 addressB: null,
             },
 
-            IDokay: false,
-            EMAILokay: false,
-
-            buttonForm: {
-                checkA: false,
-                checkB: false,
-            },
-
+            updateOKAY: false,
             popup: false,
         };
 
-        window.name = 'parentWindow';
+        this.getUser();
     }
 
+    getUser = async () => {
+        const res = await getUserCookie();
+        if (res.status === 200) {
+            const user = res.data;
+            this.setState({
+                user: res.data,
+                userID: user.userID,
+                email: user.email,
+                name: user.name,
+                address: {
+                    zipCode: user.address[0].zip,
+                    addressA: user.address[0].addressA,
+                    addressB: user.address[0].addressB,
+                },
+                newsLetter: user.newsLetter === null ? false : user.newsLetter,
+                phoneA: user.phone.substring(0, 3),
+                phoneB: user.phone.substring(3, 7),
+                phoneC: user.phone.substring(7, 11),
+                birthA: user.birth.substring(0, 4),
+                birthB: user.birth.substring(5, 7),
+                birthC: user.birth.substring(8, 10),
+            });
+        }
+    };
+
     validate = {
-        email: (value) => {
-            if (!isEmail(value)) {
-                this.setState({
-                    error: {
-                        ...this.state.error,
-                        email: '잘못된 이메일 형식 입니다.',
-                    },
-                });
-                return false;
-            }
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    email: null,
-                },
-            });
-            return true;
-        },
-        userID: (value) => {
-            if (!isAlphanumeric(value) || !isLength(value, { min: 5, max: 20 })) {
-                this.setState({
-                    error: {
-                        ...this.state.error,
-                        userID: '아이디는 5~20 글자의 알파벳 혹은 숫자로 이뤄져야 합니다.',
-                    },
-                });
-                return false;
-            }
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    userID: null,
-                },
-            });
-            return true;
-        },
         password: (value) => {
             if (!isLength(value, { min: 8 })) {
                 this.setState({
@@ -255,33 +233,25 @@ class MyPage extends Component {
     };
 
     update = async (event) => {
-        const userID = this.state.userID;
-        const name = this.state.name;
-        const email = this.state.email;
         const password = this.state.password;
         const phone = this.combine(this.state.phoneA, this.state.phoneB, this.state.phoneC, true);
         const birth = this.combine(this.state.birthA, this.state.birthB, this.state.birthC, false);
         const zipCode = this.state.address.zipCode;
         const addressA = this.state.address.addressA;
-        const addressB = this.state.addressB;
+        const addressB = this.state.address.addressB;
+        const newsLetter = this.state.newsLetter;
 
         const updateInfo = {
-            userID,
-            name,
-            email,
             password,
             phone,
             birth,
             zipCode,
             addressA,
             addressB,
+            newsLetter,
         };
 
         const errors = Object.values(this.state.error).reduce((a, b) => a + b, 0);
-        const values = Object.keys(updateInfo).reduce((a, b) => {
-            if (updateInfo[b] !== null) return a + null;
-            else return a + 1;
-        }, null);
 
         if (errors !== 0) {
             this.setState({
@@ -290,53 +260,133 @@ class MyPage extends Component {
                     overall: '모든 항목을 기입하셨나요?',
                 },
             });
-        } else if (
-            this.state.IDokay &&
-            errors === 0 &&
-            values === 0 &&
-            this.state.buttonForm.checkA
-        ) {
-            this.props.updateTry(updateInfo);
-        } else {
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    overall: '모든 항목을 기입하셨나요?',
-                },
-            });
+        } else if (errors === 0) {
+            const res = await updateAPI(updateInfo);
+
+            if (res.status === 201) {
+                this.setState({
+                    updateOKAY: true,
+                });
+            }
         }
     };
 
     handleChange = (event) => {
         const target = event.target;
-        const value = target.value;
         const name = target.name;
 
-        const validation = this.validate[name];
-        if (validation !== undefined) validation(value);
+        if (name === 'newsLetter') {
+            const value = !this.state[name];
+            this.setState({
+                newsLetter: value,
+            });
+        } else if (name === 'addressB') {
+            const value = target.value;
+            this.setState({
+                address: {
+                    ...this.state.address,
+                    addressB: value,
+                },
+            });
+        } else {
+            const value = target.value;
+            const validation = this.validate[name];
+            if (validation !== undefined) validation(value);
 
+            this.setState({
+                [name]: value,
+                errors: {
+                    ...this.state.errors,
+                    overall: null,
+                },
+            });
+        }
+    };
+
+    handlePopUp = () => {
         this.setState({
-            [name]: value,
-            errors: {
-                ...this.state.errors,
-                overall: null,
-            },
+            popup: true,
         });
     };
+
+    componentDidMount() {
+        window.addEventListener(
+            'message',
+            (event) => {
+                if (event.data.zipCode) {
+                    this.setState({
+                        address: {
+                            zipCode: event.data.zipCode,
+                            addressA: event.data.addressA,
+                        },
+                    });
+                }
+            },
+            false,
+        );
+    }
+
+    shouldComponentUpdate(nProps, nState) {
+        if (this.state.user !== nState.user) {
+            return true;
+        }
+
+        if (this.state.updateOKAY === true) {
+            this.setState({
+                updateOKAY: false,
+            });
+
+            return true;
+        }
+
+        return true;
+    }
 
     render() {
         return !this.props.logged ? (
             <Redirect to="/login" />
-        ) : (
-            <div className="h-screen flex flex-row justify-between">
-                <div className="w-49% h-auto flex flex-col justify-between">
-                    <ListedItems title="모임 예약 내역" />
-                    <div className="h-25% border border-green-500"></div>
-                    <ListedItems title="장터 주문 내역" />
+        ) : this.state.user ? (
+            <div className="h-auto flex lg:flex-row sm:flex-col sm:flex-col-reverse justify-between">
+                <div className="lg:w-49% sm:w-full h-auto flex flex-col justify-between">
+                    <ListedItems
+                        title="모임 예약 내역"
+                        items={this.state.user.gatheringHistories}
+                        goto={'/mypage/gathering-history'}
+                    />
+                    <SingleItem
+                        title="꾸러미 구독"
+                        item={
+                            this.state.user.packageSubscs[this.state.user.packageSubscs.length - 1]
+                        }
+                    />
+                    <ListedItems
+                        title="꾸러미 구입 내역"
+                        items={this.state.user.packageHistories}
+                        goto={'/mypage/package-history'}
+                    />
+                    <ListedItems
+                        title="장터 주문 내역"
+                        items={this.state.user.orderHistories}
+                        goto={'/mypage/order-history'}
+                    />
                 </div>
 
-                <div className="w-49% h-80% p-4 flex flex-col justify-between border border-green-500">
-                    <div className="font-bold text-2xl text-green-500">나의 정보</div>
+                <div className="lg:w-49% sm:w-full sm:mb-2 h-p3xl p-4 flex flex-col justify-between border border-green-500">
+                    <div className="flex flex-row justify-between">
+                        <div className="font-bold lg:text-2xl sm:text-5xl text-green-500">
+                            나의 정보
+                        </div>
+                        <div className="flex flex-row items-center lg:text-lg sm:text-4xl text-green-500">
+                            <input
+                                className="mr-4"
+                                name="newsLetter"
+                                type="checkbox"
+                                checked={this.state.newsLetter}
+                                onChange={this.handleChange}
+                            />
+                            <label>풀무질 뉴스레터 수신 동의</label>
+                        </div>
+                    </div>
                     <form className="flex flex-col justify-between">
                         <InputWithLabel
                             label="아이디"
@@ -346,6 +396,7 @@ class MyPage extends Component {
                             onChange={this.handleChange}
                             placeholder="아이디"
                             error={this.state.error.userID}
+                            disabled="disabled"
                         />
                         <InputWithLabel
                             label="E-MAIL"
@@ -355,6 +406,7 @@ class MyPage extends Component {
                             value={this.state.email}
                             placeholder="이메일"
                             error={this.state.error.email}
+                            disabled="disabled"
                         />
                         <InputWithLabel
                             label="이름"
@@ -364,6 +416,7 @@ class MyPage extends Component {
                             value={this.state.name}
                             placeholder="이름"
                             error={this.state.error.name}
+                            disabled="disabled"
                         />
                         <InputWithLabel
                             label="비밀번호"
@@ -392,7 +445,7 @@ class MyPage extends Component {
                             placeholder="우편번호"
                             additionalButton={true}
                             additionalLabel="검색"
-                            additionalOnClick={this.openAddressAPI}
+                            additionalOnClick={this.handlePopUp}
                             value={this.state.address.zipCode}
                             disabled="disabled"
                         />
@@ -401,9 +454,8 @@ class MyPage extends Component {
                             type="text"
                             name="addressA"
                             onChange={this.handleChange}
-                            value={this.state.addressA}
-                            placeholder=""
                             value={this.state.address.addressA}
+                            placeholder=""
                             disabled="disabled"
                         />
                         <InputWithLabel
@@ -411,7 +463,7 @@ class MyPage extends Component {
                             type="text"
                             name="addressB"
                             onChange={this.handleChange}
-                            value={this.state.addressB}
+                            value={this.state.address.addressB}
                             placeholder="상세 주소"
                         />
 
@@ -421,6 +473,9 @@ class MyPage extends Component {
                             name="phone"
                             onChange={this.handleChange}
                             placeholder=""
+                            valueA={this.state.phoneA}
+                            valueB={this.state.phoneB}
+                            valueC={this.state.phoneC}
                             error={this.state.error.phone}
                         />
 
@@ -430,19 +485,39 @@ class MyPage extends Component {
                             name="birth"
                             onChange={this.handleChange}
                             placeholder=""
+                            valueA={this.state.birthA}
+                            valueB={this.state.birthB}
+                            valueC={this.state.birthC}
                             error={this.state.error.birth}
                         />
                     </form>
+
+                    {this.state.popup ? (
+                        <NewWindow
+                            name="popup"
+                            center="screen"
+                            onUnload={() => this.setState({ popup: false })}
+                            features={{ width: 570, height: 450 }}
+                        >
+                            <AddressSearch />
+                        </NewWindow>
+                    ) : null}
+
                     <div className="w-full flex flex-row justify-between">
-                        <button className="w-49% h-16 border border-green-500 text-xl text-green-500">
+                        <button className="w-49% h-16 border border-green-500 lg:text-xl sm:text-4xl text-green-500">
                             회원 탈퇴
                         </button>
-                        <button className="w-49% h-16 bg-green-500 text-xl text-white">
+                        <button
+                            className="w-49% h-16 bg-green-500 lg:text-xl sm:text-4xl text-white"
+                            onClick={this.update}
+                        >
                             수정하기
                         </button>
                     </div>
                 </div>
             </div>
+        ) : (
+            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
         );
     }
 }

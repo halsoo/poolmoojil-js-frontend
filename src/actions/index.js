@@ -4,6 +4,7 @@ import {
     signupAPI,
     postCartIn,
     postCartOut,
+    postCartClear,
     getCartCookieAPI,
 } from '../util/api';
 
@@ -99,7 +100,6 @@ export const noneCookie = () => {
 export const cartInTry = (cartInInfo) => async (dispatch) => {
     try {
         const res = await postCartIn(cartInInfo);
-        console.log(res);
         if (res.status === 200) {
             dispatch(cartIn(cartInInfo));
         }
@@ -120,7 +120,6 @@ export const cartIn = ({ id, category, quantity }) => {
 export const cartOutTry = ({ id }) => async (dispatch) => {
     try {
         const res = await postCartOut({ id: id });
-        console.log(res);
         if (res.status === 200) {
             dispatch(cartOut({ id }));
         }
@@ -139,7 +138,7 @@ export const cartOut = ({ id }) => {
 export const TryGetCartCookie = () => async (dispatch) => {
     try {
         const res = await getCartCookieAPI();
-        console.log(res);
+        //console.log(res);
         if (res.status === 200) {
             dispatch(getCartCookie(res.data));
         }
@@ -155,8 +154,85 @@ export const getCartCookie = (cart) => {
     };
 };
 
+export const TryCartClear = () => async (dispatch) => {
+    try {
+        const res = await postCartClear();
+        //console.log(res);
+        if (res.status === 200) {
+            dispatch(cartClear());
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const cartClear = () => {
     return {
         type: 'CART_CLEAR',
+    };
+};
+
+export const orderIn = (orderNum) => {
+    return {
+        type: 'ORDER_IN',
+        orderNum: orderNum,
+    };
+};
+
+export const orderOut = () => {
+    return {
+        type: 'ORDER_OUT',
+    };
+};
+
+export const packageHistoryIn = (id) => {
+    return {
+        type: 'PACKAGE_HISTORY_IN',
+        packageID: id,
+    };
+};
+
+export const packageHistoryOut = () => {
+    return {
+        type: 'PACKAGE_HISTORY_OUT',
+    };
+};
+
+export const packageSubscIn = (id) => {
+    return {
+        type: 'PACKAGE_SUBSC_IN',
+        packageSubscID: id,
+    };
+};
+
+export const packageSubscOut = () => {
+    return {
+        type: 'PACKAGE_SUBSC_OUT',
+    };
+};
+
+export const gatheringHistoryIn = (id) => {
+    return {
+        type: 'GATHERING_HISTORY_IN',
+        gatheringID: id,
+    };
+};
+
+export const gatheringHistoryOut = () => {
+    return {
+        type: 'GATHERING_HISTORY_OUT',
+    };
+};
+
+export const setAdmin = (cookie) => {
+    return {
+        type: 'SET_ADMIN',
+        cookie: cookie,
+    };
+};
+
+export const noneAdmin = () => {
+    return {
+        type: 'NONE_ADMIN',
     };
 };
