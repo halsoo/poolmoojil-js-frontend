@@ -36,16 +36,12 @@ class Notice extends Component {
                     postList: res.data,
                 });
             } else {
-                this.setState(
-                    {
-                        postList: '',
-                        query: {
-                            ...this.state.query,
-                            page: this.state.query.page - 1,
-                        },
+                this.setState({
+                    query: {
+                        ...this.state.query,
+                        page: this.state.query.page - 1,
                     },
-                    this.reloadList(),
-                );
+                });
             }
         }
     };
@@ -79,8 +75,9 @@ class Notice extends Component {
         const body = this.state.currentPost
             ? this.state.currentPost.desc.split(/\r\n|\r|\n/)
             : null;
-        return this.state.postList ? (
+        return (
             <div className="h-full p-6 flex flex-col justify-between text-green-500 border border-green-500">
+                <div className="w-full font-bold lg:text-3xl sm:text-6xl">공지사항</div>
                 {this.state.currentPost ? (
                     <div>
                         <div className="flex flex-row justify-between">
@@ -98,9 +95,7 @@ class Notice extends Component {
                             })}
                         </div>
                     </div>
-                ) : (
-                    <div className="w-full font-bold lg:text-3xl sm:text-6xl">공지사항</div>
-                )}
+                ) : null}
 
                 <table className="mt-8">
                     <tbody>
@@ -187,8 +182,6 @@ class Notice extends Component {
                     </button>
                 </div>
             </div>
-        ) : (
-            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
         );
     }
 }
