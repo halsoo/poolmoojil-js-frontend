@@ -10,23 +10,24 @@ export default function SingleItem(props) {
                     더보기
                 </Link> */}
             </div>
-
-            <div className="mt-8 w-full flex flex-col justify-between text-xl text-green-500">
-                <div className="mb-4 w-full grid grid-cols-12">
-                    <div className="col-start-1 col-end-3">구독 상태</div>
-                    <div className="col-start-5 col-end-12">{props.item.subscStatus}</div>
-                </div>
-                <div className="mb-4 w-full grid grid-cols-12">
-                    <div className="col-start-1 col-end-3">구독 일자</div>
-                    <div className="col-start-5 col-end-12">
-                        {props.item.createdAt.substring(0, 10)}
+            {props.item ? (
+                <div className="mt-8 w-full flex flex-col justify-between text-xl text-green-500">
+                    <div className="mb-4 w-full grid grid-cols-12">
+                        <div className="col-start-1 col-end-3">구독 상태</div>
+                        <div className="col-start-5 col-end-12">{props.item.subscStatus}</div>
+                    </div>
+                    <div className="mb-4 w-full grid grid-cols-12">
+                        <div className="col-start-1 col-end-3">구독 일자</div>
+                        <div className="col-start-5 col-end-12">
+                            {props.item.createdAt.substring(0, 10)}
+                        </div>
+                    </div>
+                    <div className="w-full grid grid-cols-12">
+                        <div className="col-start-1 col-end-3">구독 기간</div>
+                        <div className="col-start-5 col-end-12">3개월</div>
                     </div>
                 </div>
-                <div className="w-full grid grid-cols-12">
-                    <div className="col-start-1 col-end-3">구독 기간</div>
-                    <div className="col-start-5 col-end-12">3개월</div>
-                </div>
-            </div>
+            ) : null}
         </div>
     );
 }

@@ -51,9 +51,9 @@ class RecentPackageHistory extends Component {
                         <div className="mb-6 text-2xl">주문 정보</div>
                         <div className="w-full flex flex-row justify-between">
                             <OrderStatus order={order} />
-                            <button className="w-25% h-16 self-center bg-green-500 text-2xl text-white">
+                            {/* <button className="w-25% h-16 self-center bg-green-500 text-2xl text-white">
                                 구독 취소
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div className="mb-2 flex flex-row justify-between items-stretch">

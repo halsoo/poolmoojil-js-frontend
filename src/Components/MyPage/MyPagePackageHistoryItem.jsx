@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-import { getPackageHistoryByOrderNum, cancelPackageHistory } from '../../util/api';
+import { getPackageHistoryByID, cancelPackageHistory } from '../../util/api';
 import { timeStampToDate, priceStr, priceStrToInt } from '../../util/localeStrings';
-import { packageHistoryOut } from '../../actions';
 
-class RecentPackageHistory extends Component {
+export default class AdminPackageHistoryItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,8 +14,7 @@ class RecentPackageHistory extends Component {
     }
 
     getOrder = async () => {
-        const res = await getPackageHistoryByOrderNum(this.props.order.packageID);
-
+        const res = await getPackageHistoryByID(this.props.match.params.id);
         if (res.status === 200) {
             this.setState({
                 order: res.data,
@@ -42,62 +38,52 @@ class RecentPackageHistory extends Component {
         return true;
     }
 
-    componentWillUnmount() {
-        this.props.packageHistoryOut();
-    }
-
     render() {
         const order = this.state.order;
-        return this.props.order.packageID ? (
-            order ? (
-                <div className="flex flex-col">
-                    <div className="p-4 flex flex-col text-green-500 border border-green-500">
-                        <div className="mb-6 text-2xl">주문 정보</div>
-                        <div className="w-full flex flex-row justify-between">
-                            <OrderStatus order={order} />
+        return order ? (
+            <div className="flex flex-col">
+                <div className="p-4 flex flex-col text-green-500 border border-green-500">
+                    <div className="mb-6 text-2xl">주문 정보</div>
+                    <div className="w-full flex flex-row justify-between">
+                        <OrderStatus order={order} />
+                        {order.transactionStatus !== '주문 취소' ? (
                             <button
                                 onClick={this.cancel}
                                 className="w-25% h-16 self-center bg-green-500 text-2xl text-white"
                             >
                                 주문 취소
                             </button>
-                        </div>
-                    </div>
-                    <div className="mb-2 flex flex-row justify-between items-stretch">
-                        <UserInfo user={order.user} />
-                        <ShipmentInfo order={order} />
-                    </div>
-                    <div className="p-4 border border-green-500">
-                        <PaymentInfo order={order} />
+                        ) : null}
                     </div>
                 </div>
-            ) : (
-                <div className="text-xl text-green-500">loading</div>
-            )
+                <div className="mb-2 flex flex-row justify-between items-stretch">
+                    <UserInfo user={order.user} />
+                    <ShipmentInfo order={order} />
+                </div>
+                <div className="p-4 border border-green-500">
+                    <PaymentInfo order={order} />
+                </div>
+            </div>
         ) : (
-            <Redirect to="/store" />
+            <div className="text-xl text-green-500">loading</div>
         );
     }
 }
 
-const MapStateToProps = (state) => ({
-    logged: state.logged,
-    order: state.order,
-});
-
-const MapDispatchToProps = { packageHistoryOut };
-
-export default connect(MapStateToProps, MapDispatchToProps)(RecentPackageHistory);
-
 function OrderStatus(props) {
     const order = props.order;
-    const orderDate = timeStampToDate(order.createdAt);
+    const orderDate = timeStampToDate(order.purchaseDate);
 
     return (
         <div className="w-50% h-full mb-6 flex flex-col text-green-500">
+            <InfoItem
+                title="꾸러미"
+                contents={order.package ? order.package.title : '꾸러미 미정'}
+                mb={true}
+            />
             <InfoItem title="주문일자" contents={orderDate} mb={true} />
             <InfoItem title="주문번호" contents={order.orderNum} mb={true} />
-            <InfoItem title="진행상태" contents={order.transactionStatus} mb={false} />
+            <InfoItem title="배송상태" contents={order.transactionStatus} mb={true} />
         </div>
     );
 }

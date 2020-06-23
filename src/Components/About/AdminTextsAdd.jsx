@@ -19,7 +19,7 @@ export default class AdminPlacesAdd extends Component {
                 title: '제목',
                 body: '내용',
                 emphasis: '강조 내용',
-                date: '끌 쓴 날',
+                date: '글 쓴 날',
                 writer: '글쓴이',
             },
             caution: {

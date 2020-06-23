@@ -36,6 +36,12 @@ import RecentOrder from './Components/Store/RecentOrder';
 import Notice from './Components/Notice';
 import Login from './Components/Login';
 import MyPage from './Components/MyPage';
+import MyPageGatheringHistory from './Components/MyPage/MyPageGatheringHistory';
+import MyPageGatheringHistoryItem from './Components/MyPage/MyPageGatheringHistoryItem';
+import MyPagePackageHistory from './Components/MyPage/MyPagePackageHistory';
+import MyPagePackageHistoryItem from './Components/MyPage/MyPagePackageHistoryItem';
+import MyPageOrderHistory from './Components/MyPage/MyPageOrderHistory';
+import MyPageOrderHistoryItem from './Components/MyPage/MyPageOrderHistoryItem';
 import Signup from './Components/Signup';
 import CartIcon from './Components/shared/CartIcon';
 import Footer from './Components/Footer';
@@ -183,6 +189,36 @@ class App extends Component {
                                     <Route exact path="/recent-order" component={RecentOrder} />
                                     <Route exact path="/notice" component={Notice} />
                                     <Route exact path="/mypage" component={MyPage} />
+                                    <Route
+                                        exact
+                                        path="/mypage/gathering-history"
+                                        component={MyPageGatheringHistory}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/mypage/gathering-history/:orderNum"
+                                        component={MyPageGatheringHistoryItem}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/mypage/package-history"
+                                        component={MyPagePackageHistory}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/mypage/package-history/:id"
+                                        component={MyPagePackageHistoryItem}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/mypage/order-history"
+                                        component={MyPageOrderHistory}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/mypage/order-history/:orderNum"
+                                        component={MyPageOrderHistoryItem}
+                                    />
                                     <Route exact path="/login" component={Login} />
                                     <Route exact path="/register" component={Signup} />
                                 </Switch>

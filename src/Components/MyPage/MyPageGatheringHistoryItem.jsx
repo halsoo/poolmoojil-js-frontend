@@ -6,7 +6,7 @@ import { getGatheringHistoryByOrderNum, cancelGatheringHistory } from '../../uti
 import { timeStampToDate, priceStr, priceStrToInt, oneTimeDateStr } from '../../util/localeStrings';
 import { gatheringHistoryOut } from '../../actions';
 
-class RecentPackageHistory extends Component {
+export default class MyPageGatheringHistoryItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,12 +17,20 @@ class RecentPackageHistory extends Component {
     }
 
     getOrder = async () => {
-        const res = await getGatheringHistoryByOrderNum(this.props.order.gatheringID);
+        const res = await getGatheringHistoryByOrderNum(this.props.match.params.orderNum);
 
         if (res.status === 200) {
             this.setState({
                 order: res.data,
             });
+        }
+    };
+
+    cancel = async () => {
+        const res = await cancelGatheringHistory(this.state.order.id);
+
+        if (res.status === 200) {
+            window.location.reload(false);
         }
     };
 
@@ -34,59 +42,36 @@ class RecentPackageHistory extends Component {
         return true;
     }
 
-    cancel = async () => {
-        const res = await cancelGatheringHistory(this.state.order.id);
-
-        if (res.status === 200) {
-            window.location.reload(false);
-        }
-    };
-
-    componentWillUnmount() {
-        this.props.gatheringHistoryOut();
-    }
-
     render() {
         const order = this.state.order;
-        return this.props.order.gatheringID ? (
-            order ? (
-                <div className="flex flex-col">
-                    <div className="p-4 flex flex-col text-green-500 border border-green-500">
-                        <div className="mb-6 lg:text-2xl sm:text-5xl">모임 예약 정보</div>
-                        <div className="w-full flex flex-row justify-between">
-                            <OrderStatus order={order} />
+        return order ? (
+            <div className="flex flex-col">
+                <div className="p-4 flex flex-col text-green-500 border border-green-500">
+                    <div className="mb-6 lg:text-2xl sm:text-5xl">모임 예약 정보</div>
+                    <div className="w-full flex flex-row justify-between">
+                        <OrderStatus order={order} />
+                        {order.showUp === null ? (
                             <button
                                 onClick={this.cancel}
                                 className="w-25% h-16 self-center bg-green-500 lg:text-2xl sm:text-5xl text-white"
                             >
                                 예약 취소
                             </button>
-                        </div>
-                    </div>
-                    <div className="mb-2 flex flex-row justify-between items-stretch">
-                        <UserInfo user={order.user} />
-                    </div>
-                    <div className="p-4 border border-green-500">
-                        <PaymentInfo order={order} />
+                        ) : null}
                     </div>
                 </div>
-            ) : (
-                <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
-            )
+                <div className="mb-2 flex flex-row justify-between items-stretch">
+                    <UserInfo user={order.user} />
+                </div>
+                <div className="p-4 border border-green-500">
+                    <PaymentInfo order={order} />
+                </div>
+            </div>
         ) : (
-            <Redirect to="/gathering" />
+            <div className="lg:text-xl sm:text-5xl text-green-500">loading</div>
         );
     }
 }
-
-const MapStateToProps = (state) => ({
-    logged: state.logged,
-    order: state.order,
-});
-
-const MapDispatchToProps = { gatheringHistoryOut };
-
-export default connect(MapStateToProps, MapDispatchToProps)(RecentPackageHistory);
 
 function OrderStatus(props) {
     const order = props.order;

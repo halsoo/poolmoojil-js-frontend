@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 import { getOrderHistoryByOrderNum, cancelOrder } from '../../util/api';
 import { timeStampToDate, priceStr, priceStrToInt } from '../../util/localeStrings';
-import { TryCartClear, orderOut } from '../../actions';
 
-class RecentOrder extends Component {
+export default class RecentOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +15,7 @@ class RecentOrder extends Component {
     }
 
     getOrder = async () => {
-        const res = await getOrderHistoryByOrderNum(this.props.order.orderNum);
+        const res = await getOrderHistoryByOrderNum(this.props.match.params.orderNum);
         if (res.status === 200) {
             this.setState({
                 order: res.data,
@@ -41,55 +39,39 @@ class RecentOrder extends Component {
         return true;
     }
 
-    componentWillUnmount() {
-        this.props.TryCartClear();
-        this.props.orderOut();
-    }
-
     render() {
         const order = this.state.order;
-        return this.props.order.orderNum ? (
-            order ? (
-                <div className="flex flex-col">
-                    <div className="p-4 flex flex-col text-green-500 border border-green-500">
-                        <div className="mb-6 text-2xl">주문 정보</div>
-                        <div className="w-full flex flex-row justify-between">
-                            <OrderStatus order={order} />
+        return order ? (
+            <div className="flex flex-col">
+                <div className="p-4 flex flex-col text-green-500 border border-green-500">
+                    <div className="mb-6 text-2xl">주문 정보</div>
+                    <div className="w-full flex flex-row justify-between">
+                        <OrderStatus order={order} />
+                        {order.transactionStatus !== '주문 취소' ? (
                             <button
                                 onClick={this.cancel}
                                 className="w-25% h-16 self-center bg-green-500 text-2xl text-white"
                             >
                                 주문 취소
                             </button>
-                        </div>
-                        <ItemList order={order} />
-                        <TotalPrice totalPrice={order.totalPrice} shipping={order.shippingFee} />
+                        ) : null}
                     </div>
-                    <div className="mb-2 flex flex-row justify-between items-stretch">
-                        <UserInfo user={order.user} />
-                        <ShipmentInfo order={order} />
-                    </div>
-                    <div className="p-4 border border-green-500">
-                        <PaymentInfo order={order} />
-                    </div>
+                    <ItemList order={order} />
+                    <TotalPrice totalPrice={order.totalPrice} shipping={order.shippingFee} />
                 </div>
-            ) : (
-                <div className="text-xl text-green-500">loading</div>
-            )
+                <div className="mb-2 flex flex-row justify-between items-stretch">
+                    <UserInfo user={order.user} />
+                    <ShipmentInfo order={order} />
+                </div>
+                <div className="p-4 border border-green-500">
+                    <PaymentInfo order={order} />
+                </div>
+            </div>
         ) : (
-            <Redirect to="/store" />
+            <div className="text-xl text-green-500">loading</div>
         );
     }
 }
-
-const MapStateToProps = (state) => ({
-    logged: state.logged,
-    order: state.order,
-});
-
-const MapDispatchToProps = { TryCartClear, orderOut };
-
-export default connect(MapStateToProps, MapDispatchToProps)(RecentOrder);
 
 function OrderStatus(props) {
     const order = props.order;

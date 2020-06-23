@@ -172,8 +172,18 @@ export async function getGatheringHistories(query) {
     return res;
 }
 
+export async function getGatheringHistoriesByUser(query) {
+    const res = await methods.post('gathering/gethistoriesbyuser', query);
+    return res;
+}
+
 export async function createGatheringHistory(info) {
     const res = await methods.post('gathering/createhistory', info);
+    return res;
+}
+
+export async function cancelGatheringHistory(id) {
+    const res = await methods.get('gathering/cancelhistory/' + id);
     return res;
 }
 
@@ -222,8 +232,18 @@ export async function createPackageHistory(info) {
     return res;
 }
 
+export async function cancelPackageHistory(id) {
+    const res = await methods.get('package/cancelhistory/' + id);
+    return res;
+}
+
 export async function getPackageHistories(info) {
     const res = await methods.post('package/gethistories', info);
+    return res;
+}
+
+export async function getPackageHistoriesByUser(query) {
+    const res = await methods.post('package/gethistoriesbyuser', query);
     return res;
 }
 
@@ -387,6 +407,11 @@ export async function getOrderHistories(query) {
     return res;
 }
 
+export async function getOrderHistoriesByUser(query) {
+    const res = await methods.post('orderhistory/gethistoriesbyuser', query);
+    return res;
+}
+
 export async function getOrderHistoryByOrderNum(orderNum) {
     const res = await methods.post('orderhistory/getbyordernum', { orderNum: orderNum });
     return res;
@@ -397,6 +422,11 @@ export async function changeOrderStatus(id, status) {
         id: id,
         status: status,
     });
+    return res;
+}
+
+export async function cancelOrder(orderNum) {
+    const res = await methods.get('orderhistory/cancelorder/' + orderNum);
     return res;
 }
 

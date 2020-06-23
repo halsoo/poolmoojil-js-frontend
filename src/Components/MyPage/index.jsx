@@ -371,7 +371,7 @@ class MyPage extends Component {
                     />
                 </div>
 
-                <div className="lg:w-49% sm:w-full sm:mb-2 h-p3xl p-4 flex flex-col justify-between border border-green-500">
+                <div className="lg:w-49% sm:w-full sm:h-auto sm:mb-2 h-p3xl p-4 flex flex-col justify-between border border-green-500">
                     <div className="flex flex-row justify-between">
                         <div className="font-bold lg:text-2xl sm:text-5xl text-green-500">
                             나의 정보

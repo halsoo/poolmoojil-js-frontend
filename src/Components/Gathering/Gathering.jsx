@@ -351,12 +351,14 @@ class Gathering extends Component {
                         endAccessor="end"
                         views={['month']}
                         culture="kor"
-                        style={{ height: '70vh' }}
+                        style={{
+                            height: '70vh',
+                        }}
                     />
                 </div>
 
                 <div className="mb-4 p-4 flex flex-col bg-green-500 text-white">
-                    <div className="mb-2 font-bold lg:text-2xl sm:text-4xl">필터</div>
+                    <div className="mb-2 font-bold lg:text-2xl sm:text-5xl">필터</div>
 
                     <CheckButtonGroup
                         title="모임 종류"

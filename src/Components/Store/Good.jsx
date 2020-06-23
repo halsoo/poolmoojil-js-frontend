@@ -94,7 +94,7 @@ class Good extends Component {
                         <GoodList goods={this.state.goods} />
 
                         <button
-                            className="relative mx-auto mt-16 w-10% h-12 text-white"
+                            className="relative mx-auto mt-16 w-10% lg:h-12 sm:h-18 text-white"
                             onClick={this.handleMore}
                         >
                             <img className="w-full" src={triangle} alt="" />

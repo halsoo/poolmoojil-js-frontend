@@ -420,6 +420,7 @@ class Signup extends Component {
     }
 
     render() {
+        console.log(this.state.buttonForm.checkA);
         return this.props.logged.status ? (
             <Redirect to="/" />
         ) : (

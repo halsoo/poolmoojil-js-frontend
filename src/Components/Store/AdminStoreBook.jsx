@@ -403,7 +403,7 @@ function BookList(props) {
                         }`}
                     >
                         {bookRow.map((b, index) => {
-                            const book = b.book ? b.book[0] : b;
+                            const book = b.book ? b.book : b;
                             const end = (index + 1) % 4 === 0 ? true : false;
                             return (
                                 <BookItem key={index} book={book} end={end} delete={props.delete} />
@@ -427,8 +427,8 @@ function BookItem(props) {
             } flex flex-col items-stretch justify-between`}
         >
             <div className="h-full h-auto relative">
-                <img className="my-auto" src={book.mainImg.link} alt="" />
-                <div className="absolute w-32 h-auto top-4 right-4 flex flex-col">
+                <img className="mx-auto" src={book.mainImg.link} alt="" />
+                <div className="absolute w-32 h-auto top-4 right-8 flex flex-col">
                     <Link
                         to={'/store/book/edit/' + book.id}
                         className="mb-4 p-4 text-center text-xl text-white bg-green-500"

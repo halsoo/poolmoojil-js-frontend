@@ -14,7 +14,7 @@ export default function InputWithLabel(props) {
                     }`}
                 >
                     <input
-                        className={`w-25% pl-2 border border-green-500 sm:rounded-none ${
+                        className={`w-25% pl-2 border border-green-500 sm:text-5xl sm:rounded-none ${
                             props.name === 'birth' ? 'mr-12' : null
                         }`}
                         type={props.type}
@@ -27,7 +27,7 @@ export default function InputWithLabel(props) {
                     <input
                         className={`w-${
                             props.name === 'phone' ? '25%' : '20%'
-                        } pl-2 border border-green-500 sm:rounded-none
+                        } pl-2 border border-green-500 sm:text-5xl sm:rounded-none
                         ${props.name === 'birth' ? 'mr-12' : null}`}
                         type={props.type}
                         name={props.name + 'B'}
@@ -39,7 +39,7 @@ export default function InputWithLabel(props) {
                     <input
                         className={`w-${
                             props.name === 'phone' ? '25%' : '20%'
-                        } pl-2 border border-green-500 sm:rounded-none`}
+                        } pl-2 border border-green-500 sm:text-5xl sm:rounded-none`}
                         type={props.type}
                         name={props.name + 'C'}
                         onChange={props.onChange}
@@ -65,7 +65,7 @@ export default function InputWithLabel(props) {
                             props.additionalButton ? 'mr-2' : null
                         } ${
                             props.disabled ? 'bg-purple-500' : null
-                        } pl-2 border border-green-500 sm:rounded-none`}
+                        } pl-2 border border-green-500 sm:text-5xl sm:rounded-none`}
                         type={props.type}
                         name={props.name}
                         onChange={props.onChange}

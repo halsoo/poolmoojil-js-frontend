@@ -163,14 +163,14 @@ function MonthlyPackage(props) {
         <div className="mb-4 p-4 flex flex-col text-white bg-green-500 border border-green-500">
             <div className="mb-2 font-bold lg:text-2xl sm:text-5xl">이 달의 꾸러미</div>
             <div className="flex flex-row">
-                <div className="w-20% border border-green-500">
+                <div className="lg:w-20% sm:w-30% border border-green-500">
                     <img src={monthlyPackage.mainImg.link} alt="" />
                 </div>
 
-                <div className="w-80% my-auto ml-8 flex flex-col">
+                <div className="lg:w-80% sm:w-70% my-auto ml-8 flex flex-col">
                     <p className="lg:text-lg sm:text-5xl mb-2">{month}의 꾸러미</p>
                     <Link to={'/package/' + monthlyPackage.id}>
-                        <p className="lg:text-xl sm:text-5xl mb-2">{monthlyPackage.title}</p>
+                        <p className="lg:text-xl sm:text-6xl mb-2">{monthlyPackage.title}</p>
                     </Link>
                     <p className="lg:text-lg sm:text-4xl mb-2">
                         {monthlyPackage.monthlyCurated.book.title}
@@ -184,10 +184,10 @@ function MonthlyPackage(props) {
 
 function PackageList(props) {
     return (
-        <div className="flex flex-row flex-wrap items-stretch justify-between">
+        <div className="flex lg:flex-row lg:flex-wrap sm:flex-col items-stretch justify-between">
             {props.packages.map((g, index) => {
                 return (
-                    <div className="w-49% mb-4 ">
+                    <div className="lg:w-49% sm:w-full mb-4 ">
                         <PackageItem key={index} package={g} />
                     </div>
                 );

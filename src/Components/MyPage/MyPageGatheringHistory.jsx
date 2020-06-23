@@ -1,56 +1,52 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getGatheringPeople, getGatheringByID, updateShowUp } from '../../util/api';
+import { getGatheringHistoriesByUser, getUserCookie } from '../../util/api';
 
-import {
-    timeStampToDateSimple,
-    rangeDateStr,
-    oneTimeDateStr,
-    timeStr,
-    priceStr,
-} from '../../util/localeStrings';
+import { timeStampToDateSimple } from '../../util/localeStrings';
 
 import left from '../../img/leftArrow.png';
 import right from '../../img/rightArrow.png';
 
-export default class AdminGatheringPeople extends Component {
+class MyPageGatheringHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            gathering: undefined,
             gatheringHistories: undefined,
 
             query: {
-                id: this.props.match.params.id,
                 page: 1,
                 offset: 5,
-                name: '',
-                orderNum: '',
+                user: undefined,
             },
         };
-        this.loadGathering();
-        this.reloadList();
+        this.getUser();
     }
 
-    loadGathering = async () => {
-        const res = await getGatheringByID(this.props.match.params.id);
-
+    getUser = async () => {
+        const res = await getUserCookie();
         if (res.status === 200) {
-            this.setState({
-                gathering: res.data,
-            });
+            this.setState(
+                {
+                    query: {
+                        ...this.state.query,
+                        user: res.data,
+                    },
+                },
+                this.reloadList,
+            );
         }
     };
 
     reloadList = async () => {
         const query = this.state.query;
         const queryList = {
-            id: query.id,
             page: query.page,
             offset: query.offset,
-            name: query.name,
+            user: query.user,
         };
-        const res = await getGatheringPeople(queryList);
+        const res = await getGatheringHistoriesByUser(queryList);
+
         if (res.status === 200) {
             if (res.data.length !== 0) {
                 if (typeof res.data === 'object') {
@@ -85,23 +81,10 @@ export default class AdminGatheringPeople extends Component {
         });
     };
 
-    editShowUp = async (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        const res = await updateShowUp(name, value);
-
-        if (res.status === 200) {
-            this.reloadList();
-        }
-    };
-
     shouldComponentUpdate(nProps, nState) {
         if (
-            (this.state.gatheringHistories !== nState.gatheringHistories &&
-                nState.gatheringHistories !== undefined) ||
-            this.state.gathering !== nState.gathering
+            this.state.gatheringHistories !== nState.gatheringHistories &&
+            nState.gatheringHistories !== undefined
         ) {
             return true;
         }
@@ -110,83 +93,25 @@ export default class AdminGatheringPeople extends Component {
     }
 
     render() {
-        const gathering = this.state.gathering;
-        const fullDate = gathering
-            ? gathering.rangeDate
-                ? rangeDateStr(gathering.rangeDate)
-                : ''
-            : '';
-        const oneDate = gathering
-            ? gathering.oneTimeDate
-                ? oneTimeDateStr(gathering.oneTimeDate)
-                : ''
-            : '';
-        const time = gathering ? (gathering.time ? timeStr(gathering.time) : null) : '';
-        const oncePrice = gathering
-            ? gathering.oncePrice
-                ? priceStr(gathering.oncePrice)
-                : null
-            : null;
-        const fullPrice = gathering
-            ? gathering.fullPrice
-                ? priceStr(gathering.fullPrice)
-                : null
-            : null;
-
-        return this.state.gathering ? (
-            <div className="w-full h-auto p-4 flex flex-col">
-                <div className="mb-8 w-full h-auto flex flex-row justify-between text-green-500">
-                    <p className="text-3xl">모임 관리하기</p>
+        return this.state.gatheringHistories ? (
+            <div className="w-full h-auto p-4 flex flex-col border border-green-500">
+                <div className="mb-8 w-full h-auto flex flex-col justify-between text-green-500">
+                    <p className="mb-4 text-3xl">모임 예약 내역</p>
+                    <p className="text-xl">예약 번호를 클릭해서 세부 내역 보기</p>
                 </div>
 
-                <div className="w-full p-4 h-auto border border-green-500">
-                    <div className="w-full mb-8 flex flex-row">
-                        <div className="w-30%">
-                            <img
-                                className="w-full h-auto my-auto border border-green-500"
-                                src={gathering.mainImg.link}
-                                alt=""
-                            />
-                        </div>
-                        <div className="w-full ml-4 flex flex-col text-green-500">
-                            <div className="mb-2 text-xl">{gathering.format}</div>
-                            <div className="mb-2 text-3xl">{gathering.title}</div>
-                            <div className="mb-2 text-xl">
-                                일시:{' '}
-                                {gathering.count === 1
-                                    ? oneDate + ' ' + time
-                                    : fullDate + ' ' + gathering.stringDate}
-                            </div>
-                            <div className="mb-2 text-xl">장소: {gathering.place.name}</div>
-                            <div className="mb-2 text-xl">
-                                회차 수: {gathering.isAll ? '상시' : gathering.count + '회'}
-                            </div>
-                            <div className="text-xl">
-                                참가비:{' '}
-                                {oncePrice
-                                    ? '1회 ' + oncePrice + '원 / 12회 ' + fullPrice + '원'
-                                    : fullPrice + '원'}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mb-4 text-2xl text-green-500 font-bold">모임 참가 인원</div>
-                    <TextInput
-                        title="이름으로 검색"
-                        name="search"
-                        onChange={this.handleInput}
-                        value={this.state.query.name}
-                        onClick={this.reloadList}
-                    />
-                    <table className="w-full p-4">
+                <div className="w-full h-auto">
+                    <table className="w-full">
                         <tbody>
                             <tr className="w-full h-16 flex flex-row justify-between text-green-500 border-b border-green-500">
-                                <th className="text-xl self-center font-normal">참가자명</th>
+                                <th className="w-15% self-center text-xl text-left font-normal">
+                                    모임 이름
+                                </th>
                                 <th className="text-xl self-center font-normal">모임일</th>
                                 <th className="text-xl self-center font-normal">장소</th>
                                 <th className="text-xl self-center font-normal">참가 인원</th>
                                 <th className="text-xl self-center font-normal">예약 번호</th>
                                 <th className="text-xl self-center font-normal">예약일</th>
-                                <th className="text-xl self-center font-normal">참가 여부</th>
                             </tr>
                             {typeof this.state.gatheringHistories === 'object' ? (
                                 this.state.gatheringHistories.map((d, i) => (
@@ -194,8 +119,15 @@ export default class AdminGatheringPeople extends Component {
                                         className="mb-4 flex flex-row justify-between text-green-500 border-b border-green-500"
                                         key={i}
                                     >
-                                        <th className="my-auto text-base font-normal">
-                                            {d.user.name}
+                                        <th className="w-20% text-left flex flex-row font-normal">
+                                            <img
+                                                className="w-30% mr-4"
+                                                src={d.gathering.mainImg.link}
+                                                alt=""
+                                            />
+                                            <div className="text-base self-center">
+                                                {d.gathering.title}
+                                            </div>
                                         </th>
                                         <th className="my-auto text-base font-normal">
                                             {timeStampToDateSimple(d.date)}
@@ -207,17 +139,12 @@ export default class AdminGatheringPeople extends Component {
                                             {d.headCount}
                                         </th>
                                         <th className="my-auto text-base font-normal">
-                                            {'...' + d.orderNum.substring(13)}
+                                            <Link to={'/mypage/gathering-history/' + d.orderNum}>
+                                                {d.orderNum}
+                                            </Link>
                                         </th>
                                         <th className="my-auto text-base font-normal">
                                             {timeStampToDateSimple(d.createdAt)}
-                                        </th>
-                                        <th className="my-auto text-base font-normal">
-                                            <ShowUpSelector
-                                                name={d.id}
-                                                value={d.showUp}
-                                                onChange={this.editShowUp}
-                                            />
                                         </th>
                                     </tr>
                                 ))
@@ -275,6 +202,15 @@ export default class AdminGatheringPeople extends Component {
     }
 }
 
+const MapStateToProps = (state) => ({
+    logged: state.logged,
+    cookie: state.cookie,
+});
+
+const MapDispatchToProps = {};
+
+export default connect(MapStateToProps, MapDispatchToProps)(MyPageGatheringHistory);
+
 function TextInput(props) {
     return (
         <div className="mb-4 grid grid-cols-12 ">
@@ -296,17 +232,5 @@ function TextInput(props) {
                 </button>
             </div>
         </div>
-    );
-}
-
-function ShowUpSelector(props) {
-    return (
-        <select className="" name={props.name} value={props.value} onChange={props.onChange}>
-            <option value="">선택 안함</option>
-            <option value="불참">불참</option>
-            <option value="참가">참가</option>
-            <option value="예약 취소 대기중">예약 취소 대기중</option>
-            <option value="예약 취소">예약 취소</option>
-        </select>
     );
 }

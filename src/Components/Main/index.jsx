@@ -104,7 +104,7 @@ export default class Main extends Component {
 
                     <MonthlyPackage package={this.state.packageMonthly} />
 
-                    <ThreeItems title="풀무질 굿즈" name="goods" items={this.state.goods} />
+                    <ThreeItems title="풀무질 굿즈" name="good" items={this.state.goods} />
 
                     <div className="lg:w-49% sm:w-full sm:mt-4 p-4 flex flex-col border border-green-500 text-green-500">
                         <div className="mb-4 flex flex-row justify-between">
