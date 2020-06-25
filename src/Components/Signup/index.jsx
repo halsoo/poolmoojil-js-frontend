@@ -52,7 +52,7 @@ class Signup extends Component {
 
             buttonForm: {
                 checkA: false,
-                checkB: false,
+                checkB: true,
             },
 
             popup: false,
@@ -420,7 +420,7 @@ class Signup extends Component {
     }
 
     render() {
-        console.log(this.state.buttonForm.checkA);
+        console.log(this.state.buttonForm.checkB);
         return this.props.logged.status ? (
             <Redirect to="/" />
         ) : (
@@ -555,6 +555,8 @@ class Signup extends Component {
                 <ButtonForm
                     checkOnChange={this.handleCheck}
                     onClick={this.signup}
+                    checkA={this.state.buttonForm.checkA}
+                    checkB={this.state.buttonForm.checkB}
                     checkAContents={
                         <p>
                             <Link className="text-purple-500" to="/terms">
@@ -563,8 +565,8 @@ class Signup extends Component {
                             과{' '}
                             <Link className="text-purple-500" to="/privacy">
                                 개인정보 수집 및 이용
-                            </Link>
-                            에 동의
+                            </Link>{' '}
+                            동의
                         </p>
                     }
                     checkBContents={<p>풀무질 뉴스레터 수신 동의</p>}

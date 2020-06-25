@@ -150,10 +150,10 @@ class GatheringSubsc extends Component {
                 <div className="mt-2 p-4 flex flex-col text-green-500 border border-green-500">
                     <div className="lg:text-2xl sm:text-5xl mb-10">배송/교환/반품 안내</div>
                     <p className="lg:text-xl sm:text-5xl">
-                        읽기모임: 당일 취소환불 불가, 전일까지는 100% 환불
+                        읽기모임, 행사: 당일 취소환불 불가, 전일까지는 100% 환불
                     </p>
                     <p className="mt-2 lg:text-xl sm:text-5xl">
-                        강연/세미나: 개강일로부터 4일 전까지 100% 환불, 개강일 전 3일까지 50% 환불,
+                        강좌: 개강일로부터 4일 전까지 100% 환불, 개강일 3일 전부터는 50% 환불,
                         개강일 이후 환불이 불가
                     </p>
                 </div>

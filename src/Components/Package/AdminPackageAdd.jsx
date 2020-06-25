@@ -53,6 +53,7 @@ export default class AdminTextsEdit extends Component {
         const res = await uploadImage(data);
 
         if (res.status === 200) {
+            alert('업로드 완료');
             this.setState({
                 infos: {
                     ...this.state.infos,

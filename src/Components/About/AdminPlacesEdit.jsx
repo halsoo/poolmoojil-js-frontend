@@ -78,7 +78,7 @@ export default class AdminPlacesEdit extends Component {
         const infos = this.state.infos;
         const res = await editPlace(infos);
         if (res.status === 200) {
-            window.location.reload(false);
+            window.location.href = '/about/places';
         }
     };
 
@@ -88,6 +88,7 @@ export default class AdminPlacesEdit extends Component {
         const res = await uploadImage(data);
 
         if (res.status === 200) {
+            alert('업로드 완료');
             this.setState({
                 infos: {
                     ...this.state.infos,
@@ -137,9 +138,10 @@ export default class AdminPlacesEdit extends Component {
                 <div className="w-full p-8 flex flex-col text-green-500 border border-green-500">
                     <div className="w-full h-auto mb-6 flex flex-col justify-between">
                         {Object.keys(this.state.infos).map((key, index) => {
-                            if (key !== 'mainImg') {
+                            if (key !== 'mainImg' && key !== 'id') {
                                 return (
                                     <InputWithLabel
+                                        key={index}
                                         label={this.state.label[key]}
                                         type="text"
                                         name={key}
@@ -148,9 +150,10 @@ export default class AdminPlacesEdit extends Component {
                                         caution={this.state.caution[key]}
                                     />
                                 );
-                            } else {
+                            } else if (key === 'mainImg') {
                                 return (
                                     <FileInputWithLabel
+                                        key={index}
                                         label={this.state.label[key]}
                                         onChange={this.handleFile}
                                         onClick={this.upload}
@@ -163,7 +166,7 @@ export default class AdminPlacesEdit extends Component {
                         className="w-30% h-16 mx-auto text-2xl text-white bg-green-500 border border-green-500"
                         onClick={() => this.edit(this.state.infos)}
                     >
-                        수정 하기
+                        수정하기
                     </button>
                 </div>
             </div>

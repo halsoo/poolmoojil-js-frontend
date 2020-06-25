@@ -8,6 +8,7 @@ export default class AdminPlacesAdd extends Component {
         this.state = {
             infos: {
                 isShow: false,
+                order: '',
                 title: '',
                 body: '',
                 emphasis: '',
@@ -16,6 +17,7 @@ export default class AdminPlacesAdd extends Component {
             },
             label: {
                 isShow: '표시',
+                order: '순서',
                 title: '제목',
                 body: '내용',
                 emphasis: '강조 내용',
@@ -24,6 +26,7 @@ export default class AdminPlacesAdd extends Component {
             },
             caution: {
                 isShow: '',
+                order: '표시되는 순서입니다',
                 title: '',
                 body: '',
                 emphasis: '',
@@ -51,6 +54,13 @@ export default class AdminPlacesAdd extends Component {
                 infos: {
                     ...this.state.infos,
                     [name]: !this.state.infos[name],
+                },
+            });
+        } else if (name === 'order') {
+            this.setState({
+                infos: {
+                    ...this.state.infos,
+                    [name]: parseInt(value),
                 },
             });
         } else {

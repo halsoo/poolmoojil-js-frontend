@@ -434,7 +434,7 @@ function ButtonGroup(props) {
     return (
         <div className="mb-2 grid grid-cols-12 ">
             <div className="col-start-1 col-end-3 lg:text-lg sm:text-4xl"> {props.title} </div>
-            <div className="lg:col-start-3 lg:col-end-6 sm:col-start-3 sm:col-end-9 flex flex-row justify-between">
+            <div className="lg:col-start-3 lg:col-end-7 sm:col-start-3 sm:col-end-9 flex flex-row justify-between">
                 {props.button.map((item, index) => {
                     return (
                         <SingleButton
@@ -463,7 +463,7 @@ function TextInput(props) {
                     <option value="publishingCompany">출판사</option>
                 </select>
             </div>
-            <div className="lg:col-start-4 sm:col-start-5 col-end-10 pl-4 flex flex-row justify-between">
+            <div className="lg:col-start-4 sm:col-start-5 col-end-10 pl-12 flex flex-row justify-between">
                 <input
                     className="pl-2 w-75% text-black text-base"
                     type="text"

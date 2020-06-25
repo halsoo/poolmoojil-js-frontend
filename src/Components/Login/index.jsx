@@ -23,6 +23,10 @@ class Login extends Component {
         this.props.loginTry(loginInfo, this.props.cookie);
     };
 
+    loginEnter = async (e) => {
+        if (e.keyCode === 13) await this.login();
+    };
+
     handleChange = (event) => {
         const target = event.target;
         const value = target.value;
@@ -44,6 +48,14 @@ class Login extends Component {
             return { error: '회원 정보를 찾을 수 없습니다.' };
         }
         return null;
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.loginEnter);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.loginEnter);
     }
 
     render() {

@@ -47,7 +47,7 @@ export default class AdminStoreBookEdit extends Component {
                 ISBN: '미해당 시 공란',
                 dimensions: '가로*세로(*높이) 형식',
                 weights: '숫자 ","제외',
-                desc: '',
+                desc: '내용이 공란일 경우 다시 접근할 수 없습니다.',
                 mainImg: '',
                 additionalImg: '',
             },
@@ -100,7 +100,7 @@ export default class AdminStoreBookEdit extends Component {
         const infos = this.state.infos;
         const res = await editBook(infos);
         if (res.status === 200) {
-            window.location.reload(false);
+            window.location.href = '/store/book';
         }
     };
 
@@ -144,6 +144,7 @@ export default class AdminStoreBookEdit extends Component {
         const res = await uploadImage(data);
 
         if (res.status === 200) {
+            alert('업로드 완료');
             this.setState({
                 infos: {
                     ...this.state.infos,
@@ -288,7 +289,7 @@ export default class AdminStoreBookEdit extends Component {
                         className="w-30% h-16 mx-auto text-2xl text-white bg-green-500 border border-green-500"
                         onClick={this.edit}
                     >
-                        수정 하기
+                        수정하기
                     </button>
                 </div>
             </div>
@@ -368,7 +369,7 @@ function ListedItems(props) {
                 return (
                     <InputWithLabel
                         key={index}
-                        label={props.label + index.toString()}
+                        label={props.label}
                         type="text"
                         name={props.name + '-' + index.toString()}
                         value={props.items[key]}

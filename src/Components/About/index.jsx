@@ -49,12 +49,12 @@ export default class About extends Component {
     render() {
         return this.state.places && this.state.texts ? (
             <div>
-                {this.state.places.map((place) => {
-                    return <PlaceInfo key={place.id} place={place} />;
-                })}
-
                 {this.state.texts.map((text) => {
                     return <TextBox key={text.id} text={text} />;
+                })}
+
+                {this.state.places.map((place) => {
+                    return <PlaceInfo key={place.id} place={place} />;
                 })}
             </div>
         ) : (

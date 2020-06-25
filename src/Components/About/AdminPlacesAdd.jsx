@@ -74,6 +74,7 @@ export default class AdminPlacesAdd extends Component {
         const res = await uploadImage(data);
 
         if (res.status === 200) {
+            alert('업로드 완료');
             this.setState({
                 infos: {
                     ...this.state.infos,
@@ -115,7 +116,7 @@ export default class AdminPlacesAdd extends Component {
                 <div className="w-full p-8 flex flex-col text-green-500 border border-green-500">
                     <div className="w-full h-auto mb-6 flex flex-col justify-between">
                         {Object.keys(this.state.infos).map((key, index) => {
-                            if (key !== 'mainImg') {
+                            if (key !== 'mainImg' && key !== 'id') {
                                 return (
                                     <InputWithLabel
                                         label={this.state.label[key]}
@@ -126,7 +127,7 @@ export default class AdminPlacesAdd extends Component {
                                         caution={this.state.caution[key]}
                                     />
                                 );
-                            } else {
+                            } else if (key === 'mainImg') {
                                 return (
                                     <FileInputWithLabel
                                         label={this.state.label[key]}

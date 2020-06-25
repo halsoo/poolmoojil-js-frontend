@@ -58,7 +58,7 @@ export default class AdminTextsEdit extends Component {
         const infos = this.state.infos;
         const res = await editPackage(infos);
         if (res.status === 200) {
-            window.location.reload(false);
+            window.location.href = '/package/';
         }
     };
 
@@ -68,6 +68,7 @@ export default class AdminTextsEdit extends Component {
         const res = await uploadImage(data);
 
         if (res.status === 200) {
+            alert('업로드 완료');
             this.setState({
                 infos: {
                     ...this.state.infos,
@@ -176,7 +177,7 @@ export default class AdminTextsEdit extends Component {
                         className="w-30% h-16 mx-auto text-2xl text-white bg-green-500 border border-green-500"
                         onClick={this.edit}
                     >
-                        수정 하기
+                        수정하기
                     </button>
                 </div>
             </div>

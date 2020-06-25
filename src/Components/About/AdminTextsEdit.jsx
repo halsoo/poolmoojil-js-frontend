@@ -10,6 +10,7 @@ export default class AdminTextsEdit extends Component {
             infos: undefined,
             label: {
                 isShow: '표시',
+                order: '순서',
                 title: '제목',
                 body: '내용',
                 emphasis: '강조 내용',
@@ -18,6 +19,7 @@ export default class AdminTextsEdit extends Component {
             },
             caution: {
                 isShow: '',
+                order: '표시되는 순서입니다',
                 title: '',
                 body: '',
                 emphasis: '',
@@ -37,6 +39,7 @@ export default class AdminTextsEdit extends Component {
                 infos: {
                     id: text.data.id,
                     isShow: text.data.isShow,
+                    order: text.data.order,
                     title: text.data.title,
                     body: text.data.body,
                     emphasis: text.data.emphasis,
@@ -51,22 +54,7 @@ export default class AdminTextsEdit extends Component {
         const infos = this.state.infos;
         const res = await editText(infos);
         if (res.status === 200) {
-            window.location.reload(false);
-        }
-    };
-
-    upload = async () => {
-        const data = new FormData();
-        data.append('file', this.state.file);
-        const res = await uploadImage(data);
-
-        if (res.status === 200) {
-            this.setState({
-                infos: {
-                    ...this.state.infos,
-                    mainImg: res.data.location,
-                },
-            });
+            window.location.href = '/about/texts';
         }
     };
 
@@ -81,6 +69,13 @@ export default class AdminTextsEdit extends Component {
                     [name]: !this.state.infos[name],
                 },
             });
+        } else if (name === 'order') {
+            this.setState({
+                infos: {
+                    ...this.state.infos,
+                    [name]: parseInt(value),
+                },
+            });
         } else {
             this.setState({
                 infos: {
@@ -89,15 +84,6 @@ export default class AdminTextsEdit extends Component {
                 },
             });
         }
-    };
-
-    handleFile = (event) => {
-        const target = event.target;
-        const files = target.files;
-
-        this.setState({
-            file: files[0],
-        });
     };
 
     shouldComponentUpdate(nProps, nState) {
@@ -118,7 +104,7 @@ export default class AdminTextsEdit extends Component {
                 <div className="w-full p-8 flex flex-col text-green-500 border border-green-500">
                     <div className="w-full h-auto mb-6 flex flex-col justify-between">
                         {Object.keys(this.state.infos).map((key, index) => {
-                            if (key !== 'isShow' && key !== 'body') {
+                            if (key !== 'isShow' && key !== 'body' && key !== 'id') {
                                 return (
                                     <InputWithLabel
                                         key={index}
@@ -161,7 +147,7 @@ export default class AdminTextsEdit extends Component {
                         className="w-30% h-16 mx-auto text-2xl text-white bg-green-500 border border-green-500"
                         onClick={this.edit}
                     >
-                        수정 하기
+                        수정하기
                     </button>
                 </div>
             </div>

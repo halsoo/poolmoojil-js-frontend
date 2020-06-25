@@ -9,6 +9,7 @@ export default function ButtonForm(props) {
                         className="mr-4"
                         name="checkA"
                         type="checkbox"
+                        checked={props.checkA}
                         onChange={props.checkOnChange}
                     />
                     <label> {props.checkAContents} </label>
@@ -18,6 +19,7 @@ export default function ButtonForm(props) {
                         className="mr-4"
                         name="checkB"
                         type="checkbox"
+                        checked={props.checkB}
                         onChange={props.checkOnChange}
                     />
                     <label> {props.checkBContents} </label>
