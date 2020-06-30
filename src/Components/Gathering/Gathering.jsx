@@ -312,24 +312,21 @@ class Gathering extends Component {
 
                         <GatheringTypeDesc
                             title="읽기모임"
-                            mainDesc="풀무질이 선정한 주제와 관련되니 책을 읽고 매월 정해진 날에 모여
-                                토론하는 상설 모임입니다."
-                            subDesc="회비 만원, 연회비 10만원"
+                            mainDesc="풀무질이 선정한 책을 읽고 매월 정해진 날에 모여 토론하는 상설 모임."
+                            subDesc="회비 만원, 후원회원 무료"
                             pastList={this.state.readingPast}
                         />
 
                         <GatheringTypeDesc
                             title="강좌"
-                            mainDesc="풀무질이 초빙한 강사와 함께 특정 주제를 심도 있게 공부하는
-                            모임입니다."
-                            subDesc="3개월 단위, 즉 계절 별로 강좌 일정을 기획. 주로 8회 내외.
-                            수강료 16만원 수준 일괄 수납."
+                            mainDesc="풀무질이 초빙한 강사와 함께 특정 주제를 심도 있게 공부하는 모임."
+                            subDesc="계절학기제"
                             pastList={this.state.lecturePast}
                         />
 
                         <GatheringTypeDesc
                             title="행사"
-                            mainDesc="출판기념회, 저자와의 만남, 워크숍 등 풀무질이 때에 따라 기획하는 일회성 모임입니다."
+                            mainDesc="출판기념회, 저자와의 만남, 워크숍 등 풀무질이 때에 따라 기획하는 일회성 모임."
                             subDesc="참가비 만원 내외"
                         />
                     </div>
@@ -562,7 +559,7 @@ function GatheringList(props) {
 function GatheringItem(props) {
     const gathering = props.gathering;
 
-    const oncePrice = gathering.oncePrice ? priceStr(gathering.oncePrice) : null;
+    const oncePrice = null;
     const fullPrice = gathering.fullPrice ? priceStr(gathering.fullPrice) : null;
     const fullDate = gathering.rangeDate ? rangeDateStr(gathering.rangeDate) : '';
     const oneDate = gathering.oneTimeDate ? oneTimeDateStr(gathering.oneTimeDate) : '';
@@ -573,7 +570,11 @@ function GatheringItem(props) {
             <div className="w-full h-full p-4 grid grid-cols-12 border border-green-500">
                 <div className="mr-6 col-start-1 col-end-4 border border-green-500">
                     <Link className="text-2xl" to={`/gathering/${gathering.id}`}>
-                        <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                        {gathering.mainImg ? (
+                            <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                        ) : (
+                            <div className="w-full bg-purple-500" />
+                        )}
                     </Link>
                 </div>
                 <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">

@@ -146,7 +146,11 @@ function GoodItem(props) {
         >
             <div className="h-full flex flex-col justify-center">
                 <Link className="mx-auto" to={'/store/good/' + good.id}>
-                    <img src={good.mainImg.link} alt="" />
+                    {good.mainImg ? (
+                        <img src={good.mainImg.link} alt="" />
+                    ) : (
+                        <div className="bg-purple-500" />
+                    )}
                 </Link>
             </div>
 

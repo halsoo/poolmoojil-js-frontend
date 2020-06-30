@@ -15,7 +15,7 @@ export default function ListedItems(props) {
             </div>
 
             <div className="mt-6 flex flex-col text-green-500">
-                {props.items[0] !== undefined
+                {props.items[0]
                     ? props.items[0].cart
                         ? props.items.map((order, index) => {
                               if (index < 2) {
@@ -28,9 +28,12 @@ export default function ListedItems(props) {
                                           key={index}
                                       >
                                           <img className="w-20%" src={mainImg} alt="" />
-                                          <p className="self-center">
-                                              {order.orderNum.substring(0, 20)}
-                                          </p>
+                                          <Link
+                                              to={'/mypage/order-history/' + order.orderNum}
+                                              className="self-center"
+                                          >
+                                              <p>{order.orderNum}</p>
+                                          </Link>
                                           <p className="self-center">
                                               {oneTimeDateStr(order.createdAt.substring(0, 10))}
                                           </p>
@@ -46,7 +49,7 @@ export default function ListedItems(props) {
                                       return (
                                           <div
                                               className="mb-6 py-2 w-full flex flex-row justify-between border-b border-green-500"
-                                              key={count}
+                                              key={index}
                                           >
                                               {singleItem ? (
                                                   <img

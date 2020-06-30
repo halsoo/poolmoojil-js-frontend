@@ -27,7 +27,10 @@ class ButtonOne extends Component {
             merchant_uid: `${this.props.user.userID}_${new Date().getTime()}`, // 주문번호
             amount:
                 this.props.origin === 'store'
-                    ? this.props.price + this.props.shippingFee - this.props.creditUse
+                    ? this.props.price +
+                      this.props.shippingFee -
+                      this.props.creditUse -
+                      this.props.memberDiscount
                     : this.props.origin.includes('package')
                     ? this.props.price + this.props.shippingFee - this.props.creditUse
                     : this.props.price - this.props.creditUse, // 결제금액

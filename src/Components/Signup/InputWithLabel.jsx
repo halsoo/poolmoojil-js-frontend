@@ -6,7 +6,8 @@ export default function InputWithLabel(props) {
             {props.error ? <div className="text-red-500 mb-2"> {props.error} </div> : null}
             <div className="w-full flex lg:flex-row sm:flex-col justify-between">
                 <label className="lg:text-2xl sm:text-5xl lg:h-8 text-green-500">
-                    {props.label} {props.required ? '*' : null}
+                    {props.label}
+                    {props.required ? '*' : null}
                 </label>
                 <div
                     className={`w-70% flex flex-row ${
@@ -57,7 +58,8 @@ export default function InputWithLabel(props) {
             ) : null}
             <div className="w-full flex lg:flex-row sm:flex-col justify-between">
                 <label className="lg:text-2xl sm:text-5xl lg:h-8 text-green-500">
-                    {props.label} {props.required ? '*' : null}
+                    {props.label}
+                    {props.required ? '*' : null}
                 </label>
                 <div className="lg:w-70% sm:w-full flex flex-row justify-between">
                     <input

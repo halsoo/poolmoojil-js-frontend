@@ -142,11 +142,15 @@ export default class AdminGatheringPeople extends Component {
                 <div className="w-full p-4 h-auto border border-green-500">
                     <div className="w-full mb-8 flex flex-row">
                         <div className="w-30%">
-                            <img
-                                className="w-full h-auto my-auto border border-green-500"
-                                src={gathering.mainImg.link}
-                                alt=""
-                            />
+                            {gathering.mainImg ? (
+                                <img
+                                    className="w-full h-auto my-auto border border-green-500"
+                                    src={gathering.mainImg.link}
+                                    alt=""
+                                />
+                            ) : (
+                                <div className="w-full h-auto my-auto border border-green-500 bg-purple-500" />
+                            )}
                         </div>
                         <div className="w-full ml-4 flex flex-col text-green-500">
                             <div className="mb-2 text-xl">{gathering.format}</div>

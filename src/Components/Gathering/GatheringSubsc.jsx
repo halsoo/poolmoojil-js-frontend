@@ -75,10 +75,7 @@ class GatheringSubsc extends Component {
     handleInfo = () => {
         const gathering = this.state.gathering;
 
-        let price = null;
-
-        if (this.props.isAll && this.props.isOnce) price = priceStr(gathering.oncePrice);
-        else price = priceStr(gathering.fullPrice);
+        const price = priceStr(gathering.fullPrice);
 
         const priceInt = priceStrToInt(price);
 
@@ -202,7 +199,11 @@ function GatheringInfo(props) {
     return (
         <div className="w-full h-full p-4 grid grid-cols-12 border border-green-500">
             <div className="mr-6 col-start-1 col-end-4 border border-green-500">
-                <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                {gathering.mainImg ? (
+                    <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                ) : (
+                    <div className="w-full bg-purple-500" />
+                )}
             </div>
             <div className="col-start-4 col-end-13 flex flex-col justify-around text-green-500">
                 <p className="sm:text-5xl">{gathering.format}</p>

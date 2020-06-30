@@ -42,24 +42,24 @@ class Store extends Component {
             goods: undefined,
         };
 
-        this.loadCuratedMonthly();
+        //this.loadCuratedMonthly();
         this.loadPoolmoojilSelection();
-        this.loadPackageMonthly();
+        //this.loadPackageMonthly();
         this.loadGoods();
     }
 
-    loadCuratedMonthly = async () => {
-        const query = {
-            page: 1,
-            offset: 1,
-        };
-        const res = await getBookCurated(query);
-        if (res.status === 200) {
-            this.setState({
-                curatedMonthly: res.data[0],
-            });
-        }
-    };
+    // loadCuratedMonthly = async () => {
+    //     const query = {
+    //         page: 1,
+    //         offset: 1,
+    //     };
+    //     const res = await getBookCurated(query);
+    //     if (res.status === 200) {
+    //         this.setState({
+    //             curatedMonthly: res.data[0],
+    //         });
+    //     }
+    // };
 
     loadPoolmoojilSelection = async () => {
         const query = {
@@ -74,14 +74,14 @@ class Store extends Component {
         }
     };
 
-    loadPackageMonthly = async () => {
-        const res = await getPackageMonthly();
-        if (res.status === 200) {
-            this.setState({
-                packageMonthly: res.data,
-            });
-        }
-    };
+    // loadPackageMonthly = async () => {
+    //     const res = await getPackageMonthly();
+    //     if (res.status === 200) {
+    //         this.setState({
+    //             packageMonthly: res.data,
+    //         });
+    //     }
+    // };
 
     loadGoods = async () => {
         const query = {
@@ -325,8 +325,8 @@ class Store extends Component {
     render() {
         return (this.state.isSearched && this.state.books) ||
             (!this.state.isSearched &&
-                this.state.curatedMonthly &&
-                this.state.packageMonthly &&
+                //this.state.curatedMonthly &&
+                //this.state.packageMonthly &&
                 this.state.poolmoojilSelection &&
                 this.state.goods) ? (
             <div className="flex flex-col sm:h-auto justify-between">
@@ -377,15 +377,15 @@ class Store extends Component {
                 ) : null}
 
                 {!this.state.isSearched &&
-                this.state.curatedMonthly &&
+                //this.state.curatedMonthly &&
                 this.state.poolmoojilSelection &&
-                this.state.packageMonthly &&
+                //this.state.packageMonthly &&
                 this.state.goods ? (
                     <div className="h-full flex lg:flex-row lg:flex-wrap sm:flex-col content-between items-stretch justify-between">
-                        <MonthlyCurated
+                        {/* <MonthlyCurated
                             curation={this.state.curatedMonthly}
                             onClick={this.handleShowFull}
-                        />
+                        /> */}
 
                         <ThreeItems
                             title="풀무질 인문학 100선"
@@ -395,9 +395,14 @@ class Store extends Component {
                             mb={true}
                         />
 
-                        <MonthlyPackage package={this.state.packageMonthly} />
+                        {/* <MonthlyPackage package={this.state.packageMonthly} /> */}
 
-                        <ThreeItems title="풀무질 굿즈" name="goods" items={this.state.goods} />
+                        <ThreeItems
+                            title="풀무질 굿즈"
+                            name="goods"
+                            items={this.state.goods}
+                            mb={true}
+                        />
                     </div>
                 ) : null}
             </div>
@@ -518,7 +523,11 @@ function BookItem(props) {
         >
             <div className="h-full flex flex-col justify-center">
                 <Link className="mx-auto" to={'/store/book/' + book.id}>
-                    <img src={book.mainImg.link} alt="" />
+                    {book.mainImg ? (
+                        <img src={book.mainImg.link} alt="" />
+                    ) : (
+                        <div className="bg-purple-500" />
+                    )}
                 </Link>
             </div>
 
@@ -584,7 +593,11 @@ function MonthlyCurated(props) {
             <div className="h-full flex flex-row">
                 <div className="w-40% my-auto flex justify-center border border-green-500">
                     <Link to={'/store/book/' + book.id}>
-                        <img src={book.mainImg.link} alt="" />
+                        {book.mainImg ? (
+                            <img src={book.mainImg.link} alt="" />
+                        ) : (
+                            <div className="bg-purple-500" />
+                        )}
                     </Link>
                 </div>
 
@@ -636,7 +649,11 @@ function ThreeItems(props) {
                                 className="sm:text-4xl mx-auto font-bold"
                                 to={item.name ? '/store/good/' + item.id : '/store/book/' + item.id}
                             >
-                                <img className="mx-auto mb-2" src={item.mainImg.link} alt="" />
+                                {item.mainImg ? (
+                                    <img className="mx-auto mb-2" src={item.mainImg.link} alt="" />
+                                ) : (
+                                    <div className="mx-auto mb-2" />
+                                )}
                             </Link>
                             <Link
                                 className="sm:text-4xl mx-auto font-bold"

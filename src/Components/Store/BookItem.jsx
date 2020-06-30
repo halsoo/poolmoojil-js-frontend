@@ -44,11 +44,15 @@ class BookItem extends Component {
                 <div className="p-4 flex flex-row justify-between border border-green-500">
                     <div className="w-50% h-auto flex justify-center">
                         <div className="w-90% my-auto">
-                            <img
-                                className="w-full border border-green-500"
-                                src={book.mainImg.link}
-                                alt=""
-                            />
+                            {book.mainImg ? (
+                                <img
+                                    className="w-full border border-green-500"
+                                    src={book.mainImg.link}
+                                    alt=""
+                                />
+                            ) : (
+                                <div className="w-full border border-green-500 bg-purple-500" />
+                            )}
                         </div>
                     </div>
 

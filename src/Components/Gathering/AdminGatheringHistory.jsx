@@ -112,11 +112,15 @@ export default class AdminGatheringHistory extends Component {
                                         key={i}
                                     >
                                         <th className="w-20% text-left flex flex-row font-normal">
-                                            <img
-                                                className="w-30% mr-4"
-                                                src={d.gathering.mainImg.link}
-                                                alt=""
-                                            />
+                                            {d.gathering.mainImg ? (
+                                                <img
+                                                    className="w-30% mr-4"
+                                                    src={d.gathering.mainImg.link}
+                                                    alt=""
+                                                />
+                                            ) : (
+                                                <div className="w-30% mr-4 bg-purple-500" />
+                                            )}
                                             <div className="text-base self-center">
                                                 {d.gathering.title}
                                             </div>

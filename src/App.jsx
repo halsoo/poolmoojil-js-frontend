@@ -48,6 +48,7 @@ import Footer from './Components/Footer';
 
 import AdminNav from './Components/Nav/AdminNav';
 import AdminMain from './Components/Main/AdminMain';
+import AdminUser from './Components/Users/AdminUser';
 import AdminAboutIndex from './Components/About/AdminIndex';
 import AdminPlaces from './Components/About/AdminPlaces';
 import AdminPlacesEdit from './Components/About/AdminPlacesEdit';
@@ -238,6 +239,7 @@ class App extends Component {
                                 <Switch>
                                     <Route exact path="/" component={AdminMain} />
                                     <Route exact path="/main" to="/" />
+                                    <Route exact path="/users" component={AdminUser} />
                                     <Route exact path="/about" component={AdminAboutIndex} />
                                     <Route exact path="/about/places" component={AdminPlaces} />
                                     <Route

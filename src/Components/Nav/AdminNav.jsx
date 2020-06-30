@@ -119,11 +119,7 @@ class AdminNav extends Component {
                                 로그인
                             </Link>
                         )}
-                        {this.props.logged.status ? (
-                            <button onClick={() => this.props.logoutTry()} className="ml-12">
-                                로그아웃
-                            </button>
-                        ) : (
+                        {this.props.logged.status ? null : (
                             <Link to="/register" className="ml-12">
                                 회원가입
                             </Link>
@@ -191,17 +187,7 @@ class AdminNav extends Component {
                                 </Link>
                             )}
 
-                            {this.props.logged.status ? (
-                                <button
-                                    onClick={() => {
-                                        this.setState({ isOpen: !this.state.isOpen });
-                                        return this.props.logoutTry();
-                                    }}
-                                    className="m-auto text-7xl text-green-500"
-                                >
-                                    로그아웃
-                                </button>
-                            ) : (
+                            {this.props.logged.status ? null : (
                                 <Link
                                     to="/register"
                                     onClick={() => this.setState({ isOpen: !this.state.isOpen })}

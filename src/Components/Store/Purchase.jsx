@@ -27,6 +27,7 @@ class Purchase extends Component {
                 phone: '',
             },
             shippingFee: 0,
+            memberDiscount: 0,
         };
 
         this.getItems();
@@ -51,9 +52,12 @@ class Purchase extends Component {
     getUser = async () => {
         const res = await getUserCookie();
         if (res.status === 200) {
-            this.setState({
-                user: res.data,
-            });
+            this.setState(
+                {
+                    user: res.data,
+                },
+                this.handleMember,
+            );
         }
     };
 
@@ -113,6 +117,15 @@ class Purchase extends Component {
         } else {
             this.setState({
                 creditUse: this.state.user.credit,
+            });
+        }
+    };
+
+    handleMember = () => {
+        const membership = this.state.user.membership;
+        if (membership === '후원 회원') {
+            this.setState({
+                memberDiscount: 0.1,
             });
         }
     };
@@ -223,6 +236,7 @@ class Purchase extends Component {
                             cartInfo={cartInfo}
                             shipping={this.state.shippingFee}
                             totalPrice={totalPrice}
+                            memberDiscount={totalPrice * this.state.memberDiscount}
                             inputValue={this.state.creditUse}
                             inputOnChange={this.handleDiscount}
                             selectValue={this.state.payOption}
@@ -238,6 +252,7 @@ class Purchase extends Component {
                             cart={cart}
                             cartInfo={cartInfo}
                             creditUse={this.state.creditUse}
+                            memberDiscount={totalPrice * this.state.memberDiscount}
                             shipInfo={this.state.shipInfo}
                             shippingFee={this.state.shippingFee}
                         />
@@ -288,7 +303,14 @@ function ItemList(props) {
                         <tr className="text-green-500 border-b border-green-500" key={index}>
                             <th className="text-left font-normal">
                                 <div className="py-4 flex flex-row">
-                                    <img className="w-20% mr-6" src={cartInfo[id].mainImg.link} />
+                                    {cartInfo[id].mainImg ? (
+                                        <img
+                                            className="w-20% mr-6"
+                                            src={cartInfo[id].mainImg.link}
+                                        />
+                                    ) : (
+                                        <div className="w-20% mr-6" />
+                                    )}
                                     <div className="my-auto text-xl">
                                         {cartInfo[id].name ? cartInfo[id].name : cartInfo[id].title}
                                     </div>
@@ -488,11 +510,21 @@ function PaymentInfo(props) {
                 contents={props.inputValue.toLocaleString() + '원'}
                 mb={true}
             />
+            <InfoItem
+                title="후원 회원 할인"
+                contents={props.memberDiscount.toLocaleString() + '원'}
+                mb={true}
+            />
             <InfoItem title="배송비" contents={props.shipping.toLocaleString() + '원'} mb={true} />
             <InfoItem
                 title="결제 금액"
                 contents={
-                    (props.totalPrice + props.shipping - props.inputValue).toLocaleString() + '원'
+                    (
+                        props.totalPrice +
+                        props.shipping -
+                        props.inputValue -
+                        props.memberDiscount
+                    ).toLocaleString() + '원'
                 }
                 mb={true}
             />

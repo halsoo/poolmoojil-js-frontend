@@ -43,6 +43,7 @@ class MyPage extends Component {
             const user = res.data;
             this.setState({
                 user: res.data,
+                membership: user.membership,
                 userID: user.userID,
                 email: user.email,
                 name: user.name,
@@ -353,12 +354,12 @@ class MyPage extends Component {
                         items={this.state.user.gatheringHistories}
                         goto={'/mypage/gathering-history'}
                     />
-                    <SingleItem
+                    {/* <SingleItem
                         title="꾸러미 구독"
                         item={
                             this.state.user.packageSubscs[this.state.user.packageSubscs.length - 1]
                         }
-                    />
+                    /> */}
                     <ListedItems
                         title="꾸러미 구입 내역"
                         items={this.state.user.packageHistories}
@@ -384,10 +385,18 @@ class MyPage extends Component {
                                 checked={this.state.newsLetter}
                                 onChange={this.handleChange}
                             />
-                            <label>풀무질 뉴스레터 수신 동의</label>
+                            <label>풀무질 소식지 수신 동의</label>
                         </div>
                     </div>
                     <form className="flex flex-col justify-between">
+                        <InputWithLabel
+                            label="회원 등급"
+                            type="text"
+                            name="membership"
+                            value={this.state.membership}
+                            onChange={this.handleChange}
+                            disabled="disabled"
+                        />
                         <InputWithLabel
                             label="아이디"
                             type="text"

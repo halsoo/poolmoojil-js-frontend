@@ -112,11 +112,15 @@ function ItemList(props) {
                         <tr className="text-green-500 border-b border-green-500" key={index}>
                             <th className="text-left font-normal">
                                 <div className="py-4 flex flex-row">
-                                    <img
-                                        className="w-20% mr-6"
-                                        src={cartInfo[id].mainImg.link}
-                                        alt=""
-                                    />
+                                    {cartInfo[id].mainImg ? (
+                                        <img
+                                            className="w-20% mr-6"
+                                            src={cartInfo[id].mainImg.link}
+                                            alt=""
+                                        />
+                                    ) : (
+                                        <div className="w-20% mr-6 bg-purple-500" />
+                                    )}
                                     <div className="my-auto text-xl">
                                         {cartInfo[id].name ? cartInfo[id].name : cartInfo[id].title}
                                     </div>

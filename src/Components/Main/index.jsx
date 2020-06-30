@@ -22,7 +22,7 @@ export default class Main extends Component {
             goods: undefined,
         };
         this.upcomingGathering();
-        this.getPackageMonthly();
+        //this.getPackageMonthly();
         this.loadGoods();
         this.loadNotices();
     }
@@ -36,14 +36,14 @@ export default class Main extends Component {
         }
     };
 
-    getPackageMonthly = async () => {
-        const res = await getPackageMonthly();
-        if (res.status === 200) {
-            this.setState({
-                packageMonthly: res.data,
-            });
-        }
-    };
+    // getPackageMonthly = async () => {
+    //     const res = await getPackageMonthly();
+    //     if (res.status === 200) {
+    //         this.setState({
+    //             packageMonthly: res.data,
+    //         });
+    //     }
+    // };
 
     loadGoods = async () => {
         const query = {
@@ -87,7 +87,7 @@ export default class Main extends Component {
 
     render() {
         return this.state.gathering &&
-            this.state.packageMonthly &&
+            //this.state.packageMonthly &&
             this.state.goods &&
             this.state.notices ? (
             <div className="flex flex-col">
@@ -102,9 +102,14 @@ export default class Main extends Component {
                 <div className="mt-2 flex lg:flex-row sm:flex-col lg:flex-wrap justify-between items-stretch">
                     <UpcomingGathering gathering={this.state.gathering} />
 
-                    <MonthlyPackage package={this.state.packageMonthly} />
+                    {/* <MonthlyPackage package={this.state.packageMonthly} /> */}
 
-                    <ThreeItems title="풀무질 굿즈" name="good" items={this.state.goods} />
+                    <ThreeItems
+                        title="풀무질 굿즈"
+                        name="good"
+                        items={this.state.goods}
+                        mb={true}
+                    />
 
                     <div className="lg:w-49% sm:w-full sm:mt-4 p-4 flex flex-col border border-green-500 text-green-500">
                         <div className="mb-4 flex flex-row justify-between">
@@ -180,7 +185,11 @@ function UpcomingGathering(props) {
             <div className="h-full flex flex-row">
                 <div className="w-40% h-auto my-auto flex border border-green-500">
                     <Link to={'/gathering/' + gathering.id}>
-                        <img className="h-auto" src={gathering.mainImg.link} alt="" />
+                        {gathering.mainImg ? (
+                            <img className="h-auto" src={gathering.mainImg.link} alt="" />
+                        ) : (
+                            <div className="h-auto bg-purple-500" />
+                        )}
                     </Link>
                 </div>
 

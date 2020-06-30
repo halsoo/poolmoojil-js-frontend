@@ -82,6 +82,11 @@ export async function editText(info) {
     return res;
 }
 
+export async function getUsers(query) {
+    const res = await methods.post('users/', query);
+    return res;
+}
+
 export async function loginAPI(loginInfo) {
     const res = await methods.post('users/login', loginInfo);
     return res;
@@ -94,6 +99,11 @@ export async function signupAPI(signupInfo) {
 
 export async function updateAPI(updateInfo) {
     const res = await methods.post('users/update', updateInfo);
+    return res;
+}
+
+export async function updateMembership(id, status) {
+    const res = await methods.post('users/updatemembership', { id: id, status: status });
     return res;
 }
 

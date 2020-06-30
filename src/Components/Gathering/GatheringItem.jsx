@@ -34,11 +34,15 @@ class GatheringItem extends Component {
                     </div>
                     <div className="lg:w-50% sm:w-full h-auto p-4 flex flex-col sm:order-1">
                         <div className="lg:w-90% sm:w-full mx-auto">
-                            <img
-                                className="w-full border border-green-500"
-                                src={gathering.mainImg.link}
-                                alt=""
-                            />
+                            {gathering.mainImg ? (
+                                <img
+                                    className="w-full border border-green-500"
+                                    src={gathering.mainImg.link}
+                                    alt=""
+                                />
+                            ) : (
+                                <div className="w-full bg-purple-500 border border-green-500" />
+                            )}
 
                             {!this.props.logged.status ? (
                                 <ButtonLogin />
@@ -82,7 +86,7 @@ function GatheringItemDesc(props) {
 
     const body = gathering.desc.split(/\r\n|\r|\n/);
 
-    const oncePrice = gathering.oncePrice ? priceStr(gathering.oncePrice) : null;
+    const oncePrice = null;
     const fullPrice = gathering.fullPrice ? priceStr(gathering.fullPrice) : null;
     const fullDate = gathering.rangeDate ? rangeDateStr(gathering.rangeDate) : '';
     const oneDate = gathering.oneTimeDate ? oneTimeDateStr(gathering.oneTimeDate) : '';

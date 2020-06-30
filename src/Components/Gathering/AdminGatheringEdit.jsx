@@ -13,7 +13,7 @@ export default class AdminTextsEdit extends Component {
                 title: '모임명',
                 count: '회차 수',
                 oncePrice: '1회 참가비',
-                fullPrice: '전체 참가비',
+                fullPrice: '참가비',
                 rangeDate: '모임 기간',
                 oneTimeDate: '일시',
                 time: '시각',
@@ -43,7 +43,7 @@ export default class AdminTextsEdit extends Component {
                 format: '',
                 speaker: '공란일 수 있음',
                 books: '장터의 책 제목을 정확하게 입력',
-                desc: '',
+                desc: '공란일 수 없음',
                 liveLink: '',
             },
         };
@@ -66,7 +66,7 @@ export default class AdminTextsEdit extends Component {
                     id: gathering.data.id,
                     title: gathering.data.title,
                     count: gathering.data.count,
-                    oncePrice: priceStrToInt(priceStr(gathering.data.oncePrice)),
+                    //oncePrice: priceStrToInt(priceStr(gathering.data.oncePrice)),
                     fullPrice: priceStrToInt(priceStr(gathering.data.fullPrice)),
                     rangeDate: gathering.data.rangeDate,
                     oneTimeDate: gathering.data.oneTimeDate,
@@ -191,7 +191,7 @@ export default class AdminTextsEdit extends Component {
                 },
             });
         } else if (name.includes('book')) {
-            const bookNum = name.substring(5);
+            const bookNum = name.substring(6);
             const infoBooks = this.state.infos.books;
 
             infoBooks[bookNum] = value;
@@ -258,7 +258,8 @@ export default class AdminTextsEdit extends Component {
                                 key !== 'category' &&
                                 key !== 'isAll' &&
                                 key !== 'books' &&
-                                key !== 'place'
+                                key !== 'place' &&
+                                key !== 'oncePrice'
                             ) {
                                 return (
                                     <InputWithLabel

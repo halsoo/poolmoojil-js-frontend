@@ -390,6 +390,7 @@ class Signup extends Component {
 
         this.setState({
             buttonForm: {
+                ...this.state.buttonForm,
                 [name]: value,
             },
         });
@@ -420,7 +421,6 @@ class Signup extends Component {
     }
 
     render() {
-        console.log(this.state.buttonForm.checkB);
         return this.props.logged.status ? (
             <Redirect to="/" />
         ) : (
@@ -569,7 +569,7 @@ class Signup extends Component {
                             동의
                         </p>
                     }
-                    checkBContents={<p>풀무질 뉴스레터 수신 동의</p>}
+                    checkBContents={<p>풀무질 소식지 수신 동의</p>}
                 />
 
                 <img

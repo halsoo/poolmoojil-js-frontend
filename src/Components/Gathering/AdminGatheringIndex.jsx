@@ -413,7 +413,11 @@ function GatheringItem(props) {
         <div className="relative overflow-hidden">
             <div className="w-full h-full p-4 grid grid-cols-12 border border-green-500">
                 <div className="mr-6 col-start-1 col-end-4 border border-green-500">
-                    <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                    {gathering.mainImg ? (
+                        <img className="w-full" src={gathering.mainImg.link} alt="img" />
+                    ) : (
+                        <div className="w-full bg-purple-500" />
+                    )}
                 </div>
                 <div className="col-start-4 col-end-9 flex flex-col justify-around text-green-500">
                     <p className="sm:font-bold">{gathering.format}</p>

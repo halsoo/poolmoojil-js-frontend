@@ -158,7 +158,11 @@ function GoodItem(props) {
             } flex flex-col items-stretch justify-between`}
         >
             <div className="h-full h-auto relative">
-                <img className="my-auto" src={good.mainImg.link} alt="" />
+                {good.mainImg ? (
+                    <img className="my-auto" src={good.mainImg.link} alt="" />
+                ) : (
+                    <div className="my-auto bg-purple-500" />
+                )}
                 <div className="absolute w-32 h-auto top-4 right-4 flex flex-col">
                     <Link
                         to={'/store/good/edit/' + good.id}

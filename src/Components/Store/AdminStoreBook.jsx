@@ -427,7 +427,11 @@ function BookItem(props) {
             } flex flex-col items-stretch justify-between`}
         >
             <div className="h-full h-auto relative">
-                <img className="mx-auto" src={book.mainImg.link} alt="" />
+                {book.mainImg ? (
+                    <img className="mx-auto" src={book.mainImg.link} alt="" />
+                ) : (
+                    <div classNAme="mx-auto bg-purpl-500" />
+                )}
                 <div className="absolute w-32 h-auto top-4 right-8 flex flex-col">
                     <Link
                         to={'/store/book/edit/' + book.id}
