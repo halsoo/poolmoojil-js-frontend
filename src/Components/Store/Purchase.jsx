@@ -105,18 +105,23 @@ class Purchase extends Component {
         );
     };
 
-    handleDiscount = (e) => {
+    handleDiscount = (e, p) => {
         const target = e.target;
         let value = target.value;
         value = parseInt(value);
+        const price = p;
 
-        if (value < this.state.user.credit) {
+        if (value < this.state.user.credit && price - value >= 0) {
             this.setState({
                 creditUse: value,
             });
-        } else {
+        } else if (price - value >= 0) {
             this.setState({
                 creditUse: this.state.user.credit,
+            });
+        } else {
+            this.setState({
+                creditUse: 0,
             });
         }
     };
@@ -205,6 +210,7 @@ class Purchase extends Component {
         const user = this.state.user;
 
         let totalPrice = 0;
+        let discountAmount = 0;
         for (const id in this.state.cartInfo) {
             totalPrice +=
                 priceStrToInt(priceStr(this.state.cartInfo[id].price)) *
@@ -292,7 +298,7 @@ function ItemList(props) {
     const cartInfo = props.cartInfo;
     return (
         <div className="w-full mb-12 flex flex-col">
-            <table className="">
+            <table className="w-full">
                 <tbody>
                     <tr className="h-16 text-green-500 border-b border-green-500">
                         <th className="w-60% text-xl text-left font-normal">상품 정보</th>
@@ -305,7 +311,7 @@ function ItemList(props) {
                                 <div className="py-4 flex flex-row">
                                     {cartInfo[id].mainImg ? (
                                         <img
-                                            className="w-20% mr-6"
+                                            className="w-20% h-full mr-6"
                                             src={cartInfo[id].mainImg.link}
                                         />
                                     ) : (
@@ -373,7 +379,7 @@ function SearchInputItem(props) {
                 disabled={props.disabled}
             />
             <button
-                className="col-start-11 col-end-13 h-full text-lg bg-green-500 text-white"
+                className="col-start-11 col-end-13 h-auto text-lg bg-green-500 text-white"
                 type="button"
                 onClick={props.onClick}
             >

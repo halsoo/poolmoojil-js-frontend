@@ -24,11 +24,11 @@ class Nav extends Component {
                     display: '모임',
                     path: '/gathering',
                 },
-                {
-                    name: 'package',
-                    display: '꾸러미',
-                    path: '/package',
-                },
+                // {
+                //     name: 'package',
+                //     display: '꾸러미',
+                //     path: '/package',
+                // },
                 {
                     name: 'store',
                     display: '장터',

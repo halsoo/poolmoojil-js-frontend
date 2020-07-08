@@ -114,7 +114,7 @@ function ItemList(props) {
                                 <div className="py-4 flex flex-row">
                                     {cartInfo[id].mainImg ? (
                                         <img
-                                            className="w-20% mr-6"
+                                            className="w-20% h-full mr-6"
                                             src={cartInfo[id].mainImg.link}
                                             alt=""
                                         />

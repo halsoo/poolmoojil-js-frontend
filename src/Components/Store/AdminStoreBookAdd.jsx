@@ -77,9 +77,40 @@ export default class AdminStoreBookEdit extends Component {
 
     add = async () => {
         const infos = this.state.infos;
-        const res = await createBook(infos);
-        if (res.status === 200) {
-            window.location.href = '/store/book';
+
+        let str = [];
+        if (infos.title === null || infos.title === '') {
+            str.push('도서명');
+        }
+        if (infos.author === null || infos.author === '') {
+            str.push('지은이');
+        }
+        if (infos.publishingCompany === null || infos.publishingCompany === '') {
+            str.push('출판사');
+        }
+        if (infos.pages === null || infos.pages === '') {
+            str.push('쪽수');
+        }
+        if (infos.price === null || infos.price === '') {
+            str.push('가격');
+        }
+
+        console.log(str);
+
+        if (str.length !== 0) {
+            alert(
+                '다음과 같은 항목을 점검해주세요.' +
+                    '\n' +
+                    str.map((s, index) => {
+                        if (index === str.length - 1) return s;
+                        else return s;
+                    }),
+            );
+        } else {
+            const res = await createBook(infos);
+            if (res.status === 200) {
+                window.location.href = '/store/book';
+            }
         }
     };
 
@@ -136,7 +167,7 @@ export default class AdminStoreBookEdit extends Component {
     handleChange = (event) => {
         const target = event.target;
         const name = target.name;
-        const value = target.value;
+        const value = target.value === '' ? null : target.value;
         if (name.includes('monthlyCuration')) {
             const bookNum = name.substring(17);
             const infoBooks = this.state.infos.monthlyCurations;

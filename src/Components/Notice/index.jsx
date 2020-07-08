@@ -97,7 +97,7 @@ class Notice extends Component {
                     </div>
                 ) : null}
 
-                <table className="mt-8">
+                <table className="w-full mt-8">
                     <tbody>
                         {typeof this.state.postList === 'object' ? (
                             this.state.postList.map((d, i) => (

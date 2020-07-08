@@ -47,18 +47,24 @@ class GatheringSubsc extends Component {
         });
     };
 
-    handleDiscount = (e) => {
+    handleDiscount = (e, p) => {
         const target = e.target;
-        let value = target.value;
+        let value = target.value === '' ? 0 : target.value;
         value = parseInt(value);
 
-        if (value < this.state.user.credit) {
+        const price = p;
+
+        if (value < this.state.user.credit && price - value >= 0) {
             this.setState({
                 creditUse: value,
             });
-        } else {
+        } else if (price - value >= 0) {
             this.setState({
                 creditUse: this.state.user.credit,
+            });
+        } else {
+            this.setState({
+                creditUse: 0,
             });
         }
     };
@@ -75,9 +81,18 @@ class GatheringSubsc extends Component {
     handleInfo = () => {
         const gathering = this.state.gathering;
 
-        const price = priceStr(gathering.fullPrice);
+        let price = priceStrToInt(priceStr(gathering.fullPrice));
+        let discount = 1;
 
-        const priceInt = priceStrToInt(price);
+        if (this.state.user.membership === '후원 회원' && gathering.category === '강좌')
+            discount = 0.8;
+        if (this.state.user.membership === '후원 회원' && gathering.category === '읽기모임')
+            discount = 0;
+        else discount = 1;
+
+        let discountAmount = price * (1 - discount);
+
+        price = price * discount;
 
         let count = null;
 
@@ -123,7 +138,7 @@ class GatheringSubsc extends Component {
 
         return {
             price: price,
-            priceInt: priceInt,
+            discountAmount: discountAmount,
             count: count,
             date: date,
         };
@@ -132,7 +147,7 @@ class GatheringSubsc extends Component {
     render() {
         const gathering = this.state.gathering;
         const user = this.state.user;
-        const info = gathering ? this.handleInfo() : null;
+        const info = gathering && user ? this.handleInfo() : null;
         return gathering && user ? (
             <div className="flex flex-col">
                 <GatheringInfo
@@ -173,7 +188,7 @@ class GatheringSubsc extends Component {
                         pg={this.state.payOption}
                         gathering={gathering}
                         origin="gathering_onetime"
-                        price={this.state.headCount * info.priceInt}
+                        price={this.state.headCount * info.price}
                         headCount={this.state.headCount}
                         user={this.state.user}
                         creditUse={this.state.creditUse}
@@ -211,7 +226,7 @@ function GatheringInfo(props) {
                     {gathering.title} ({count}회 참가)
                 </Link>
                 <p className="sm:text-5xl">일시: {date}</p>
-                <p className="sm:text-5xl">참가비: {price}</p>
+                <p className="sm:text-5xl">참가비: {price.toLocaleString()}</p>
 
                 {(props.isAll && !props.isOnce) || (!props.isAll && !props.isOnce) ? null : (
                     <div className="flex flex-row">
@@ -242,7 +257,7 @@ function InfoItem(props) {
 
 function SubscInfo(props) {
     const gathering = props.gathering;
-    const { priceInt, date } = props.info;
+    const { price, date } = props.info;
     const headCount = props.headCount;
 
     return (
@@ -254,7 +269,7 @@ function SubscInfo(props) {
             <InfoItem title="참가 인원" contents={headCount} mb={true} />
             <InfoItem
                 title="예약비"
-                contents={(priceInt * headCount).toLocaleString() + '원'}
+                contents={(price * headCount).toLocaleString() + '원'}
                 mb={false}
             />
         </div>
@@ -276,7 +291,7 @@ function UserInfo(props) {
 
 function PaymentInfo(props) {
     const user = props.user;
-    const { priceInt } = props.info;
+    const { price, discountAmount } = props.info;
     const headCount = props.headCount;
 
     return (
@@ -284,7 +299,7 @@ function PaymentInfo(props) {
             <div className="mb-12 text-2xl">결제 정보</div>
             <InfoItem
                 title="총합 금액"
-                contents={(priceInt * headCount).toLocaleString() + '원'}
+                contents={(price * headCount).toLocaleString() + '원'}
                 mb={true}
             />
             <div className="mb-4 grid grid-cols-12">
@@ -293,7 +308,7 @@ function PaymentInfo(props) {
                     <input
                         className="w-24 pl-2 mr-2 border border-green-500"
                         value={props.inputValue}
-                        onChange={props.inputOnChange}
+                        onChange={(e) => props.inputOnChange(e, price)}
                     />
                     <div>원 / {user.credit.toLocaleString()}원</div>
                 </div>
@@ -304,8 +319,13 @@ function PaymentInfo(props) {
                 mb={true}
             />
             <InfoItem
+                title="회원 할인 금액"
+                contents={discountAmount.toLocaleString() + '원'}
+                mb={true}
+            />
+            <InfoItem
                 title="결제 금액"
-                contents={(priceInt * headCount - props.inputValue).toLocaleString() + '원'}
+                contents={(price * headCount - props.inputValue).toLocaleString() + '원'}
                 mb={true}
             />
 

@@ -48,9 +48,9 @@ class MyPage extends Component {
                 email: user.email,
                 name: user.name,
                 address: {
-                    zipCode: user.address[0].zip,
-                    addressA: user.address[0].addressA,
-                    addressB: user.address[0].addressB,
+                    zipCode: user.address[0] ? user.address[0].zip : null,
+                    addressA: user.address[0] ? user.address[0].addressA : null,
+                    addressB: user.address[0] ? user.address[0].addressB : null,
                 },
                 newsLetter: user.newsLetter === null ? false : user.newsLetter,
                 phoneA: user.phone.substring(0, 3),

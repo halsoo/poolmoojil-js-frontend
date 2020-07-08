@@ -159,7 +159,7 @@ class App extends Component {
                                         path="/recent-gathering-history"
                                         component={RecentGatheringHistory}
                                     />
-                                    <Route exact path="/package" component={Package} />
+                                    {/* <Route exact path="/package" component={Package} />
                                     <Route exact path="/package/:id" component={PackageItem} />
                                     <Route
                                         exact
@@ -180,7 +180,7 @@ class App extends Component {
                                         exact
                                         path="/recent-package-subsc"
                                         component={RecentPackageSubsc}
-                                    />
+                                    /> */}
                                     <Route exact path="/store" component={Store} />
                                     <Route exact path="/store/good" component={Good} />
                                     <Route exact path="/store/book/:id" component={BookItem} />

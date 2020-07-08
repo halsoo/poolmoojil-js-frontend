@@ -88,9 +88,40 @@ export default class AdminTextsEdit extends Component {
 
     edit = async () => {
         const infos = this.state.infos;
-        const res = await editGathering(infos);
-        if (res.status === 200) {
-            window.location.href = '/gathering/';
+
+        let str = [];
+        if (infos.title === null || infos.title === '') {
+            str.push('제목');
+        }
+        if (infos.place === null) {
+            str.push('장소');
+        }
+        if (infos.category === null) {
+            str.push('종류');
+        }
+        if (infos.format === null) {
+            str.push('포맷');
+        }
+        if (infos.desc === null || infos.desc === '') {
+            str.push('내용');
+        }
+
+        console.log(str);
+
+        if (str.length !== 0) {
+            alert(
+                '다음과 같은 항목을 점검해주세요.' +
+                    '\n' +
+                    str.map((s, index) => {
+                        if (index === str.length - 1) return s;
+                        else return s;
+                    }),
+            );
+        } else {
+            const res = await editGathering(infos);
+            if (res.status === 200) {
+                window.location.href = '/gathering';
+            }
         }
     };
 
@@ -182,7 +213,7 @@ export default class AdminTextsEdit extends Component {
     handleChange = (event) => {
         const target = event.target;
         const name = target.name;
-        const value = target.value;
+        const value = target.value === '' ? null : target.value;
         if (name === 'isAll') {
             this.setState({
                 infos: {
@@ -194,7 +225,7 @@ export default class AdminTextsEdit extends Component {
             const bookNum = name.substring(6);
             const infoBooks = this.state.infos.books;
 
-            infoBooks[bookNum] = value;
+            infoBooks[bookNum] = value === '' ? null : value;
 
             this.setState({
                 infos: {
