@@ -42,24 +42,24 @@ class Store extends Component {
             goods: undefined,
         };
 
-        //this.loadCuratedMonthly();
+        this.loadCuratedMonthly();
         this.loadPoolmoojilSelection();
         //this.loadPackageMonthly();
         this.loadGoods();
     }
 
-    // loadCuratedMonthly = async () => {
-    //     const query = {
-    //         page: 1,
-    //         offset: 1,
-    //     };
-    //     const res = await getBookCurated(query);
-    //     if (res.status === 200) {
-    //         this.setState({
-    //             curatedMonthly: res.data[0],
-    //         });
-    //     }
-    // };
+    loadCuratedMonthly = async () => {
+        const query = {
+            page: 1,
+            offset: 1,
+        };
+        const res = await getBookCurated(query);
+        if (res.status === 200) {
+            this.setState({
+                curatedMonthly: res.data[0],
+            });
+        }
+    };
 
     loadPoolmoojilSelection = async () => {
         const query = {
@@ -204,7 +204,7 @@ class Store extends Component {
                 type = '이 달의 책';
                 break;
             case 'selected':
-                type = '풀무질 인문학 100선';
+                type = '베스트셀러';
                 break;
         }
 
@@ -283,7 +283,7 @@ class Store extends Component {
 
         switch (name) {
             case 'selected':
-                type = '풀무질 인문학 100선';
+                type = '베스트셀러';
                 break;
             case 'monthly':
                 type = '이 달의 책';
@@ -312,7 +312,7 @@ class Store extends Component {
             (this.state.isSearched && this.state.books !== nState.books) ||
             (!this.state.isSearched &&
                 (this.state.curatedMonthly !== nState.curatedMonthly ||
-                    this.state.packageMonthly !== nState.packageMonthly ||
+                    //this.state.packageMonthly !== nState.packageMonthly ||
                     this.state.poolmoojilSelection !== nState.poolmoojilSelection ||
                     this.state.goods !== nState.goods))
         ) {
@@ -325,7 +325,7 @@ class Store extends Component {
     render() {
         return (this.state.isSearched && this.state.books) ||
             (!this.state.isSearched &&
-                //this.state.curatedMonthly &&
+                this.state.curatedMonthly &&
                 //this.state.packageMonthly &&
                 this.state.poolmoojilSelection &&
                 this.state.goods) ? (
@@ -342,7 +342,7 @@ class Store extends Component {
                                 name: 'all',
                             },
                             {
-                                title: '이달의 책',
+                                title: '이 주의 책',
                                 name: 'monthly',
                             },
                             {
@@ -377,18 +377,18 @@ class Store extends Component {
                 ) : null}
 
                 {!this.state.isSearched &&
-                //this.state.curatedMonthly &&
+                this.state.curatedMonthly &&
                 this.state.poolmoojilSelection &&
                 //this.state.packageMonthly &&
                 this.state.goods ? (
                     <div className="h-full flex lg:flex-row lg:flex-wrap sm:flex-col content-between items-stretch justify-between">
-                        {/* <MonthlyCurated
+                        <MonthlyCurated
                             curation={this.state.curatedMonthly}
                             onClick={this.handleShowFull}
-                        /> */}
+                        />
 
                         <ThreeItems
-                            title="풀무질 인문학 100선"
+                            title="베스트셀러"
                             name="selected"
                             items={this.state.poolmoojilSelection}
                             onClick={this.handleShowFull}
@@ -513,6 +513,7 @@ function BookList(props) {
 
 function BookItem(props) {
     const book = props.book;
+    console.log(book);
     const price = priceStr(book.price);
 
     return (
@@ -574,13 +575,13 @@ function MonthlyPackage(props) {
 
 function MonthlyCurated(props) {
     const book = props.curation.book;
-    const month = oneTimeMonthStr(props.curation.date);
-    const price = priceStr(book.price);
+    //const month = oneTimeMonthStr(props.curation.date);
+    const price = book ? priceStr(book.price) : null;
 
     return (
         <div className="lg:w-49% sm:w-full mb-4 p-4 flex flex-col text-green-500 border border-green-500">
             <div className="w-full mb-2 flex flex-row justify-between">
-                <div className="font-bold lg:text-2xl sm:text-5xl">이 달의 책</div>
+                <div className="font-bold lg:text-2xl sm:text-5xl">이 주의 책</div>
                 <div>
                     <button
                         className="font-bold lg:text-xl sm:text-4xl"
@@ -590,27 +591,30 @@ function MonthlyCurated(props) {
                     </button>
                 </div>
             </div>
-            <div className="h-full flex flex-row">
-                <div className="w-40% my-auto flex justify-center border border-green-500">
-                    <Link to={'/store/book/' + book.id}>
-                        {book.mainImg ? (
-                            <img src={book.mainImg.link} alt="" />
-                        ) : (
-                            <div className="bg-purple-500" />
-                        )}
-                    </Link>
-                </div>
+            {book ? (
+                <div className="h-full flex flex-row">
+                    <div className="w-40% my-auto flex justify-center border border-green-500">
+                        <Link to={'/store/book/' + book.id}>
+                            {book.mainImg ? (
+                                <img src={book.mainImg.link} alt="" />
+                            ) : (
+                                <div className="bg-purple-500" />
+                            )}
+                        </Link>
+                    </div>
 
-                <div className="w-80% my-auto ml-8 flex flex-col">
-                    <p className="lg:text-lg sm:text-4xl mb-2">{month}의 책</p>
-                    <Link to={'/store/book/' + book.id}>
-                        <p className="lg:text-2xl sm:text-5xl mb-2">{book.title}</p>
-                    </Link>
-                    <p className="lg:text-lg sm:text-4xl mb-2">저자: {book.author}</p>
-                    <p className="lg:text-lg sm:text-4xl mb-2">출판사: {book.publishingCompany}</p>
-                    <p className="lg:text-lg sm:text-4xl">가격: {price}원</p>
+                    <div className="w-80% my-auto ml-8 flex flex-col">
+                        <Link to={'/store/book/' + book.id}>
+                            <p className="lg:text-2xl sm:text-5xl mb-2">{book.title}</p>
+                        </Link>
+                        <p className="lg:text-lg sm:text-4xl mb-2">저자: {book.author}</p>
+                        <p className="lg:text-lg sm:text-4xl mb-2">
+                            출판사: {book.publishingCompany}
+                        </p>
+                        <p className="lg:text-lg sm:text-4xl">가격: {price}원</p>
+                    </div>
                 </div>
-            </div>
+            ) : null}
         </div>
     );
 }

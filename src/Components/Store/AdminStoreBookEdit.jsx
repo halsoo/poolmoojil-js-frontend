@@ -31,9 +31,9 @@ export default class AdminStoreBookEdit extends Component {
                 additionalImg: '추가 이미지',
             },
             caution: {
-                type: '풀무질 인문학 100선 혹은 공란',
+                type: '베스트셀러 혹은 공란',
                 quantity: '',
-                monthlyCurations: 'YYYY-MM-01 형식',
+                monthlyCurations: 'YYYY-MM-DD DD는 그 주의 월요일',
                 title: '',
                 author: '',
                 translator: '미해당 시 공란',
@@ -88,8 +88,8 @@ export default class AdminStoreBookEdit extends Component {
                     dimensions: res.data.dimensions,
                     weights: res.data.weights,
                     desc: res.data.desc,
-                    mainImg: res.data.mainImg.link,
-                    additionalImg: res.data.additionalImg,
+                    mainImg: res.data.mainImg ? res.data.mainImg.link : undefined,
+                    additionalImg: res.data.additionalImg ? res.data.additionalImg : undefined,
                     monthlyCurations: monthlyCurations,
                 },
             });

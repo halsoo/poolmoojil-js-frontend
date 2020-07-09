@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getUpcomingGathering, getPackageMonthly, getGoods, getNotices } from '../../util/api';
+import {
+    getUpcomingGathering,
+    getBookCurated,
+    getPackageMonthly,
+    getGoods,
+    getNotices,
+} from '../../util/api';
 import {
     priceStr,
     rangeDateStr,
@@ -17,7 +23,8 @@ export default class Main extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            packageMonthly: undefined,
+            //packageMonthly: undefined,
+            curatedMonthly: undefined,
             gathering: undefined,
             goods: undefined,
         };
@@ -25,6 +32,7 @@ export default class Main extends Component {
         //this.getPackageMonthly();
         this.loadGoods();
         this.loadNotices();
+        this.loadCuratedMonthly();
     }
 
     upcomingGathering = async () => {
@@ -32,6 +40,19 @@ export default class Main extends Component {
         if (res.status === 200) {
             this.setState({
                 gathering: res.data,
+            });
+        }
+    };
+
+    loadCuratedMonthly = async () => {
+        const query = {
+            page: 1,
+            offset: 1,
+        };
+        const res = await getBookCurated(query);
+        if (res.status === 200) {
+            this.setState({
+                curatedMonthly: res.data[0],
             });
         }
     };
@@ -88,6 +109,7 @@ export default class Main extends Component {
     render() {
         return this.state.gathering &&
             //this.state.packageMonthly &&
+            this.state.curatedMonthly &&
             this.state.goods &&
             this.state.notices ? (
             <div className="flex flex-col">
@@ -95,7 +117,11 @@ export default class Main extends Component {
                     className="lg:h-plg sm:h-p2xl relative overflow-hidden
                                 border border-green-500"
                 >
-                    <img src={mainImg} className="absolute top-0 left-0 w-full" alt="풀무질" />
+                    <img
+                        src={mainImg}
+                        className="absolute top-0 left-0 w-full h-full"
+                        alt="풀무질"
+                    />
                     <img src={logo} className="absolute inset-y-0 right-0 h-full" alt="logo" />
                 </div>
 
@@ -103,6 +129,7 @@ export default class Main extends Component {
                     <UpcomingGathering gathering={this.state.gathering} />
 
                     {/* <MonthlyPackage package={this.state.packageMonthly} /> */}
+                    <MonthlyCurated curation={this.state.curatedMonthly} />
 
                     <ThreeItems
                         title="풀무질 굿즈"
@@ -203,6 +230,53 @@ function UpcomingGathering(props) {
                     </p>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function MonthlyCurated(props) {
+    const book = props.curation.book;
+    console.log(book);
+    //const month = oneTimeMonthStr(props.curation.date);
+    const price = book ? priceStr(book.price) : null;
+
+    return (
+        <div className="lg:w-49% sm:w-full mb-4 p-4 flex flex-col text-green-500 border border-green-500">
+            <div className="w-full mb-2 flex flex-row justify-between">
+                <div className="font-bold lg:text-2xl sm:text-5xl">이 주의 책</div>
+                {/* <div>
+                    <button
+                        className="font-bold lg:text-xl sm:text-4xl"
+                        onClick={(e) => props.onClick(e, 'monthly')}
+                    >
+                        더보기
+                    </button>
+                </div> */}
+            </div>
+            {book ? (
+                <div className="h-full flex flex-row">
+                    <div className="w-40% my-auto flex justify-center border border-green-500">
+                        <Link to={'/store/book/' + book.id}>
+                            {book.mainImg ? (
+                                <img src={book.mainImg.link} alt="" />
+                            ) : (
+                                <div className="bg-purple-500" />
+                            )}
+                        </Link>
+                    </div>
+
+                    <div className="w-80% my-auto ml-8 flex flex-col">
+                        <Link to={'/store/book/' + book.id}>
+                            <p className="lg:text-2xl sm:text-5xl mb-2">{book.title}</p>
+                        </Link>
+                        <p className="lg:text-lg sm:text-4xl mb-2">저자: {book.author}</p>
+                        <p className="lg:text-lg sm:text-4xl mb-2">
+                            출판사: {book.publishingCompany}
+                        </p>
+                        <p className="lg:text-lg sm:text-4xl">가격: {price}원</p>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }

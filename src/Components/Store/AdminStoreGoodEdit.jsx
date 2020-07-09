@@ -56,8 +56,8 @@ export default class AdminStoreGoodEdit extends Component {
                     dimensions: res.data.dimensions,
                     color: res.data.color,
                     desc: res.data.desc,
-                    mainImg: res.data.mainImg.link,
-                    additionalImg: res.data.additionalImg,
+                    mainImg: res.data.mainImg ? res.data.mainImg.link : undefined,
+                    additionalImg: res.data.additionalImg ? res.data.additionalImg : undefined,
                 },
             });
         }

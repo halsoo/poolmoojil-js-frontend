@@ -79,7 +79,7 @@ export default class AdminTextsEdit extends Component {
                     speaker: gathering.data.speaker,
                     books: books,
                     desc: gathering.data.desc,
-                    mainImg: gathering.data.mainImg.link,
+                    mainImg: gathering.data.mainImg ? gathering.data.mainImg.link : undefined,
                     liveLink: gathering.data.liveLink,
                 },
             });
